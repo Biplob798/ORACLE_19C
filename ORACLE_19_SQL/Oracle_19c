@@ -468,3 +468,225 @@ DELETE from employees where department_id in (select department_id from departme
 
 -- truncate 
 truncate table employees;
+
+
+-- practice ____ 9
+
+
+select department_id 
+from departments minus 
+select department_id 
+from employees 
+where job_id='ST_CLERK';
+
+
+
+select country_id, country_name 
+from countries minus 
+select l.country_id,c.country_name
+from locations l 
+join countries c 
+on (l.country_id= c.country_id) 
+join departments d 
+on d.location_id=l. location_id; 
+
+
+select employee_id,job_id,department_id 
+from employees
+where department_id=50
+union all
+select employee_id,job_id,department_id
+from employees
+where department_id =80;
+
+
+select employee_id 
+from employees
+where job_id ='SA_REP'
+intersect
+select employee_id
+from employees
+where department_id=80;
+
+
+select last_name, department_id,to_char(null)department_name
+from employees
+union
+select to_char(null), department_id,department_name 
+from departments;
+
+
+
+
+
+-- practice ____ 10
+
+
+create table my_employee ( id number(5) constraint my_employee_id_pk primary key,
+                           last_name varchar2(100),
+                           first_name varchar2(100),
+                           userid varchar2 (100),
+                           salary number (9,2) );
+
+
+ insert into my_employee 
+ values(1,
+        'Patel',
+        'Ralph',
+        'rpatel',
+        895);                      
+
+ insert into my_employee (
+                          id,
+                          last_name,
+                          first_name,
+                          userid,
+                          salary
+ )    
+ values(2,
+        'Dancs',
+        'Betty',
+        'bdancs',
+        860);
+
+
+insert into my_employee (
+                          id,
+                          last_name,
+                          first_name,
+                          userid,
+                          salary
+ )    
+ values(&id,
+        '&last_name',
+        '&first_name',
+        '&userid',
+        &salary);    
+
+ select * from my_employee;
+
+
+
+
+ commit;
+
+
+
+ update my_employee
+    set last_name ='Drexler'
+    where id=3;                          
+
+
+ update my_employee
+    set salary=1000
+    where salary<900;   
+
+
+ select * from my_employee;
+
+
+ delete from my_employee  
+ where last_name='Dancs' ; 
+
+
+ select * from my_employee;
+
+
+
+ insert into my_employee (
+                          id,
+                          last_name,
+                          first_name,
+                          userid,
+                          salary
+ )    
+ values(&id,
+        '&last_name',
+        '&first_name',
+        '&userid',
+        &salary);    
+
+savepoint step_17;
+
+delete from my_employee;
+
+
+
+
+ select * from my_employee;
+
+
+  rollback to step_17;     
+
+
+   select * from my_employee;
+
+   commit;  
+
+
+
+   -- practice ____ 11
+
+   create table dept (
+                    id number (7) constraint department_id_pk primary key ,
+                    name varchar2 (25)
+   );
+
+
+create table emp(
+    id          number(7),
+    last_name   varchar2(25),
+    first_name  varchar2(25),
+    dept_id     number(7),
+    constraint emp_dept_id_fk foreign key (id) references dept (id)
+);
+
+
+alter table emp
+add (commission number(2,2));
+
+alter table emp
+  2 modify (last_name varchar2(50));
+
+
+alter table emp 
+drop (first_name);
+/
+alter table emp 
+drop column first_name;
+
+
+
+
+alter table emp
+set unused (dept_id);
+
+alter table emp 
+drop unused column;
+
+
+
+create table employees2
+ as 
+ select employee_id id,
+ first_name,
+ last_name,
+ salary,
+ department_id dept_id
+ from employees ;
+
+
+ alter table employees2
+ read only;
+
+
+alter table employees2 
+add job_id varchar2 (9);
+
+alter table employees2
+read write ;
+
+commit;
+
+
+
