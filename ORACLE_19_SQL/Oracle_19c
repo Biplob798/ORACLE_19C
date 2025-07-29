@@ -811,3 +811,72 @@ desc user_ind_columns
 
 
 drop index emp_last_name_idx;
+
+
+
+-- view---
+
+-- create view
+create view empvu80
+as select employee_id,last_name,salary from employees where department_id=80;
+
+create view salvu50
+as select employee_id id_number,last_name name,salary*12 ann_salary from employees where department_id=50;
+
+
+create or replace view salvu50(
+    id_number,name,ann_salary) as select employee_id id_number,last_name name,salary*12 ann_salary from employees where department_id=50;
+
+
+
+    -- modify view ---or replace
+
+create or replace view empvu80 (id_number,name,sal,department_id)as select employee_id,first_name ||' '|| last_name,salary,department_id from employees;
+
+
+
+-- creat a complex view 
+
+create or replace view dept_sun_vu(name,minsal,maxsal,avgsal) as select d.department_name,min(e.salary),max(salary),avg(salary) from employees e join departments d using (department_id) group by d.department_name;
+
+-- using the with check option clause
+
+create or replace view empvu20 as select * from employees where department_id=20 with check option constraint empvu20_ck;
+
+
+
+-- denying dml operations by with read only clause 
+
+create or replace view empvu10 (employee_id,employee_name,job_title)as select employee_id,last_name,job_id from employees where department_id=10 with read only;
+
+drop view empvu80;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
