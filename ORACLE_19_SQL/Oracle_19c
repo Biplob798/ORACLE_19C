@@ -1042,29 +1042,226 @@ create global temporary table cart (
 ON COMMIT DELETE ROWS;
 
 
+-- activity guide 1 ____ 
+
+-- chapter- 9 practice 
+
+select department_id from departments minus select department_id from employees where job_id= 'ST_CLERK';
 
 
 
+SELECT country_id,country_name 
+FROM countries 
+minus
+SELECT l.country_id,c.country_name from locations l join countries c on(l.country_id=c.country_id) join  departments d on (d.location_id=l.location_id);
+
+
+select employee_id,job_id, department_id from employees where department_id =50 union all
+select employee_id,job_id, department_id from employees where department_id=80;
+
+
+select employee_id from employees where job_id='SA_REP' intersect select employee_id from employees where department_id =80;
+-- OR 
+SELECT EMPLOYEE_ID FROM EMPLOYEES WHERE JOB_ID='SA_REP' AND DEPARTMENT_ID=80;
+-- OR 
+SELECT employee_id
+FROM employees
+WHERE employee_id IN (
+    SELECT employee_id 
+    FROM employees 
+    WHERE job_id = 'SA_REP'
+)
+AND department_id = 80;
+-- OR 
+SELECT employee_id
+FROM employees
+WHERE job_id = 'SA_REP'
+AND employee_id IN (
+    SELECT employee_id
+    FROM employees
+    WHERE department_id = 80
+);
+
+
+select last_name, department_id,to_char(null) dept_name from employees
+union 
+select to_char(null),department_id , department_name from departments;
+
+SELECT LAST_NAME , DEPARTMENT_ID , TO_CHAR(NULL) DEPT_NAME FROM EMPLOYEES 
+UNION
+SELECT TO_CHAR(NULL), DEPARTMENT_ID,DEPARTMENT_NAME FROM DEPARTMENTS;
+
+SELECT E.LAST_NAME,E.DEPARTMENT_ID,D.DEPARTMENT_NAME
+FROM EMPLOYEES E 
+FULL OUTER JOIN DEPARTMENTS D 
+ON E.DEPARTMENT_ID=D.DEPARTMENT_ID;
+
+
+-- chapter- 10 practice 
+
+
+create table my_employee(
+    id number (4),
+    last_name varchar2 (25),
+    first_name varchar2 (25),
+    userid varchar2 (8),
+    salary number (9,2),
+    hire_date date
+);
+
+
+desc my_employee;
+
+alter table my_employee constraint emp_id_pk primary key (id);
+
+create sequence emp_id_sq 
+    start with 100
+    increment by 1
+    maxvalue 100000
+    minvalue 100
+    nocache
+    nocycle
+;
+
+desc user_sequences
+drop sequence emp_id_sq
+
+insert into my_employee 
+values(emp_id_sq.nextval ,'Patel','Ralph','rpatel',895,sysdate);
+
+
+select * from my_employee;
+
+-- explicit insert 
+insert into my_employee 
+(id,last_name,first_name,userid,salary,hire_date)
+values(emp_id_sq.nextval, 'Dancs', 'Betty',lower(substr('Dancs',1,1)||substr('Betty' ,1,7)),860,to_date('12/jan/05' ,'dd/mon/rr'));
+
+-- dynamic insert 
+
+insert into my_employee 
+values(emp_id_sq.nextval ,'&last_name','&first_name','&userid',&salary, TO_DATE(SYSDATE));
+
+insert into my_employee 
+values(emp_id_sq.nextval ,'&last_name','&first_name','&userid',&salary, TO_DATE('&hire_date', 'YYYY-MM-DD'));
+
+
+commit;
+
+
+create synonym emp_synonym for my_employee;
+
+desc user_synonyms
+drop synonym emp_synonym;
+
+create view emp_vw_100 as select id,userid,salary,hire_date from my_employee where id=100;
+create or replace view emp_vw_1 as select id,userid,salary,hire_date from my_employee where id=100;
+create or replace view emp_vw_1 as select id,userid,salary,hire_date from my_employee where id=100 with read only;
+create or replace view emp_vw_1 as select * from my_employee where id=100 with check option constraint empvw100_ck;
+select * from emp_vw_100;
+drop view emp_vw_100; 
+
+create index emp_salar_idx100 on my_employee(salary);
+desc user_idexes
+drop index emp_salar_idx100;
+
+-- update 
+update my_employee set last_name='Drexler' where id=103;
+
+update my_employee set salary =1000 where salary<900;
+
+select * from my_employee;
+
+delete from my_employee where last_name ='Dancs';
+
+commit;
+insert into my_employee 
+values(emp_id_sq.nextval ,'&last_name','&first_name','&userid',&salary, TO_DATE(SYSDATE));
+
+
+select * from my_employee;
+savepint step_17;
+delete from my_employee;
+select * from my_employee;
+rollback to step_17;
+commit;
 
 
 
+insert into my_employee 
+values(emp_id_sq.nextval, '&last_name', '&first_naem',lower(substr('&first_naem',1,1)||substr('&last_name' ,1,7)),&salary,to_date('&hire_date' ,'dd/mon/rr'));
 
 
 
+select * from my_employee where id=107;
+
+
+-- chapter- 11 practice
+
+
+create table dept (id number(7) constraint dept_id_new_pk primary key ,name varchar2(25));
+desc dept
 
 
 
+CREATE TABLE emp01 (
+  id NUMBER(7),
+  last_name VARCHAR2(25),
+  first_name VARCHAR2(25),
+  dept_id NUMBER(7),
+  CONSTRAINT dept_id_fk FOREIGN KEY (dept_id) REFERENCES dept(id)
+);
+
+create table emp6(id number(7), last_name varchar2(25), first_name varchar2(25), dept_id number(7), 
+constraint emp_dept_id_fk foreign key (dept_id)  references dept(id));
+
+create table emp(id number(7), last_name varchar2(25), first_name varchar2(25), dept_id number(7), 
+constraint dept_id_fk  references dept(id));
+
+alter table emp01 
+add commission number(2,2);
+desc emp01
+
+alter table emp01 
+modify last_name varchar2 (50);
+desc emp01
+
+alter table emp01
+drop column first_name;
+desc emp01
+
+
+alter table emp01
+set unused(dept_id);
+desc emp01
+
+alter table emp01
+drop unused columns;
+desc emp01
 
 
 
+create table employees02 as select employee_id id,first_name,last_name,salary,department_id dept_id from employees;
+desc employees02
+
+alter table employees02 read only;
 
 
 
+alter table employees02 
+add job_id varchar2(9);
+desc employees02
+
+alter table employees02 read write;
+alter table employees02
+add job_id varchar2(9);
 
 
 
+drop table emp;
 
-
+drop table dept cascade constraints purge;
+drop table employees2;
 
 
 
