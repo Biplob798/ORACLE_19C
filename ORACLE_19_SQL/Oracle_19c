@@ -1355,17 +1355,58 @@ select department_id,department_name,(
 ) as emp_cout from departments d;
 
 
+-- correlated subqueries 
+-- Compare each row in a table to a value that depends on that same row.
+
+
+-- emloyee salay more then avg salary of each department 
+SELECT outer_e.employee_id, outer_e.last_name, outer_e.salary
+FROM employees outer_e
+WHERE outer_e.salary > (
+    SELECT AVG(inner_e.salary)
+    FROM employees inner_e
+    WHERE outer_e.department_id = inner_e.department_id
+);
+
+-- employee highest salary of each department 
+ 
+select outer_e.employee_id,outer_e.last_name,outer_e.salary 
+from employees outer_e
+where salary=(
+    select max(salary)
+    from employees inner_e 
+    where outer_e.department_id=inner_e.department_id);
+
+
+-- exists or not exists operator 
+
+select employee_id,last_name,job_id,department_id
+from employees outer_e
+where exists(select null 
+from employees 
+where manager_id=outer_e.employee_id);
 
 
 
+SELECT employee_id, last_name, job_id, department_id
+FROM employees outer_e
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM employees
+    WHERE manager_id = outer_e.employee_id
+);
+
+-- with cluase 
 
 
-
-
-
-
-
-
+with top_salary as (select outer_e.employee_id,outer_e.last_name,outer_e.salary 
+from employees outer_e
+where salary=(
+    select max(salary)
+    from employees inner_e 
+    where outer_e.department_id=inner_e.department_id)
+)
+select * from top_salary;
 
 
 
