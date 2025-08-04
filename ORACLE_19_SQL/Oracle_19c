@@ -55,6 +55,36 @@ WHERE department_id = (
 AND UPPER(last_name) <> UPPER('zlotkey');
 
 
+-- multiple column comparisons 
+
+-- 1.pariwise comparisions
+-- 2.nonpariwise comparisions
+
+-- 1.pariwise comparisions
+select first_name,last_name,manager_id,department_id 
+from employees
+where (manager_id ,department_id)
+in
+(
+    SELECT manager_id, department_id
+    FROM employees
+    WHERE first_name = 'Daniel'
+);
+
+-- 2.nonpariwise comparisions
+select first_name,last_name,manager_id,department_id 
+from employees
+where manager_id 
+in
+(select manager_id from employees 
+where first_name='Daniel'
+)
+and department_id 
+in(
+select department_id from employees where first_name='Daniel'
+);
+
+
 
 
 
