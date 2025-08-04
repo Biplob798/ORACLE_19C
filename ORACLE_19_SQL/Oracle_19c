@@ -1294,11 +1294,65 @@ drop table dept cascade constraints purge;
 drop table employees2;
 
 
+-- multiple column subqueries 
+-- 1.pariwise
+-- 2.nonpariwise
+create table emp_column_comparisons_test(first_name varchar2(100),manager_id number,department_id number);
+
+insert into emp_column_comparisons_test
+   values('Daniel',108, 100);
+
+insert into emp_column_comparisons_test
+    values('Daniel',109, 200);  
+
+ insert into emp_column_comparisons_test
+    values('Bob',108, 200);
+
+ insert into emp_column_comparisons_test
+    values('Alice',109, 100); 
 
 
+-- 2.nonpariwise
+
+SELECT first_name, manager_id, department_id
+  FROM emp_column_comparisons_test
+ WHERE     manager_id IN (SELECT manager_id
+                            FROM emp_column_comparisons_test
+                           WHERE first_name = 'Daniel')
+       AND department_id IN (SELECT department_id
+                               FROM emp_column_comparisons_test
+                              WHERE first_name = 'Daniel');
 
 
+--  1.pariwise
 
+SELECT first_name, manager_id, department_id
+FROM emp_column_comparisons_test
+WHERE (manager_id, department_id) IN (
+    SELECT manager_id, department_id
+    FROM emp_column_comparisons_test
+    WHERE first_name = 'Daniel'
+);
+
+
+-- scalar subqueries
+-- when need only one column result 
+
+
+select employee_id,last_name,department_id, (CASE
+                                when department_id=(select department_id from departments where location_id=1800)
+                                then 'Dhaka'
+                                else 'Rajshahi'
+                                end
+) location 
+from employees;
+
+
+select department_id,department_name,(
+    select count(*)
+    from employees e 
+    where  e.department_id=d.department_id
+) as emp_cout from departments d;
 
 
 
