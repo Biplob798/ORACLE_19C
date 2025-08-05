@@ -1409,6 +1409,308 @@ where salary=(
 select * from top_salary;
 
 
+-- practice chapter_6_sql_2
+
+select last_name,department_id,salary
+from employees
+where 
+(department_id,salary)
+in
+(select department_id,salary 
+from employees 
+where commission_pct is not null);
+
+
+select e.last_name,d.department_name,e.salary
+from employees e
+join
+departments d 
+on
+(
+    e.department_id=d.department_id
+)
+and 
+(salary,job_id)
+in
+(
+select e.salary, e.job_id 
+from employees e 
+join departments d 
+on (e.department_id=d.department_id)
+)
+and d.location_id =1700;
+
+
+
+select e.last_name,d.department_name,e.salary
+from employees e
+join
+departments d 
+on
+(
+    e.department_id=d.department_id
+)
+and
+(salary,job_id)
+in
+(
+select e.salary, e.job_id 
+from employees e 
+join departments d 
+on (e.department_id=d.department_id)
+)
+where d.location_id =1700;
+
+
+
+select last_name,hire_date,salary 
+from employees 
+where (salary,manager_id)
+in
+(select salary,manager_id 
+from employees 
+where last_name='Kochhar') 
+and last_name<>'Kochhar';
+
+
+select last_name,job_id,salary 
+from employees
+where
+salary >all
+(
+    select salary from employees where job_id='SA_MAN'
+)
+order by salary desc;
+
+
+select employee_id,last_name,department_id 
+from employees  
+where department_id 
+in
+(select department_id 
+from departments 
+where location_id 
+in
+(select location_id 
+from locations 
+where city 
+like 'T%') );
+
+
+-- select outer_e.last_name ename, outer_e.salary salary, outer_e.department_id deptno,
+-- (select round(AVG(salary), 2) 
+-- from employees inner_e 
+-- where inner_e.department_id=outer_e.department_id)avg_salary_by_dpt from employees outer_e;
+
+
+select 
+outer_e.last_name ename,
+outer_e.salary salary, 
+outer_e.department_id deptno,
+round(AVG(outer_e.salary), 2) dept_avg 
+from 
+employees outer_e ,employees inner_e 
+where outer_e.department_id=inner_e.department_id 
+and 
+outer_e.salary>
+(
+    select avg(salary) 
+    from employees  
+    where department_id=outer_e.department_id
+    ) 
+    group by outer_e.last_name,
+    outer_e.salary,
+    outer_e.department_id 
+    order by avg(outer_e.salary);
+
+
+
+WITH dept_avg AS (
+    SELECT department_id, ROUND(AVG(salary), 2) AS avg_sal
+    FROM employees
+    GROUP BY department_id
+)
+SELECT 
+    e.last_name AS ename,
+    e.salary as salary,
+    e.department_id AS deptno,
+    d.avg_sal AS dept_avg
+FROM 
+    employees e
+JOIN 
+    dept_avg d ON e.department_id = d.department_id
+WHERE 
+    e.salary > d.avg_sal
+ORDER BY 
+    d.avg_sal;
+
+
+
+-- select outer_e.last_name 
+-- from employees outer_e 
+-- where 
+-- not exists (
+--     select 'X' 
+--     from employees inner_e 
+--     where inner_e.manager_id=outer_e.manager_id
+-- );
+
+select outer.last_name
+from
+employees outer
+where 
+not exists
+(select 'X'
+from employees inner
+where
+inner.manager_id=outer.employee_id);
+
+
+SELECT  e.last_name
+FROM employees e
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM employees sub
+    WHERE sub.manager_id = e.employee_id
+);
+
+
+-- select outer.last_name
+-- from employees outer
+-- where outer.employee_id not in
+-- (
+--     select inner.manager_id from employees inner
+-- );
+
+select outer.last_name
+from employees outer
+where outer.employee_id not in
+(
+    select inner.manager_id from employees inner where manager_id is not null
+);
+
+
+
+SELECT last_name
+FROM employees
+WHERE employee_id NOT IN (
+    SELECT DISTINCT manager_id
+    FROM employees
+    WHERE manager_id IS NOT NULL
+);
+
+
+SELECT e.last_name
+FROM employees e
+LEFT JOIN employees m ON e.employee_id = m.manager_id
+WHERE m.employee_id IS NULL;
+
+
+
+select outer.last_name 
+from employees outer
+where 
+salary 
+< 
+(
+    select avg(inner.salary)
+    from employees inner 
+    where inner.department_id=outer.department_id 
+);
+
+
+select outer.last_name from employees outer
+where 
+exists
+(
+    select 1 from employees inner where 
+    inner.department_id=outer.department_id
+    and
+    inner.hire_date>outer.hire_date
+    and
+    inner.salary>outer.salary
+);
+
+
+select employee_id, last_name, 
+(
+    select department_name  
+    from departments d 
+    where e.department_id =d.department_id
+) department 
+from employees e 
+order by department;
+
+
+
+with 
+summary as 
+(
+    select d.department_name, sum(e.salary) as dept_total from employees e join departments d on (e.department_id=d.department_id) group by d.department_name
+)
+select department_name, dept_total from summary where dept_total>(select sum(dept_total)*1/8 from summary) order by dept_total desc;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+_
+
+
+
+
+
+
+
+
+
+
 
 
 
