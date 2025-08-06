@@ -1293,7 +1293,8 @@ drop table emp;
 drop table dept cascade constraints purge;
 drop table employees2;
 
-
+-- using subqueries for data retrive
+-- 1.by select statement
 -- multiple column subqueries 
 -- 1.pariwise
 -- 2.nonpariwise
@@ -1652,15 +1653,133 @@ select department_name, dept_total from summary where dept_total>(select sum(dep
 
 
 
+-- using subqueries for data manipulation
+-- 1.insere data by subquery
+-- 2.update data by subquery
+-- 3.delete data by subquery
 
 
 
 
 
+insert into (
+    select l.location_id,l.city,l.country_id 
+    from locations l 
+    join countries c on (l.country_id=c.country_id) 
+    join regions using(region_id)
+    where region_name= 'Europe'
+            )
+values (3400,'Cardiff', 'Uk');       
+
+INSERT INTO (
+    SELECT l.location_id, l.city, l.country_id
+    FROM locations l
+    JOIN countries c ON (l.country_id = c.country_id)
+    JOIN regions USING(region_id)
+    WHERE region_name = 'Europe'
+)
+VALUES (3400, 'Cardiff', 'UK');
+
+INSERT INTO (
+    SELECT l.location_id, l.city, l.country_id
+    FROM locations l
+    JOIN countries c ON (l.country_id = c.country_id)
+    JOIN regions USING(region_id)
+    WHERE region_name = 'Europe'
+)
+VALUES (3400, 'Cardiff', 'UK');
+
+insert into (select location_id,city,country_id from loc where country_id in (select country_id from countries natural join regions where region_name='Europe') with check option)
+values(3500,'Berlin', 'DE');
+
+
+create or replace view european_cities
+as 
+select location_id, city,country_id from locations where country_id in(select country_id from countries natural join regions where region_name='Europe') with check option;
+
+insert into european_cities
+values(3400,'New York ', 'US');
+insert into european_cities
+values(3400,'New York ', 'Uk');
+
+-- update table by correlated subquery
+
+create table emp16 as select * from employees;
+
+alter table emp16 
+add (department_name varchar2(25));
+
+select department_id,department_name from emp16;
+
+update emp16 outer
+set department_name=(select department_name from departments inner where outer.department_id=inner.department_id);
+
+select department_name from emp16;
+
+-- delete table by correlated subquery
+
+delete from job_history jh
+    where employee_id=
+    (
+    select employee_id  
+    from employees e 
+    where jh.employee_id=e.employee_id 
+    and start_date = 
+    (select min(start_date) 
+    from job_history jh 
+    where jh.employee_id=e.employee_id)
+    and 5>
+    (select count (*) 
+    from job_history jh 
+    where jh.employee_id=e.employee_id 
+    group by employee_id 
+    HAVING count(*)>=4)
+);
+
+
+DELETE FROM job_history JH
+WHERE employee_id =
+(SELECT employee_id
+FROM employees E
+WHERE JH.employee_id = E.employee_id
+AND START_DATE =
+(SELECT MIN(start_date)
+FROM job_history JH
+WHERE JH.employee_id = E.employee_id)
+AND 5 > (SELECT COUNT(*)
+FROM job_history JH
+WHERE JH.employee_id = E.employee_id
+GROUP BY EMPLOYEE_ID
+HAVING COUNT(*) >= 4));
+
+DELETE FROM job_history
+WHERE (employee_id, start_date) IN (
+    SELECT employee_id, MIN(start_date)
+    FROM job_history
+    GROUP BY employee_id
+    HAVING COUNT(*) < 5
+);
+
+delete from emp16 e 
+where employee_id=(
+    select employee_id from emp_history where 
+    employee_id=e.employee_id
+);
 
 
 
-
+select employee_id from (select EMPLOYEE_ID, 
+       FIRST_NAME, 
+       LAST_NAME, 
+       EMAIL, 
+       PHONE_NUMBER, 
+       HIRE_DATE,
+       JOB_ID, 
+       SALARY, 
+       COMMISSION_PCT, 
+       MANAGER_ID,
+       DEPARTMENT_ID  
+from employees);
 
 
 
