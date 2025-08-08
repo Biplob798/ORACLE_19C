@@ -1632,6 +1632,13 @@ exists
     inner.salary>outer.salary
 );
 
+SELECT DISTINCT e1.last_name
+FROM employees e1
+JOIN employees e2
+  ON e1.department_id = e2.department_id
+ AND e2.hire_date > e1.hire_date
+ AND e2.salary > e1.salary;
+
 
 select employee_id, last_name, 
 (
@@ -1647,10 +1654,45 @@ order by department;
 with 
 summary as 
 (
-    select d.department_name, sum(e.salary) as dept_total from employees e join departments d on (e.department_id=d.department_id) group by d.department_name
+    select d.department_name, 
+    sum(e.salary) as dept_total 
+    from employees e 
+    join departments d 
+    on (e.department_id=d.department_id) 
+    group by d.department_name
 )
-select department_name, dept_total from summary where dept_total>(select sum(dept_total)*1/8 from summary) order by dept_total desc;
+select department_name, dept_total 
+from summary
+where dept_total>
+(
+    select sum(dept_total)*1/8 
+    from summary
+    ) 
+    order by dept_total desc;
 
+
+WITH dept_salary AS (
+    SELECT department_id, SUM(salary) AS dept_total_salary
+    FROM employees
+    GROUP BY department_id
+),
+company_salary AS (
+    SELECT SUM(salary) AS company_total_salary
+    FROM employees
+)
+SELECT d.department_name
+FROM departments d
+JOIN dept_salary ds ON d.department_id = ds.department_id
+JOIN company_salary cs ON 1=1  
+WHERE ds.dept_total_salary > (cs.company_total_salary / 8);    
+ 
+SELECT d.department_name
+FROM departments d
+JOIN employees e ON d.department_id = e.department_id
+GROUP BY d.department_name
+HAVING SUM(e.salary) > (
+    SELECT SUM(salary)/8 FROM employees
+);
 
 
 -- using subqueries for data manipulation
@@ -1784,6 +1826,70 @@ from employees);
 
 
 
+--  chapter_8_sql_2
+-- controlling user Access 
+1.database security
+    a.system security
+    b.data security
+2.privileges
+    a.system privileges
+        1.create user
+        2.grant user
+        3.create role
+        4.grant role
+        5.revoke  user and role
+
+
+        -- sqlplus 
+        sys as sysdba
+        show user
+        conn_name
+        alter session set container=orclpdb66;
+        conn sys@orclpdb66 as sysdba;
+        create user biplob indentified by 123
+        grant connect,resource,dba to biplob;
+        connect biplob/123@localhost:1521/orclpdb66.mshome.net
+        show user
+        conn_name
+        -- befor create a table
+        conncet sys@orclpdb66 as sysdba
+        alter user biplob quota unlimited on users;
+        connect biplob/123@orclpdb66;
+        -- create table
+        -- insert data
+        create role book_manager;
+
+        grant select,insert,update
+        on biplob to book_manager;
+
+        grant book_manager to biplob
+
+    -- revoke system privileges 
+
+        -- REVOKE system_privilege 
+        -- FROM user_name;
+
+        REVOKE CREATE SESSION FROM biplob;
+
+
+    b.object privileges
+        1.grant object privileges with grant option 
+
+
+        grant privileges_name
+        on object_name
+        to user_name
+
+        grant select,insert,update
+        on employees
+        to biplob
+        with grant option;
+
+--   revoke object privileges
+    
+    revoke select,insert,update
+    on employees
+    from biplob;
 
 
 
