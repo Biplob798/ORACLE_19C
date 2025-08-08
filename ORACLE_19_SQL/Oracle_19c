@@ -1853,7 +1853,10 @@ from employees);
         conn_name
         -- befor create a table
         conncet sys@orclpdb66 as sysdba
-        alter user biplob quota unlimited on users;
+        (grant unlimited tablespace to biplob
+        -- or   
+        alter user biplob quota unlimited on users;)    -- for insert table 
+       
         connect biplob/123@orclpdb66;
         -- create table
         -- insert data
@@ -1890,6 +1893,104 @@ from employees);
     revoke select,insert,update
     on employees
     from biplob;
+
+
+
+        -- chapter_9_sql_2
+        -- manipulation date 
+
+        CREATE TABLE employees2 (
+    emp_id NUMBER PRIMARY KEY,
+    emp_name VARCHAR2(50),
+    department VARCHAR2(30) DEFAULT 'HR',
+    salary NUMBER DEFAULT 30000
+);
+
+INSERT INTO employees2 (emp_id, emp_name)
+VALUES (101, 'Rahim');
+
+
+insert all
+    into sal_history values(employee_id,hire_date,salary)
+   into mgr_history values(employee_id,hire_date,manager_id)
+    select employee_id , hire_date, salary ,manager_id 
+   from employees
+    where employee_id=200;
+
+ CREATE TABLE emp_history2 (
+        emp_id       NUMBER,
+        hire_date    DATE,
+        salary       NUMBER
+    );
+
+CREATE TABLE emp_sales2 (
+    emp_id       NUMBER,
+    comm	number(2,2),
+    salary  NUMBER
+);
+
+insert all
+when hire_date< '01-JAN-05' then 
+into emp_history2 values(emp_id,hire_date,salary)
+when comm is not null then
+ into emp_sales2 values(emp_id,  comm,salary)
+select 
+employee_id emp_id,
+ hire_date, 
+salary salary ,
+commission_pct comm from employees;
+
+INSERT ALL
+  WHEN hire_date < TO_DATE('01-JAN-2005', 'DD-MON-YYYY') THEN
+    INTO emp_history2 (emp_id, hire_date, salary) VALUES (emp_id, hire_date, salary)
+  WHEN commission_pct IS NOT NULL THEN
+    INTO emp_sales2 (emp_id, commission_pct, salary) VALUES (emp_id, commission_pct, salary)
+SELECT
+  employee_id emp_id,
+  hire_date,
+  salary,
+  commission_pct
+FROM employees;
+
+
+
+create table salary_low (employee_id number,last_name  varchar2 (25),salary number);
+
+create table salary_mid (employee_id number,last_name  varchar2 (25),salary number);
+
+create table salary_high (employee_id number,last_name  varchar2 (25),salary number);
+
+insert first
+when salary<5000 then
+into salary_low (employee_id ,last_name ,salary )
+when salary between 5000 and 10000 then
+into salary_mid (employee_id ,last_name  ,salary )
+else
+into salary_high (employee_id ,last_name  ,salary )
+select employee_id,last_name,salary from employees;
+
+
+
+create table copy_emp4 as select * from employees where salary<10000;
+
+merge into copy_emp4 c
+using(select * from employees)e
+on(c.employee_id=e.employee_id)
+when matched then
+update set
+c.first_name=e.first_name,c.salary=e.salary*2,c.last_name=e.last_name
+delete where(e.commission_pct is not null)
+when not matched then
+insert values(e.employee_id,e.first_name,e.last_name,e.email,e.phone_number,e.hire_date,e.job_id,e.salary,e.commission_pct,e.manager_id,e.department_id);
+
+
+
+
+
+
+
+
+
 
 
 
