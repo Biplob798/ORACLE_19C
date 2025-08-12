@@ -1,5 +1,6 @@
 
 -- conn hr/hr@localhost:1521/orclpdb66.mshome.net   
+-- hr/hr@orclpdb66
 
 select last_name,hire_date
 from employees 
@@ -2045,7 +2046,13 @@ _
 
 
 
-
+insert all
+    when salary >20000 then
+    into special_sal values(employee_id,salary)
+    else
+    into  sal_history values(employee_id,hire_date,salary)
+    into mgr_history values(employee_id,manager_id,salary)
+    select employee_id,hire_date,manager_id,salary from employees where employee_id<125;
 
 
 

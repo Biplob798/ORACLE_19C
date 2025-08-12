@@ -1,0 +1,57 @@
+
+-- declaring pl/sql variables chapter_3
+
+
+set  serveroutput on  --  for pl/sql run
+declare
+v_lname varchar2 (25);
+begin
+select last_name
+into v_lname 
+from employees
+where employee_id=100;
+dbms_output.put_line(v_lname);
+end;
+/
+
+
+-- how to declare a variables
+declare 
+variable_name    constant  datatype () not null := default value;
+
+
+-- examp
+
+set serveroutput on
+declare
+v_number1 number (9);
+v_number2 number (9);
+begin
+v_number1 :=12;
+v_number2 :=13;
+dbms_output.put_line('result : '||(v_number1-v_number2));
+end;
+/
+set serveroutput on
+declare
+v_number1 number (9):=12;
+v_number2 number (9):=13;
+result number(9,2);
+begin 
+result:=(v_number1+v_number2);
+
+dbms_output.put_line('result : '||(result));
+end;
+/
+set serveroutput on
+declare
+v_number1 number (9):=&v_number1;
+v_number2 number (9):=&v_number2;
+result number(9,2);
+begin 
+result:=v_number1+v_number2;
+dbms_output.put_line('result : '||(result));
+end;
+/
+
+
