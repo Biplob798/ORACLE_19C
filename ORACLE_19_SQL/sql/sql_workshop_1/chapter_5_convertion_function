@@ -1,3 +1,108 @@
+-- convertion function 
+    -- 1.implicit
+    -- 2.explicit
+
+
+-- implicit     
+--  varchar2/char -------------->number
+-- varchar2/char------------------->date
+--   number-------------->varchar2/char
+-- varchar2/char
+-- date------------------->varchar2/char
+-- varchar2/char
+
+
+create table test_convertion
+(id varchar2 (7),
+name varchar2(50));
+
+
+insert into test_convertion
+values('150','Bob');
+
+
+select * from test_convertion
+where id= 150;
 
 
 
+-- to_char function
+
+-- to_char with date 
+select last_name,hire_date,to_char(hire_date,'fmdd MM YYYY') as hiredate
+from employees where job_id='IT_PROG';
+
+select last_name,hire_date,to_char(hire_date,'fmDY Mon YYYY') as hiredate
+from employees where job_id='IT_PROG';
+
+select last_name,hire_date,to_char(hire_date,'fmDAY MONTH YEAR FMHH:MI:SS AM') as hiredate
+from employees where job_id='IT_PROG';
+
+select 
+last_name,
+hire_date,
+to_char(hire_date,'DAY MONTH YEAR FMHH:MI:SS AM') as WITH_OUT_FM_hiredate,
+to_char(hire_date,'fmDAY MONTH YEAR FMHH:MI:SS AM') as WITH_FM_hiredate
+from employees where job_id='IT_PROG';
+
+
+
+
+-- to_char with NUMBER
+
+SELECT SALARY,
+        TO_CHAR(SALARY,'999,999.00')SALARY FROM EMPLOYEES 
+WHERE JOB_ID='IT_PROG';
+
+SELECT SALARY,
+        TO_CHAR(SALARY,'$0,999,999.00')SALARY FROM EMPLOYEES 
+WHERE JOB_ID='IT_PROG';
+
+
+-- TO_NUMBER AND TO_DATE 
+
+
+-- TO_DATE 
+
+
+
+SELECT hire_date,
+        TO_DATE('01-jan-06','fxdd-mon-rr')hiredate FROM EMPLOYEES 
+WHERE JOB_ID='IT_PROG';
+
+SELECT hire_date
+FROM EMPLOYEES 
+WHERE hire_date=TO_DATE('01-jan-06','dd mon  rr');
+
+-- thats why need explicit convertion function
+SELECT hire_date
+FROM EMPLOYEES 
+WHERE hire_date='jan 24 ,2006';
+
+SELECT hire_date
+FROM EMPLOYEES 
+WHERE hire_date=to_date('jan 24 ,2006','mon dd,yyyy');
+
+
+--  TO_NUMBER
+
+
+select employee_id,
+        to_char(salary,'FM9,999,999.00')
+from employees
+where job_id='IT_PROG';
+
+select employee_id,
+          TO_NUMBER(TO_CHAR(salary, 'FM9,999,999.00'), 'FM9,999,999.00') AS salary_num
+from employees
+where job_id='IT_PROG';
+
+select employee_id,
+        to_char(salary,'FM$09,999,999.00')
+from employees
+where job_id='IT_PROG';
+
+select employee_id,
+       TO_NUMBER(to_char(salary,'FM$09,999,999.00'))
+from employees
+where job_id='IT_PROG';

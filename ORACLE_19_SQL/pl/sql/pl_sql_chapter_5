@@ -198,7 +198,7 @@ DECLARE
      v_job_id copy_emp.job_id%type := 'IT_PROG';
 BEGIN
     DELETE FROM copy_emp
-    WHERE job_id =v_job_id;
+    WHERE employee_id =v_job_id;
     v_rows_deleted :=(SQL%ROWCOUNT || 'row delete');
     DBMS_OUTPUT.PUT_LINE(v_rows_deleted);
 END;
