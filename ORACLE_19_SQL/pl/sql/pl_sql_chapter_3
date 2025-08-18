@@ -44,6 +44,8 @@ dbms_output.put_line('result : '||(result));
 end;
 /
 set serveroutput on
+
+
 declare
 v_number1 number (9):=&v_number1;
 v_number2 number (9):=&v_number2;
@@ -55,3 +57,108 @@ end;
 /
 
 
+-- Bind variables
+variable b_result number;
+declare
+v_add1 number := 12;
+v_add2 number := 112;
+begin
+:b_result := v_add1+v_add2;
+dbms_output.put_line('Result : ' || :b_result);
+end;
+/
+Print b_result
+
+-- Declare the bind variable first
+VARIABLE b_result NUMBER;
+
+-- PL/SQL block
+DECLARE
+    v_add1 NUMBER := 12;
+    v_add2 NUMBER := 112;
+BEGIN
+    -- Assign value to bind variable using :=
+    :b_result := v_add1 + v_add2;
+
+    -- Print result using DBMS_OUTPUT
+    DBMS_OUTPUT.PUT_LINE('Result : ' || :b_result);
+END;
+/
+
+
+
+
+SET SERVEROUTPUT ON;
+
+BEGIN <<outer>>
+    DECLARE
+        v_sal     NUMBER(7,2) := 60000;
+        v_comm    NUMBER(7,2) := v_sal * 0.20;
+        v_message VARCHAR2(255) := ' eligible for commission';
+    BEGIN
+        DECLARE
+            v_sal        NUMBER(7,2) := 50000;
+            v_comm       NUMBER(7,2) := 0;
+            v_total_comp NUMBER(7,2) := v_sal + v_comm;
+        BEGIN
+            -- Position 1: v_message inside inner block (outer variable)
+            v_message := 'CLERK not' || v_message;
+            DBMS_OUTPUT.PUT_LINE('1. v_message (pos 1)       = ' || v_message);
+
+            -- Update outer.v_comm from inner v_sal
+            outer.v_comm := v_sal * 0.30;
+
+            -- Position 1: inner v_comm
+            DBMS_OUTPUT.PUT_LINE('3. v_comm (pos 1)          = ' || v_comm);
+
+            -- Position 1: outer.v_comm
+            DBMS_OUTPUT.PUT_LINE('4. outer.v_comm (pos 1)    = ' || outer.v_comm);
+
+            -- Position 2: v_total_comp (inner variable)
+            DBMS_OUTPUT.PUT_LINE('2. v_total_comp (pos 2)    = ' || v_total_comp);
+        END;
+
+        -- Back in outer block after inner ends
+        v_message := 'SALESMAN' || v_message;
+
+        -- Position 2: outer v_comm
+        DBMS_OUTPUT.PUT_LINE('5. v_comm (pos 2)          = ' || v_comm);
+
+        -- Position 2: outer v_message
+        DBMS_OUTPUT.PUT_LINE('6. v_message (pos 2)       = ' || v_message);
+    END;
+END outer;
+/
+
+
+declare
+v_fname varchar2 (50);
+begin
+select first_name into v_fname from employees 
+where job_id ='ST_CLERK';
+dbms_output.put_line(v_fname);
+end;
+/
+
+
+
+
+begin
+v_increse_salary number(9) := 500;
+update employees 
+set salary=salary+v_increse_salary
+where job_id ='ST_CLERK';
+
+end;
+/
+
+
+declare
+V_FNAME VARCHAR2(50) := 'BIPLOB';
+BEGIN
+V_LNAME := 'HOSSIAN';
+DBMS_OUTPUT.PUT_LINE(V_FNAME);
+DBMS_OUTPUT.PUT_LINE(V_LNAME);
+END;
+DBMS_OUTPUT.PUT_LINE(V_FNAME);
+/
