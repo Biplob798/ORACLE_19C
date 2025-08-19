@@ -106,3 +106,49 @@ select employee_id,
        TO_NUMBER(to_char(salary,'FM$09,999,999.00'))
 from employees
 where job_id='IT_PROG';
+
+
+
+-- conditional expressions 
+
+-- 1.case expression
+-- 2.searched case expression
+-- 3.decode funtion
+
+-- case convertion
+SELECT last_name,
+       job_id,
+       salary,
+       CASE salary
+            WHEN 3000 THEN 'Low'
+            WHEN 9000 THEN 'Medium'
+            WHEN 15000 THEN 'Good'
+            ELSE 'Excellent'
+       END AS qualified_salary
+FROM employees;
+
+-- searched case convertion
+
+select last_name,
+       job_id,
+       salary,
+    case 
+        when salary<5000 then 'low'
+        when salary<10000 then 'medium'
+        when salary<20000 then 'good'
+        else 'excellent'
+    end as  qualified_salary
+    from employees;
+
+    -- DECODE function
+
+    SELECT  last_name,
+            job_id,
+            salary,
+       DECODE(salary,
+              5000, 'Low',
+              10000, 'Medium',
+              20000, 'Good',
+              'Excellent') AS qualified_salary
+FROM employees;
+
