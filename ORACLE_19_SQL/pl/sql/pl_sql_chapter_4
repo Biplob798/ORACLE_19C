@@ -1,0 +1,152 @@
+
+
+-- write executable statement in pl/sql
+    NOT USE IN executable SECTION
+        1.DECODE
+        2.GROUP FUNCTION
+-- lexical unite
+    1.identifiers
+    2.delinters
+    3.literals
+    4.comments
+
+-- NESTED BLOCK 
+    -- TOPIC
+            -- 1.SCOPE FOR VARIABLE
+            -- 2.VISIBILITY FOR VARIABLE
+            -- 3.QUALIFIER FOR BLOCK
+
+-- NESTED BLOCK WITH SCOPE 
+DECLARE
+v_outer_variable VARCHAR2(20) := 'GLOBAL VARIABLE';
+BEGIN
+DECLARE
+v_inner_variable VARCHAR2(20) := 'LOCAL VARIABLE';
+BEGIN
+DBMS_OUTPUT.PUT_LINE(v_inner_variable);
+DBMS_OUTPUT.PUT_LINE(v_outer_variable);
+END;
+DBMS_OUTPUT.PUT_LINE(v_outer_variable);
+END;
+/           
+
+
+-- NESTED BLOCK WITH visibility
+DECLARE
+v_father_name VARCHAR2(20) := 'Ali Akbar';
+v_date_of_birth DATE := '20.APR.1968';
+BEGIN
+DECLARE
+v_child_name VARCHAR2(20) := 'Biplob Islam';
+v_date_of_birth DATE := '28.AUG.1997';
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Father''s Name: ' || v_father_name);
+DBMS_OUTPUT.PUT_LINE('Child''s Name: '|| v_child_name);
+DBMS_OUTPUT.PUT_LINE('Date of Birth: '|| v_date_of_birth );
+END;
+DBMS_OUTPUT.PUT_LINE('Date of Birth: '|| v_date_of_birth );
+END;
+/
+
+
+-- NESTED BLOCK WITH qualifier
+BEGIN<<outer>>
+    DECLARE
+        v_father_name VARCHAR2(20) := 'Ali Akbar';
+        v_date_of_birth DATE := '20.APR.1968';
+    BEGIN
+        DECLARE
+            v_child_name VARCHAR2(20) := 'Biplob Islam';
+            v_date_of_birth DATE := '28.AUG.1997';
+        BEGIN
+            DBMS_OUTPUT.PUT_LINE('Father''s Name: ' || v_father_name);
+            DBMS_OUTPUT.PUT_LINE('Child''s Name: '|| v_child_name);
+            DBMS_OUTPUT.PUT_LINE('Date of Birth: '|| outer.v_date_of_birth );
+            DBMS_OUTPUT.PUT_LINE('Date of Birth: '|| v_date_of_birth );
+        END;
+    END;
+END outer;
+/
+BEGIN<<outer>>
+    DECLARE
+        v_father_name VARCHAR2(20) := 'Ali Akbar';
+        v_date_of_birth DATE := '20.APR.1968';
+    BEGIN
+        DECLARE
+            v_child_name VARCHAR2(20) := 'Biplob Islam';
+            v_date_of_birth DATE := '28.AUG.1997';
+        BEGIN
+            DBMS_OUTPUT.PUT_LINE('Father''s Name: ' || v_father_name);
+            DBMS_OUTPUT.PUT_LINE('Child''s Name: '|| v_child_name);
+            DBMS_OUTPUT.PUT_LINE('Date of Birth: '|| v_date_of_birth );
+            DBMS_OUTPUT.PUT_LINE('Date of Birth: '|| v_date_of_birth );
+        END;
+    END;
+END outer;
+/
+
+SET SERVEROUTPUT ON;
+
+BEGIN <<outer>>
+    DECLARE
+        v_sal     NUMBER(7,2) := 60000;
+        v_comm    NUMBER(7,2) := v_sal * 0.20;
+        v_message VARCHAR2(255) := ' eligible for commission';
+    BEGIN
+        DECLARE
+            v_sal        NUMBER(7,2) := 50000;
+            v_comm       NUMBER(7,2) := 0;
+            v_total_comp NUMBER(7,2) := v_sal + v_comm;
+        BEGIN
+            -- Position 1: v_message inside inner block (outer variable)
+            v_message := 'CLERK not' || v_message;
+            DBMS_OUTPUT.PUT_LINE('1. v_message (pos 1)       = ' || v_message);
+
+            -- Update outer.v_comm from inner v_sal
+            outer.v_comm := v_sal * 0.30;
+
+            -- Position 1: inner v_comm
+            DBMS_OUTPUT.PUT_LINE('3. v_comm (pos 1)          = ' || v_comm);
+
+            -- Position 1: outer.v_comm
+            DBMS_OUTPUT.PUT_LINE('4. outer.v_comm (pos 1)    = ' || outer.v_comm);
+
+            -- Position 2: v_total_comp (inner variable)
+            DBMS_OUTPUT.PUT_LINE('2. v_total_comp (pos 2)    = ' || v_total_comp);
+        END;
+
+        -- Back in outer block after inner ends
+        v_message := 'SALESMAN' || v_message;
+
+        -- Position 2: outer v_comm
+        DBMS_OUTPUT.PUT_LINE('5. v_comm (pos 2)          = ' || v_comm);
+
+        -- Position 2: outer v_message
+        DBMS_OUTPUT.PUT_LINE('6. v_message (pos 2)       = ' || v_message);
+    END;
+END outer;
+/
+
+
+-- practice---------
+DROP sequence my_seq;
+
+
+DECLARE
+    v_weight NUMBER(3) := 600;
+    v_message VARCHAR2(255) := 'Product 10012';
+BEGIN
+    DECLARE
+        v_weight NUMBER(3) := 1;
+        v_message VARCHAR2(255) := 'Product 11001';
+        v_new_iocn VARCHAR2(25) := 'Europe';
+    BEGIN
+        v_weight := v_weight + 1; --v_weight is inner
+        v_new_iocn := 'Western' || v_new_iocn;--v_new_iocn is inner
+    END;
+v_weight := v_weight + 1;  --v_weight is outer
+v_message := v_message || ' is in stock '; --v_message is outer
+v_new_iocn := 'Western' || v_new_iocn; --v_new_iocn is inner
+END;
+
+
