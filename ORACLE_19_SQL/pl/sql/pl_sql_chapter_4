@@ -150,3 +150,58 @@ v_new_iocn := 'Western' || v_new_iocn; --v_new_iocn is inner
 END;
 
 
+DECLARE
+    v_customer VARCHAR2(50) := 'Womansport'; -- Womansport
+    v_credit_rating VARCHAR2(50) := 'EXCELLENT'; --EXCELLENT
+BEGIN
+    DECLARE
+        v_customer NUMBER(7) := 201;   --201
+        v_name VARCHAR2(25) := 'Unisports'; --Upisports
+    BEGIN
+        v_credit_rating := 'GOOD'; --GOOD
+    END;
+END;
+
+
+
+--variable b_basic_percent number;
+--variable b_pf_percent number;
+set serveroutput on
+
+
+/*:b_basic_percent :=45;
+:b_pf_percent :=12;*/
+
+
+v_basic_percent number :=45;
+v_pf_percent number :=12;
+v_fname varchar2(25);
+v_emp_sal number(10);
+
+
+select first_name,salary 
+into v_fname,v_emp_sal 
+from employees 
+where employee_id = 110;
+
+
+dbms_output.put_line('Hello'||v_fname);
+/*DBMS_OUTPUT.PUT_LINE('Today is :' || v_today);
+DBMS_OUTPUT.PUT_LINE('Tomorrow is :'||v_tomorrow);*/
+
+
+print b_basic_percent
+print b_pf_percent 
+
+
+
+
+declare
+v_basic_percent number :=45;
+v_pf_percent number :=12;
+v_emp_sal number(10) :=8200;
+begin
+dbms_output.put_line('Your salary is : ' || v_emp_sal);
+dbms_output.put_line('Your contribution towards fp: '|| v_emp_sal*v_basic_percent/100*v_pf_percent/100);
+end;
+/

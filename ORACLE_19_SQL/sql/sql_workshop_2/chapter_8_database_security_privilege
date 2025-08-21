@@ -1,0 +1,44 @@
+conn sys@orclpdb66 as sysdba
+
+drop user demo;
+
+
+create user demo identified by demo;
+demo/demo@orclpdb66
+no permission
+grant create session to demo;
+now i connect login in sqlplus
+demo/demo@orclpdb66;
+now i try to create a tabel 
+create table ......
+but error
+now dba grant privilege to demo for create table 
+like 
+grant create table to demo
+now demo can create a table after connect the demo user
+after that the demo want to insert data in table 
+now the demo user need grant privilege for insert data in table
+like 
+grant unlimited tablespace to demo;
+now demo can insert data.
+
+go to dba or sys user
+and create a role 
+create role manager;
+now dba want some privilege in manager of the role
+grant create session,create table,create sequence,create view to manager;
+grant select,insert,update,delete  on hr.employees to manager/user/public with grant option;
+
+now i want to create a new user
+
+create user demo2 identified by demo2;
+now i grant privilege the demo2 user the role of manager
+grant manager to demo2 
+
+now i want to return the grant privilege
+
+revoke select,insert,delete on hr.employees  from demo;
+revoke  create session,create table,create sequence,create view from demo;
+revoke  manager from demo2;
+
+

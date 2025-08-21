@@ -155,7 +155,7 @@ BEGIN
     END IF;
 END;
 /
-SELECT * FROM dept_temp
+SELECT * FROM dept_tempchg
 WHERE DEPARTMENT_ID=270;
 
 SELECT * FROM dept_temp
