@@ -187,3 +187,87 @@ BEGIN
    END CASE;
 END;
 /
+
+
+
+--practice in book
+
+
+declare
+v_myage number :=45;
+begin 
+    if v_myage < 18 then
+        dbms_output.put_line('I am a teenager');
+    end if;
+end;
+/
+
+
+declare
+v_myage number :=45;
+begin 
+    if v_myage < 18 then
+        dbms_output.put_line('I am a teenager');
+    else
+        dbms_output.put_line('I am an adult');
+    end if;
+end;
+/
+
+
+declare
+v_myage number :=45;
+begin 
+    if v_myage < 18 then
+        dbms_output.put_line('I am a teenager');
+    elsif v_myage < 25 then
+        dbms_output.put_line('I am a adult');
+    elsif v_myage < 35 then
+        dbms_output.put_line('I am a man');
+    else
+        dbms_output.put_line('I am a middle aged');
+    end if;
+end;
+/
+
+
+create table loc 
+(location_id number,
+city varchar2(50),
+country_id varchar2(50));
+
+
+insert into
+loc 
+values(1000,'Mexico City', 'MX');
+
+insert into
+loc 
+values(1100,'Oxford', 'UK');
+
+insert into
+loc 
+values(1200,'Montreal', 'CA');
+
+SELECT MAX(location_id)FROM LOC 
+WHERE country_id='CA';
+
+DECLARE
+v_counter number :=1;
+v_loc_id loc.location_id%TYPE;
+v_country_id loc.country_id%TYPE := 'CA';
+v_new_city loc.city%TYPE := 'Montreal';
+begin
+select max(location_id) into v_loc_id from loc
+where country_id =v_country_id;
+loop
+insert into loc(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_country_id);
+v_counter := v_counter +1;
+exit when v_counter >5;
+
+dbms_output.put_line(v_loc_id || ' ' || v_country_id || ' ' || v_new_city);
+dbms_output.put_line('Inserted ' || v_counter || ' rows');
+end loop;
+end;
+/
