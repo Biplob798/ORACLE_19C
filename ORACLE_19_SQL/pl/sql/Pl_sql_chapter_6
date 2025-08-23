@@ -1,0 +1,189 @@
+
+-- File: pl_sql_chapter_6.sql_
+
+-- control tructure 
+    1.conditional statement
+        --  a.if then
+        --  b.if then else
+        --  c.if then elsif else
+    2.looping statement
+        -- a.basic loop
+        -- b.while loop
+        -- c.for loop
+    3.case statement   
+        -- a.case expression
+                i.case expression
+                ii.case searched expression
+        -- b.case statement                   --use in pl/sql not in sql 
+                i.case statement
+                ii.case searched statement
+        
+
+
+
+--  how to write 
+-- if then 
+-- control stucture in pl/sql
+
+
+DECLARE
+    v_salary number :=5000;
+begin
+    if v_salary <7000 then
+        dbms_output.put_line('My salary is less than 7000' );
+    end if;
+end;
+/
+
+
+--  how to write 
+-- if then else 
+-- control stucture in pl/sql
+
+DECLARE
+    v_salary number :=5000;
+begin
+    if v_salary <7000 then
+        dbms_output.put_line('My salary is less than 7000');
+        else
+       dbms_output.put_line('My salary is greater  than 7000');
+       end if;
+end;
+/
+
+
+
+--  how to write 
+-- if then elsif else 
+-- control stucture in pl/sql
+
+DECLARE 
+v_salary number :=5000;
+begin
+    if v_salary < 3000 then
+    dbms_output.put_line('My salary is less than 3000');
+    elsif v_salary <4000 then
+    dbms_output.put_line('My salary is less than 4000');
+    elsif v_salary <5000 then
+    dbms_output.put_line('My salary is less than 5000');
+    elsif v_salary <6000 then
+    dbms_output.put_line('My salary is less than 6000');
+    else
+    dbms_output.put_line('My salary is greater than 6000');
+    end if;
+end;
+/
+
+
+
+--  how to write 
+-- basic loop                           --condition in the end point of loop
+-- control stucture in pl/sql
+DECLARE
+v_num NUMBER := 1;
+begin
+    loop   --loop
+        dbms_output.put_line('The number is ' || v_num); --statement
+        v_num := v_num + 1; --increment storage
+        exit when v_num > 5; --condition by exist 
+        end loop; --end loop
+end;
+/
+
+
+
+--  how to write 
+-- while loop                 --condition in the start point of loop
+-- control stucture in pl/sql
+
+
+DECLARE
+    v_num NUMBER := 1;
+begin
+    while  v_num < 5    --condition by while
+    loop     --loop
+        dbms_output.put_line('The number is ' || v_num); --statement
+        v_num := v_num + 1; --increment storage
+    end loop; --end loop
+end;
+/
+
+
+--  how to write 
+-- for loop                 --condition in the between(start point and end point) 
+-- control stucture in pl/sql
+
+
+
+DECLARE
+    -- v_num NUMBER := 1;  no need to declare variable
+begin
+    for v_num in 1..5    --condition by between (start point and end point )
+    loop     --loop
+        dbms_output.put_line('The number is ' || v_num); --statement
+        -- v_num := v_num + 1; --increment storage no need 
+    end loop; --end loop
+end;
+/
+
+--  how to write 
+-- case expression   --we can not use condition operator like <,>,<=,>=,!=,between  
+-- control stucture in pl/sql
+
+
+SELECT last_name,
+       job_id,
+       salary,
+       CASE salary  --add column name
+            WHEN 3000 THEN 'Low'
+            WHEN 9000 THEN 'Medium'
+            WHEN 15000 THEN 'Good'
+            ELSE 'Excellent'
+       END 
+       AS qualified_salary
+FROM employees;
+
+--  how to write 
+-- searched  case expression   --we can use condition operator like <,>,<=,>=,!=,between  
+-- control stucture in pl/sql
+SELECT salary,
+       CASE
+            WHEN salary < 5000 THEN 'Low'
+            WHEN salary BETWEEN 5000 AND 10000 THEN 'Medium'
+            WHEN salary BETWEEN 10001 AND 15000 THEN 'Good'
+            ELSE 'Excellent'
+       END AS qualified_salary
+FROM employees;
+
+--  how to write 
+--  case statement   
+-- control stucture in pl/sql
+DECLARE
+   v_salary NUMBER := 9000;
+BEGIN
+   CASE v_salary
+      WHEN 3000 THEN DBMS_OUTPUT.PUT_LINE('Low');
+      WHEN 9000 THEN DBMS_OUTPUT.PUT_LINE('Medium');
+      WHEN 15000 THEN DBMS_OUTPUT.PUT_LINE('Good');
+      ELSE DBMS_OUTPUT.PUT_LINE('Excellent');
+   END CASE;
+END;
+/
+
+
+--  how to write 
+--  searched case statement   
+-- control stucture in pl/sql
+
+
+DECLARE
+   v_salary NUMBER := 12000;
+BEGIN
+   CASE
+      WHEN v_salary < 5000 THEN DBMS_OUTPUT.PUT_LINE('Low');
+      WHEN v_salary BETWEEN 5000 AND 10000 THEN DBMS_OUTPUT.PUT_LINE('Medium');
+      WHEN v_salary BETWEEN 10001 AND 15000 THEN DBMS_OUTPUT.PUT_LINE('Good');
+      ELSE DBMS_OUTPUT.PUT_LINE('Excellent');
+   END CASE;
+END;
+/

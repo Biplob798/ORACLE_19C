@@ -115,7 +115,7 @@ where job_id='IT_PROG';
 -- 2.searched case expression
 -- 3.decode funtion
 
--- case convertion
+-- case expression convertion
 SELECT last_name,
        job_id,
        salary,
@@ -127,7 +127,7 @@ SELECT last_name,
        END AS qualified_salary
 FROM employees;
 
--- searched case convertion
+-- searched case xpression convertion
 
 select last_name,
        job_id,

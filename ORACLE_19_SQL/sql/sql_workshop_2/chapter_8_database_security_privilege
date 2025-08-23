@@ -39,6 +39,7 @@ now i want to return the grant privilege
 
 revoke select,insert,delete on hr.employees  from demo;
 revoke  create session,create table,create sequence,create view from demo;
+revoke create session from demo2;
 revoke  manager from demo2;
-
+revoke select on departments from demo2;
 
