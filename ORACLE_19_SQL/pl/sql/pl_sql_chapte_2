@@ -1,4 +1,6 @@
 
+--pl sql 
+
 # pl/sql = procedural language extension to sql.
     # benifits of pl/sql:
         1.Modularized program

@@ -430,3 +430,12 @@ BEGIN
   DBMS_OUTPUT.PUT_LINE('Stars updated for employee ' || v_empno);
 END;
 / 
+
+BEGIN
+FOR i IN (select EMPLOYEE_ID,lpad(' ',NVL (ROUND (salary / 1000), 0),'*')asteriks from emp)
+LOOP
+UPDATE emp
+SET starts = i.asteriks
+WHERE EMPLOYEE_ID = i.EMPLOYEE_ID;
+END LOOP;
+END;

@@ -1,0 +1,347 @@
+ --cursor declare step by step
+
+-- step_1
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+end;
+/
+-- step_2
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+open c_emp;
+end;
+/
+-- step_3
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+open c_emp;
+fetch c_emp;
+end;
+/
+-- step_4
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+open c_emp;
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+end;
+/
+-- step_5
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+open c_emp;
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+end;
+/
+
+-- step_6
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+open c_emp;
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end;
+/
+-- step_7
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+open c_emp;
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+-- step_8
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+open c_emp;
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+-- step_9
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+open c_emp;
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+close c_emp;
+end;
+/
+
+
+-- use for loop in cursor 
+
+-- step_1
+
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+open c_emp;
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+close c_emp;
+end;
+/
+
+-- step_2
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+open c_emp;
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+
+-- step_3
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+-- step_4
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+loop
+fetch c_emp into
+v_emp_id,
+v_first_name,
+v_last_name;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+-- step_5
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+loop
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+-- step_6
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+for v_emp_rec in c_emp 
+loop
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+end;
+/
+-- step_7
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+for v_emp_rec in c_emp 
+loop
+dbms_output.put_line(v_emp_rec.employee_id||' '||v_emp_rec.first_name||' '||v_emp_rec.last_name);
+end loop;
+end;
+/
+-- use subquery in cursor for loop 
+-- step_1
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+begin
+for v_emp_rec in c_emp 
+loop
+dbms_output.put_line(v_emp_rec.employee_id||' '||v_emp_rec.first_name||' '||v_emp_rec.last_name);
+end loop;
+end;
+/
+
+-- step_2
+declare
+begin
+for v_emp_rec in (select employee_id,first_name,last_name 
+from employees
+where department_id=30)
+loop
+dbms_output.put_line(v_emp_rec.employee_id||' '||v_emp_rec.first_name||' '||v_emp_rec.last_name);
+end loop;
+end;
+/
+
+-- user record in cursor 
+
+-- step_1
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_rec c_emp%rowtype;
+begin
+open c_emp;
+loop
+fetch c_emp into 
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+close c_emp;
+end;
+/
+
+-- step_2
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_rec c_emp%rowtype;
+begin
+open c_emp;
+loop
+fetch c_emp into 
+v_emp_rec;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+close c_emp;
+end;
+/
+-- step_3
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_rec c_emp%rowtype;
+begin
+open c_emp;
+loop
+fetch c_emp into 
+v_emp_rec;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_rec.employee_id||' '||v_emp_rec.first_name||' '||v_emp_rec.last_name);
+end loop;
+close c_emp;
+end;
+/
+
