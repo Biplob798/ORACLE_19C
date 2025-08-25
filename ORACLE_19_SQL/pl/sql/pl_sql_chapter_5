@@ -204,5 +204,53 @@ BEGIN
 END;
 /
 
+-- activity guide practice
+
+declare
+v_max_deptid departments.department_id%TYPE;
+begin
+select max(department_id) into v_max_deptid 
+from departments;
+DBMS_OUTPUT.PUT_LINE('The maximun department_id is : '|| v_max_deptid);
+end;
+/
+
+declare
+v_dept_name departments.department_name%TYPE := 'Education';
+v_dept_id number ;
+begin
+v_dept_id :=  550+ 10;
+insert into departments (department_name,department_id,location_id)
+values(v_dept_name,v_dept_id,null);
+
+DBMS_OUTPUT.PUT_LINE('sql%rowcount gives '|| sql%rowcount || ' row inserted');
+end;
+/
 
 
+
+begin
+update departments
+set location_id=3000 where department_id=560;
+end;
+/
+
+
+begin
+delete from departments
+where department_id=560;
+end;
+/
+
+
+declare
+    v_number number;
+    begin
+   v_number:=&number;
+    if mod(v_number,2)=0 then
+    dbms_output.put_line('The number is even :'||v_number);
+    else
+    dbms_output.put_line('The number is odd'|| v_number);
+    end if;
+    end;
+   /

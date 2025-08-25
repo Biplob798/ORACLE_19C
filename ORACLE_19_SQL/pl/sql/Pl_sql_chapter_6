@@ -271,3 +271,85 @@ dbms_output.put_line('Inserted ' || v_counter || ' rows');
 end loop;
 end;
 /
+
+--------------------------------------------------------------
+-- activity guide practice
+
+begin
+for i in 1..10
+loop
+if i =6 or i=6 then
+null;
+ELSE
+insert into messages(result)
+values(i);
+end if;
+end loop;
+end;
+/
+
+-- or 
+
+begin
+for i in 1..10
+loop
+if i =6 or i=6 then
+null;
+ELSE
+dbms_output.put_line('Inserting ' || i || ' rows');
+end if;
+end loop;
+end;
+/
+
+begin
+for i in 1..10
+loop
+if i =6 or i=6 then
+null;
+ELSE
+dbms_output.put_line('Inserting ' || i || ' rows');
+end if;
+end loop;
+end;
+/
+
+
+create table emp as select * from employees;
+
+alter table emp add (stars varchar2(50));
+
+declare
+v_empno emp.employee_id%TYPE :=176;
+v_asterisk emp.stars%TYPE :=null;
+v_sal emp.salary%TYPE ;
+begin
+select nvl(round(salary/1000),0) into v_sal 
+from emp 
+where employee_id =v_empno;
+for i in 1..v_sal
+loop
+v_asterisk := v_asterisk || '*';
+end loop;
+update emp
+set stars =v_asterisk
+where employee_id =v_empno;
+commit;
+end;
+/
+
+-- or
+
+
+DECLARE
+  v_empno emp.employee_id%TYPE := 176;
+BEGIN
+  UPDATE emp
+  SET stars = RPAD('*', ROUND(salary/1000), '*')
+  WHERE employee_id = v_empno;
+
+  COMMIT;
+
+  DBMS_OUTPUT.PUT_LINE('Stars updated for employee ' || v_empno);
+END;
+/ 
