@@ -252,6 +252,12 @@ values(1200,'Montreal', 'CA');
 SELECT MAX(location_id)FROM LOC 
 WHERE country_id='CA';
 
+-- case expression and case statement -----------
+ 
+
+
+-- loop ---------------------
+-- insert data by basic loop 
 DECLARE
 v_counter number :=1;
 v_loc_id loc.location_id%TYPE;
@@ -271,6 +277,77 @@ dbms_output.put_line('Inserted ' || v_counter || ' rows');
 end loop;
 end;
 /
+
+-- insert data by while loop 
+
+DECLARE
+v_counter number :=1;
+v_loc_id loc.location_id%TYPE;
+v_country_id loc.country_id%TYPE := 'CA';
+v_new_city loc.city%TYPE := 'Montreal';
+begin
+select max(location_id) into v_loc_id from loc
+where country_id =v_country_id;
+while v_counter <5
+loop
+insert into loc(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_country_id);
+v_counter := v_counter +1;
+
+dbms_output.put_line(v_loc_id || ' ' || v_country_id || ' ' || v_new_city);
+dbms_output.put_line('Inserted ' || v_counter || ' rows');
+end loop;
+end;
+/
+
+-- insert data by for loop 
+
+
+DECLARE
+v_counter number :=1;
+v_loc_id loc.location_id%TYPE;
+v_country_id loc.country_id%TYPE := 'CA';
+v_new_city loc.city%TYPE := 'Montreal';
+begin
+select max(location_id) into v_loc_id from loc
+where country_id =v_country_id;
+for i in 1..5
+loop
+insert into loc(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_country_id);
+v_counter := v_counter +1;
+
+dbms_output.put_line(v_loc_id || ' ' || v_country_id || ' ' || v_new_city);
+dbms_output.put_line('Inserted ' || v_counter || ' rows');
+end loop;
+end;
+/
+
+
+
+
+
+-- continue statement in loop 
+declare
+v_total simple_integer  :=0;
+begin
+for i in 1..10
+loop
+v_total :=v_total +i;
+dbms_output.put_line('Total is : ' || v_total);
+continue when i>5;
+v_total :=v_total+i;
+dbms_output.put_line('After continue Total is : ' || v_total);
+end loop;
+end;
+/
+
+
+
+
+
+
+
 
 --------------------------------------------------------------
 -- activity guide practice
