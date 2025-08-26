@@ -345,3 +345,183 @@ close c_emp;
 end;
 /
 
+
+-- cursor attributes
+-- 1.%isopen
+-- 2.%found
+-- 3.%notfound
+-- 4.%rowcount   
+
+
+
+
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_rec c_emp%rowtype;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+if c_emp%isopen then
+dbms_output.put_line('cursor is open');
+end if;
+open c_emp;
+loop
+fetch c_emp into 
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line(v_emp_id||' '||v_first_name||' '||v_last_name);
+end loop;
+close c_emp;
+end;
+/
+
+
+declare
+cursor c_emp is 
+select employee_id,first_name,last_name 
+from employees
+where department_id=30;
+v_emp_rec c_emp%rowtype;
+v_emp_id employees.employee_id%type;
+v_first_name employees.first_name%type; 
+v_last_name employees.last_name%type;
+begin
+if not c_emp%isopen then
+dbms_output.put_line('cursor is open');
+open c_emp;
+end if;
+loop
+fetch c_emp into 
+v_emp_id,
+v_first_name,
+v_last_name;
+exit when c_emp%notfound;
+dbms_output.put_line('The Row number is :' ||c_emp%rowcount || '-'|| v_emp_id||' '||v_first_name||' '||v_last_name );
+end loop;
+close c_emp;
+end;
+/
+
+
+-- without cursor declare in for loop 
+
+
+
+begin
+for emp_record in (select employee_id,first_name,last_name 
+from employees  
+where department_id=30)
+loop
+dbms_output.put_line(emp_record.employee_id||' '||emp_record.first_name||' '||emp_record.last_name );
+end loop;
+end;
+/
+
+
+
+-- user parameter in cursor 
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name,department_id
+from employees
+where department_id=30;
+cursor c_emp_cursor1 is
+select employee_id,last_name,department_id
+from employees
+where department_id=40;
+cursor c_emp_cursor2 is
+select employee_id,last_name,department_id
+from employees
+where department_id=50;
+begin
+for emp_record in c_emp_cursor
+loop
+dbms_output.put_line(emp_record.employee_id||' '||emp_record.last_name||' '||emp_record.department_id );
+end loop;
+for emp_record in c_emp_cursor1
+loop    
+dbms_output.put_line(emp_record.employee_id||' '||emp_record.last_name||' '||emp_record.department_id );
+end loop;
+for emp_record in c_emp_cursor2
+loop
+dbms_output.put_line(emp_record.employee_id||' '||emp_record.last_name||' '||emp_record.department_id );
+end loop;
+end;
+/
+
+
+-- lock row by for update clause in cursor and use where current of clause in update statement
+
+-- step_1
+create table emp_lock as select employee_id,job_id,salary from employees where employee_id<110;
+select * from emp_lock;
+
+-- step_2
+
+declare
+cursor c1 is
+select employee_id,job_id,salary
+from emp_lock for update;
+emp_record c1%rowtype;
+begin
+open c1;
+loop
+fetch c1 into emp_record;  --PROTHOME BAR FETCH KORCHE BUT SECOND FAILED FOR UPDATE CLUASE.
+if emp_record.job_id='IT_PROG' then
+update emp_lock 
+set salary=emp_record.salary+1000;
+end if;
+exit when c1%notfound;
+end loop;
+end;    
+/
+
+-- step_3_user where clause in update statement
+
+declare
+cursor c1 is
+select employee_id,job_id,salary
+from emp_lock for update;
+emp_record c1%rowtype;
+begin
+open c1;
+loop
+fetch c1 into emp_record; 
+if emp_record.job_id='IT_PROG' then
+update emp_lock 
+set salary=emp_record.salary+1000
+where employee_id=emp_record.employee_id;
+end if;
+exit when c1%notfound;
+end loop;
+end;    
+/
+ 
+-- step_3_user where current of clause in update statement
+
+declare
+cursor c1 is
+select employee_id,job_id,salary
+from emp_lock for update;
+emp_record c1%rowtype;
+begin
+open c1;
+loop
+fetch c1 into emp_record; 
+if emp_record.job_id='IT_PROG' then
+update emp_lock 
+set salary=emp_record.salary+1000
+where current of c1;
+end if;
+exit when c1%notfound;
+end loop;
+end;    
+/
+ 
