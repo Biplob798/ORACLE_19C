@@ -525,3 +525,93 @@ end loop;
 end;    
 /
  
+-- activity book practice
+
+declare
+v_depatno number :=10;
+cursor c_emp_cursor is
+select last_name,salary,manager_id from employees where department_id=v_depatno;
+begin
+for emp_record in c_emp_cursor
+loop
+if 
+emp_record.salary>5000 
+and 
+emp_record.manager_id 
+in(101,124) 
+then
+dbms_output.put_line(emp_record.last_name||'Due for a raise');
+else
+dbms_output.put_line(emp_record.last_name||'Not Due for a raise');
+end if;
+end loop;
+end;
+/
+
+
+declare
+v_depatno number :=&deptnum;
+cursor c_emp_cursor is
+select last_name,salary,manager_id from employees where department_id=v_depatno;
+begin
+for emp_record in c_emp_cursor
+loop
+if 
+emp_record.salary>5000 
+and 
+emp_record.manager_id 
+in(101,124) 
+then
+dbms_output.put_line(emp_record.last_name||'Due for a raise');
+else
+dbms_output.put_line(emp_record.last_name||'Not Due for a raise');
+end if;
+end loop;
+end;
+/
+
+
+
+declare
+v_dept_id departments.department_id%TYPE;
+v_dept_name departments.department_name%TYPE;
+cursor c_dept_cursor is
+select department_id,department_name from departments
+where department_id<100;
+begin
+open c_dept_cursor;
+loop
+fetch c_dept_cursor into
+v_dept_id,v_dept_name;
+exit when c_dept_cursor%notfound;
+dbms_output.put_line(v_dept_id||' '||v_dept_name);
+end loop;
+close c_dept_cursor;
+end;
+/
+
+declare
+v_deptno number :=30;
+v_emp_id employees.employee_id%TYPE;
+v_last_name employees.last_name%TYPE;
+v_job_id employees.job_id%TYPE;
+v_hire_date employees.hire_date%TYPE;
+v_salary employees.salary%TYPE;
+cursor c_emp_cursor(v_deptno  number) is
+select employee_id,last_name,job_id,hire_date,salary from employees
+where department_id =v_deptno 
+and
+employee_id<120;
+begin
+open c_emp_cursor(v_deptno);
+loop
+fetch c_emp_cursor into v_emp_id,v_last_name,v_job_id,v_hire_date,v_salary;
+exit when c_emp_cursor%notfound;
+dbms_output.put_line(v_emp_id||' '||v_last_name||' '||v_job_id||' '||v_hire_date||' '||v_salary);
+end loop;
+close c_emp_cursor;
+end;    
+/
+
+
+

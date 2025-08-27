@@ -1,0 +1,192 @@
+--  reture more than one row that is not allowed in PL/SQL
+declare
+v_lname varchar2(15);
+begin
+select last_name into v_lname
+from employees
+where first_name = 'Steven';
+dbms_output.put_line('Last name is : ' || v_lname);
+end;
+/
+
+-- when returen more than one row use cursor or cursor for loop
+
+select last_name
+from employees
+where first_name = 'Steven';
+
+-- exception handling 
+
+
+
+declare
+v_lname varchar2(15);
+begin
+select last_name into v_lname
+from employees
+where first_name = 'Steven';
+dbms_output.put_line('Last name is : ' || v_lname);
+exception
+when too_many_rows then
+dbms_output.put_line('You select statement retrived multiple rows.consider using cursor');
+end;
+/ 
+
+-- use predefined exceptions
+
+
+
+--  statement retrived no data
+cursor c_emp is
+select * from employees
+where employee_id>200;
+v_lname varchar2(15);
+r_emp employees%ROWTYPE;
+begin
+select * into r_emp from employees
+where employee_id>200;
+select last_name into v_lname from employees
+where first_name='John';
+dbms_output.put_line('Last name is : ' || v_lname);
+close c_emp;
+exception
+when no_data_found then
+dbms_output.put_line('select statement retrived no data');
+when too_many_rows then
+dbms_output.put_line('You select statement retrived multiple rows.consider using cursor');
+when others then
+dbms_output.put_line('For all the other exceptions/errors');
+end;
+/
+
+
+-- statement retrived multiple rows
+
+declare
+cursor c_emp is
+select * from employees
+where employee_id>200;
+v_lname varchar2(15);
+r_emp employees%ROWTYPE;
+begin
+select * into r_emp from employees
+where employee_id>300;
+select last_name into v_lname from employees
+where first_name='Steven';
+dbms_output.put_line('Last name is : ' || v_lname);
+close c_emp;
+exception
+when no_data_found then
+dbms_output.put_line('select statement retrived no rows');
+when too_many_rows then
+dbms_output.put_line(' select statement retrived multiple row.consider using cursor');
+when others then
+dbms_output.put_line('For all the other exceptions/errors');
+end;
+/
+
+
+-- all the other exceptions
+declare
+cursor c_emp is
+select * from employees
+where employee_id>200;
+v_lname varchar2(15);
+r_emp employees%ROWTYPE;
+begin
+/*select * into r_emp from employees
+where employee_id>300;
+select last_name into v_lname from employees
+where first_name='Steven';
+dbms_output.put_line('Last name is : ' || v_lname);*/
+close c_emp;
+exception
+when no_data_found then
+dbms_output.put_line('select statement retrived no rows');
+when too_many_rows then
+dbms_output.put_line(' select statement retrived multiple row.consider using cursor');
+when others then
+dbms_output.put_line('For all the other exceptions/errors');
+end;
+/ 
+
+
+
+-- use nonpredefined exceptions
+
+declare
+e_insert_excep exception;
+pragma exception_init(e_insert_excep,-1400);
+begin
+insert into departments(department_id,department_name)
+values(280,null);
+exception
+when e_insert_excep then
+dbms_output.put_line('insert oprationfailed');
+dbms_output.put_line(sqlerrm);
+dbms_output.put_line(SQLCODE);
+end;
+/
+
+
+-- USER DEFINED EXCEPTION  used raise statement
+declare
+v_depatno number:=500;
+v_name varchar2(50) :='Testion';
+e_invalid_deptno exception;
+begin
+update departments
+set department_name=v_name
+where department_id=v_depatno;
+-- if sql%notfound then
+-- raise e_invalid_deptno;
+-- end if;
+dbms_output.put_line('Department name updated successfully');
+exception
+when e_invalid_deptno then
+dbms_output.put_line('Invalid department number' || v_depatno);
+end;
+/
+
+
+
+
+declare
+v_depatno number:=500;
+v_name varchar2(50) :='Testion';
+e_invalid_deptno exception;
+begin
+update departments
+set department_name=v_name
+where department_id=v_depatno;
+if sql%notfound then   --EXCEPTION RAISED
+raise e_invalid_deptno; --BY USER
+end if;
+dbms_output.put_line('Department name updated successfully');
+exception
+when e_invalid_deptno then
+dbms_output.put_line('Invalid department number' || v_depatno);
+end;
+/
+
+
+
+
+-- Rasie_APPLICATION_ERROR procedure
+
+declare
+v_mgr number:=300;
+e_mgr exception;
+pragma exception_init(e_mgr,-20001);
+begin
+delete from employees
+where manager_id=v_mgr;
+if sql%notfound then
+raise e_mgr;
+end if;
+dbms_output.put_line('Employee deleted successfully');
+exception
+when e_mgr then 
+raise_application_error(-20001,'This is not valid manager id' || v_mgr);
+end;
+/

@@ -431,8 +431,49 @@ BEGIN
 END;
 / 
 
+
+
+begin
+for i in 1..10
+loop
+if i =6 or i=8 then
+null;
+else
+dbms_output.put_line('Inserting ' || i || ' rows');
+end if;
+end loop;
+end;
+/
+
+
+declare
+v_empno emp.employee_id%TYPE :=176;
+v_asterisk emp.stars%TYPE :=null;
+v_sal emp.salary%TYPE ;
+begin
+select nvl(round(salary/1000),0) into v_sal
+from emp where employee_id =v_empno;
+for i in 1..v_sal
+loop
+v_asterisk :=v_asterisk || '*';
+end loop;
+update emp
+set stars = v_asterisk;
+end;
+/
+
+
+
+
+
+
+
+rpad/lpad 
+-- rpad(column_name,length,pad_string)
+-- RPAD('*', 5, '*') → "*****"
+
 BEGIN
-FOR i IN (select EMPLOYEE_ID,lpad(' ',NVL (ROUND (salary / 1000), 0),'*')asteriks from emp)
+FOR i IN (select EMPLOYEE_ID,lpad('*',NVL (ROUND (salary / 1000), 0),'*')asteriks from emp)
 LOOP
 UPDATE emp
 SET starts = i.asteriks
