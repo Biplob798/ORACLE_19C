@@ -186,7 +186,135 @@ raise e_mgr;
 end if;
 dbms_output.put_line('Employee deleted successfully');
 exception
-when e_mgr then 
+when v_mgr then 
 raise_application_error(-20001,'This is not valid manager id' || v_mgr);
 end;
 /
+
+
+
+-- activity guide practice
+create table messages(result varchar2(100));
+
+-- show no error 
+
+declare
+v_ename employees.first_name%TYPE;
+v_emp_sal employees.salary%TYPE := 6000;
+begin
+select last_name into v_ename
+from employees
+where salary=v_emp_sal;
+insert into messages(result)
+values(v_ename || v_emp_sal);
+exception
+when no_data_found then
+insert into messages(result)
+values('No employee with a salary of ' || v_emp_sal);
+when too_many_rows then
+insert into messages(result)
+values('More than one employee with a salary of ' || v_emp_sal);
+when others then
+insert into messages(result)
+values('Some other error occured');
+end;
+/
+select * from messages;
+
+
+-- show first error 
+declare
+v_ename employees.first_name%TYPE;
+v_emp_sal employees.salary%TYPE := 1000;
+begin
+select last_name into v_ename
+from employees
+where salary=v_emp_sal;
+insert into messages(result)
+values(v_ename || v_emp_sal);
+exception
+when no_data_found then
+insert into messages(result)
+values('No employee with a salary of ' || v_emp_sal);
+when too_many_rows then
+insert into messages(result)
+values('More than one employee with a salary of ' || v_emp_sal);
+when others then
+insert into messages(result)
+values('Some other error occured');
+end;
+/
+select * from messages;
+
+-- show second error 
+declare
+v_ename employees.first_name%TYPE;
+v_emp_sal employees.salary%TYPE := 3000;
+begin
+select last_name into v_ename
+from employees
+where salary=v_emp_sal;
+insert into messages(result)
+values(v_ename || v_emp_sal);
+exception
+when no_data_found then
+insert into messages(result)
+values('No employee with a salary of ' || v_emp_sal);
+when too_many_rows then
+insert into messages(result)
+values('More than one employee with a salary of ' || v_emp_sal);
+when others then
+insert into messages(result)
+values('Some other error occured');
+end;
+/
+select * from messages;
+
+
+
+
+-- show other error 
+
+
+declare
+v_ename employees.first_name%TYPE;
+v_emp_sal employees.salary%TYPE := doc;
+begin
+select last_name into v_ename
+from employees
+where salary=v_emp_sal;
+insert into messages(result)
+values(v_ename || v_emp_sal);
+exception
+when no_data_found then
+insert into messages(result)
+values('No employee with a salary of ' || v_emp_sal);
+when too_many_rows then
+insert into messages(result)
+values('More than one employee with a salary of ' || v_emp_sal);
+when others then
+insert into messages(result)
+values('Some other error occured');
+end;
+/
+select * from messages;
+
+
+
+
+
+
+declare
+e_childrecord_exists exception;
+
+pragma exception_init(e_childrecord_exists,-02292);
+begin
+delete from departments
+where department_id=40;
+exception
+when e_childrecord_exists then
+dbms_output.put_line('Cannot delete this department.There are employees in this department (child records exist)');
+end;
+/
+
+

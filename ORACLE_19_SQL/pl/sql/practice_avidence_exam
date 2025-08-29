@@ -1,0 +1,307 @@
+-- chapter__6
+
+create table messages (results number);
+begin
+for i in 1..10
+LOOP
+if i = 6 or i=8 
+then 
+null;
+else
+insert into messages(results)
+values(i);
+end if;
+end loop;
+end;
+/
+
+
+
+begin
+for i in 11..20 
+loop
+if i=12 or i=16 then
+null;
+else
+insert into messages(results)
+values(i);
+end if;
+end loop;
+end;
+/
+
+
+
+
+begin
+for i in 1..10
+loop
+if i= 6 or i =8 then
+null;
+else
+insert into messages(results)
+values(i);
+end if;
+end loop;
+end;
+/
+
+
+create table emp as select * from employees;
+
+alter table emp
+add stars varchar2(50);
+
+declare
+v_empno emp.employee_id%type :=176;
+v_asterisk emp.stars%type;
+v_sal emp.salary%type;
+
+begin
+select round(nvl(salary/1000,0)) into v_sal from emp
+where employee_id=v_empno;
+for i in 1..v_sal
+loop
+v_asterisk:=v_asterisk||'*';
+end loop;
+update emp
+set stars =v_asterisk
+where employee_id=v_empno;
+end;
+/
+
+
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_sal emp.salary%type;
+begin
+select round(salary/1000) into v_sal from emp
+where employee_id =v_empno;
+dbms_output.put_line('salary : ' || v_sal);
+update emp 
+set stars=rpad('*',v_sal,'*')
+where employee_id=v_empno;
+end;
+/
+
+declare
+v_empno emp.employee_id%type :=150;
+v_asterisk emp.stars%type :=null;
+v_sal emp.salary%type;
+begin
+select round(salary/1000) into v_sal from emp
+where employee_id=v_empno;
+for i in 1.. v_sal
+loop
+v_asterisk:=v_asterisk||'*';
+end loop;
+update emp
+set stars = v_asterisk
+where employee_id=v_empno;
+end;
+/
+
+
+
+declare
+  v_empno     emp.employee_id%type := 166;
+  v_sal       emp.salary%type;
+begin
+  select round(nvl(salary/1000,0)) into v_sal
+  from emp
+  where employee_id = v_empno;
+  update emp
+  set stars = rpad('*', v_sal, '*')
+  where employee_id = v_empno;
+end;
+/
+
+
+-- chapter__8
+
+
+declare
+v_deptno number :=30;
+cursor c_emp_cursor is
+select last_name,salary,manager_id
+from employees
+where department_id=v_deptno;
+begin
+for v_record in c_emp_cursor
+loop
+if v_record.salary<5000 and v_record.manager_id in(101,124)
+then
+dbms_output.put_line(v_record.last_name ||' - ' || 'Due for a raise');
+else
+
+dbms_output.put_line(v_record.last_name ||' - ' || 'Not Due for a raise');
+end if;
+end loop;
+end;
+/
+
+
+declare
+v_num number :=10;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+
+begin
+open c_emp_cursor;
+loop
+FETCH c_emp_cursor into v_sal;
+EXIT when c_emp_cursor%ROWCOUNT<=v_num and c_emp_cursor%found;
+insert into top_salaries (salary)
+values(v_sal);
+end loop;
+CLOSE c_emp_cursor;
+end;
+/
+
+
+
+
+
+create table t_sal (salary number);
+
+declare
+v_n number :=10;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_sal;
+EXIT when c_emp_cursor%ROWCOUNT >=v_n;
+dbms_output.put_line(v_sal);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+
+declare
+v_n number :=5;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_sal;
+dbms_output.put_line(v_sal);
+insert into t_sal(salary)
+values(v_sal);
+EXIT when c_emp_cursor%ROWCOUNT >=v_n and c_emp_cursor%found;
+end loop;
+close c_emp_cursor;
+end;
+/
+
+declare
+v_n number :=5;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_sal;
+dbms_output.put_line(v_sal);
+
+EXIT when c_emp_cursor%ROWCOUNT >=v_n and c_emp_cursor%found;
+insert into t_sal(salary)
+values(v_sal);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- sir ---------
+
+declare
+v_deptno number :=10;
+cursor c_emp_cursor is
+select last_name,salary,manager_id
+from employees 
+where department_id =v_deptno
+order by salary desc;
+
+begin
+for v_record in c_emp_cursor
+loop
+if
+v_record.salary<5000 and v_record.manager_id in(101,124)
+then
+dbms_output.put_line(v_record.last_name ||'-'||'Due for a raise');
+else 
+dbms_output.put_line(v_record.last_name ||'-'||'Not Due for a raise');
+end if;
+end loop;
+end;
+
+
+
+
+
+
+
+
+create table top_salaries(empid number,salary number);
+
+DECLARE
+  v_num   NUMBER := 5;
+  v_empid employees.employee_id%TYPE;
+  v_sal   employees.salary%TYPE;
+
+  CURSOR c_top_salary_cursor IS
+    SELECT employee_id, salary
+    FROM employees
+    ORDER BY salary DESC;
+BEGIN
+  OPEN c_top_salary_cursor;
+  LOOP
+    FETCH c_top_salary_cursor INTO v_empid, v_sal;
+    EXIT WHEN c_top_salary_cursor%NOTFOUND OR c_top_salary_cursor%ROWCOUNT > v_num;
+
+    INSERT INTO top_salaries(empid, salary)
+    VALUES (v_empid, v_sal);
+  END LOOP;
+  CLOSE c_top_salary_cursor;
+END;
+/
