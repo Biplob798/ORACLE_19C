@@ -194,7 +194,7 @@ end;
 
 
 -- activity guide practice
-create table messages(result varchar2(100));
+create table messages(results varchar2(100));
 
 -- show no error 
 
@@ -205,17 +205,17 @@ begin
 select last_name into v_ename
 from employees
 where salary=v_emp_sal;
-insert into messages(result)
-values(v_ename || v_emp_sal);
+insert into messages(results)
+values(v_ename ||'-'|| v_emp_sal);
 exception
 when no_data_found then
-insert into messages(result)
+insert into messages(results)
 values('No employee with a salary of ' || v_emp_sal);
 when too_many_rows then
-insert into messages(result)
+insert into messages(results)
 values('More than one employee with a salary of ' || v_emp_sal);
 when others then
-insert into messages(result)
+insert into messages(results)
 values('Some other error occured');
 end;
 /

@@ -1,5 +1,187 @@
 -- chapter__6
 
+begin
+for i in 1..10
+loop
+if
+i=6 or i=8 then
+null;
+else
+dbms_output.put_line(i);
+end if;
+end loop ;
+end;
+/
+
+
+
+
+
+create table emp as select * from employees;
+alter table emp
+add stars varchar2(100);
+
+
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_asterisk emp.stars%type;
+v_sal emp.salary%type;
+begin
+select round(nvl(salary/1000,0)) into v_sal from emp
+where employee_id=v_empno;
+for i in 1..v_sal
+loop
+v_asterisk:=v_asterisk||'*';
+end loop;
+update emp
+set stars =v_asterisk
+where employee_id=v_empno;
+end;
+/
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_asterisk emp.stars%type :=null;
+v_sal emp.salary%type;
+begin
+select round(nvl(salary/1000,0)) into v_sal from emp
+where employee_id=v_empno;
+for i in 1..v_sal
+loop
+v_asterisk := v_asterisk || '*';
+update emp
+set stars =v_asterisk
+where employee_id=v_empno;
+end loop;
+end;
+/
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_asterisk emp.stars%type :=null;
+v_sal emp.salary%type;
+begin
+select round(nvl(salary/1000,0)) into v_sal from emp
+where employee_id=v_empno;
+for i in 1..v_sal
+loop
+v_asterisk := v_asterisk || '*';
+update emp
+set stars =v_asterisk;
+end loop;
+end;
+/
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_sal emp.salary%type;
+v_asterisk emp.stars%type :=null;
+begin
+select round(nvl(salary/1000,0)) into v_sal from employees
+where employee_id =v_empno;
+for i in 1..v_sal
+loop
+v_asterisk := v_asterisk || '*';
+update emp
+set stars=v_asterisk
+where employee_id=v_empno;
+end loop;
+end;
+/
+
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_sal emp.salary%type;
+v_asterisk emp.stars%type :=null;
+
+begin
+select round(nvl(salary/1000,0)) into v_sal from emp
+where employee_id=v_empno;
+for i in 1..v_sal
+loop
+v_asterisk := v_asterisk||'*';
+update emp 
+set stars =v_asterisk
+where employee_id =v_empno;
+end loop;
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_sal emp.salary%type;
+begin
+select round(salary/1000) into v_sal from emp
+where employee_id =v_empno;
+dbms_output.put_line('salary : ' || v_sal);
+update emp 
+set stars=rpad('*',v_sal,'*')
+where employee_id=v_empno;
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+select stars from emp 
+where employee_id =176;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 create table messages (results number);
 begin
 for i in 1..10
@@ -123,6 +305,216 @@ end;
 
 
 declare
+v_deptno number :=10;
+cursor c_emp_cursor is
+select last_name,salary,manager_id
+from employees
+where department_id =v_deptno;
+
+begin
+for i in c_emp_cursor 
+loop
+if 
+i.salary<5000 and i.manager_id in(101,124)
+then
+dbms_output.put_line(i.last_name || ' '|| 'Due for a raise.');
+else
+dbms_output.put_line(i.last_name || ' '|| 'Not Due for a raise.');
+end if;
+end loop;
+end;
+/
+
+
+declare
+cursor c_emp_cursor (v_deptno number)is
+select last_name,salary,manager_id
+from employees
+where department_id =v_deptno;
+
+begin
+for i in c_emp_cursor(80) 
+loop
+if 
+i.salary<5000 and i.manager_id in(101,124)
+then
+dbms_output.put_line(i.last_name || ' '|| 'Due for a raise.');
+else
+dbms_output.put_line(i.last_name || ' '|| 'Not Due for a raise.');
+end if;
+end loop;
+end;
+/
+
+
+declare
+cursor c_dept_cursor is
+select department_id,department_name from departments
+where department_id <100
+order by department_id;
+cursor c_emp_cursor (p_deptno number) is
+select last_name,job_id,hire_date,salary from employees 
+where department_id <120;
+v_deptno departments.department_id%type;
+v_ndept departments.department_name%type;
+v_lname employees.last_name%type;
+v_job_id employees.job_id%type;
+v_hiredate employees.hire_date%type;
+v_salary employees.salary%type;
+begin
+open c_dept_cursor;
+loop
+fetch c_dept_cursor into v_deptno,v_ndept;
+exit when c_dept_cursor%notfound;
+dbms_output.put_line('Department id is :' ||v_deptno);
+dbms_output.put_line('Department name is :' ||v_ndept);
+end loop;
+close c_dept_cursor;
+open c_emp_cursor (50);
+loop
+fetch c_emp_cursor into v_lname,v_job_id,v_hiredate,v_salary;
+exit when c_emp_cursor%notfound;
+dbms_output.put_line('Employee last_name is :'|| v_lname);
+dbms_output.put_line('Employee job_id is :'|| v_job_id);
+dbms_output.put_line('Employee hiredate is :'|| v_hiredate);
+dbms_output.put_line('Employee salary is :'|| v_salary);
+end loop;
+close c_emp_cursor;
+end;
+
+
+/
+declare
+cursor c_dept_cursor is
+select department_id,department_name from departments
+where department_id <100
+order by department_id;
+cursor c_emp_cursor (p_deptno number) is
+select last_name,job_id,hire_date,salary from employees 
+where department_id <120;
+begin
+for i in c_dept_cursor
+loop
+dbms_output.put_line('Department id is :' ||i.department_id);
+dbms_output.put_line('Department name is :' ||i.department_name);
+end loop;
+for i in c_emp_cursor(50)
+loop
+dbms_output.put_line('Employee last_name is :'|| i.last_name);
+dbms_output.put_line('Employee job_id is :'|| i.job_id);
+dbms_output.put_line('Employee hiredate is :'|| i.hire_date);
+dbms_output.put_line('Employee salary is :'|| i.salary);
+end loop;
+end;
+/
+
+
+
+create table top_salaries(salary number);
+
+declare
+v_num number :=5;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select distinct salary from employees
+order by salary desc;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_sal;
+insert into top_salaries(salary)
+values(v_sal);
+dbms_output.put_line(v_sal);
+exit when c_emp_cursor%rowcount>v_num and c_emp_cursor%found;
+-- dbms_output.put_line(v_sal);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+declare
+v_num number :=5;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select distinct salary from employees
+order by salary desc;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_sal;
+
+dbms_output.put_line(v_sal);
+exit when c_emp_cursor%rowcount>v_num+1 and c_emp_cursor%found;
+insert into top_salaries(salary)
+values(v_sal);
+dbms_output.put_line(v_sal);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+declare
 v_deptno number :=30;
 cursor c_emp_cursor is
 select last_name,salary,manager_id
@@ -227,6 +619,156 @@ end loop;
 close c_emp_cursor;
 end;
 /
+
+
+-- chapter__9
+drop table messages;
+alter table messages modify results varchar2(200);
+
+declare
+v_ename employees.last_name%type;
+v_emp_sal employees.salary%type :=6000;
+begin
+select last_name into v_ename from employees
+where salary=v_emp_sal;
+insert into messages(results)
+values(v_ename || ' - ' || to_char(v_emp_sal));
+exception
+when no_data_found then
+insert into messages(results)
+values('No employee with a salary of ' || to_char(v_emp_sal));
+when too_many_rows then
+insert into messages(results)
+values('More than one empployee with a salary of '||to_char(v_emp_sal));
+when others then
+insert into messages(results)
+values('Some other error occurred ');
+end;
+/
+select last_name from employees where salary=6000;--1 jon ase.
+
+
+declare
+v_ename employees.last_name%type;
+v_emp_sal employees.salary%type :=7000;
+begin
+select last_name into v_ename from employees
+where salary=v_emp_sal;
+insert into messages(results)
+values(v_ename || ' - ' || to_char(v_emp_sal));
+exception
+when no_data_found then
+insert into messages(results)
+values('No employee with a salary of ' || to_char(v_emp_sal));
+when too_many_rows then
+insert into messages(results)
+values('More than one empployee with a salary of '||to_char(v_emp_sal));
+when others then
+insert into messages(results)
+values('Some other error occurred ');
+end;
+/
+select last_name from employees where salary=7000;--3 jon ase.
+
+
+
+
+declare
+v_ename employees.last_name%type;
+v_emp_sal employees.salary%type :=2000;
+begin
+select last_name into v_ename from employees
+where salary=v_emp_sal;
+insert into messages(results)
+values(v_ename || ' - ' || (v_emp_sal));
+exception
+when no_data_found then
+insert into messages(results)
+values('No employee with a salary of ' || (v_emp_sal));
+when too_many_rows then
+insert into messages(results)
+values('More than one empployee with a salary of '||(v_emp_sal));
+when others then
+insert into messages(results)
+values('Some other error occurred ');
+end;
+/
+
+select last_name from employees where salary=2000;--0 jon ase.
+
+
+
+
+
+
+create table messages2 (results varchar2(100));
+
+
+declare
+v_ename employees.last_name%type;
+v_emp_sal employees.salary%type :=6000;
+
+begin
+
+select last_name into v_ename from employees 
+where salary =v_emp_sal;
+insert into messages2(results)
+values (v_ename||'-'||v_emp_sal);
+exception
+when no_data_found then
+insert into messages2(results)
+values ('No employee with a salary of :'||v_emp_sal);
+when too_many_rows then
+insert into messages2(results)
+values ('More than one employee with a salary of :'||v_emp_sal);
+when others then
+insert into messages2(results)
+values ('Some other error occurred');
+end;
+/
+
+
+declare
+e_childrecord_exists exception;
+pragma exception_init(e_childrecord_exists,-02292);
+begin
+delete from departments
+where department_id=40;
+dbms_output.put_line('Deleting department_id: 40 .......');
+exception
+when e_childrecord_exists then
+dbms_output.put_line('Cannot delete this department.There are employees in this department (child recorde exist.)');
+end;
+/
+
+
+
+
+declare
+e_childrecord_exists exception;
+pragma exception_init(e_childrecord_exists,-02292);
+begin
+delete from departments
+where department_id=40;
+dbms_output.put_line('Deleting department 40.......');
+exception
+when e_childrecord_exists then
+dbms_output.put_line('Cannot delete this department.There are employees in this department (child records exist.)');
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
