@@ -1,3 +1,56 @@
+-- chapter__5
+
+declare
+v_max_deptno number;
+
+begin
+select max(department_id) into v_max_deptno from departments;
+dbms_output.put_line('The maximun department_id is : '|| v_max_deptno);
+end;
+/
+
+
+
+declare
+v_max_deptno number;
+v_dept_name departments.department_name%type := 'Education';
+v_dept_id number;
+begin
+select max(department_id) into v_max_deptno from departments;
+dbms_output.put_line('The maximun department_id is : '|| v_max_deptno);
+insert into departments(department_name,department_id,location_id)
+values(v_dept_name,(v_max_deptno+10),null);
+dbms_output.put_line(sql%rowcount || '-'||'sql%rowcount');
+end;
+/
+
+
+
+
+declare
+v_location_id number :=3000;
+v_department_id number :=560;
+begin
+update departments
+set location_id=v_location_id
+where department_id =560;
+end;
+/
+select * from departments where department_id =560;
+
+
+
+begin
+delete from departments
+where department_id=560;
+dbms_output.put_line(sql%rowcount || ' ' || 'rows deleted.');
+end;
+/
+
+
+
+
+
 -- chapter__6
 
 begin
@@ -426,7 +479,7 @@ insert into top_salaries(salary)
 values(v_sal);
 dbms_output.put_line(v_sal);
 exit when c_emp_cursor%rowcount>v_num and c_emp_cursor%found;
--- dbms_output.put_line(v_sal);
+dbms_output.put_line(v_sal);
 end loop;
 close c_emp_cursor;
 end;
@@ -453,10 +506,49 @@ close c_emp_cursor;
 end;
 /
 
+-- chapter__9 
+drop table messages;
+create table messages(reasults varchar2(100));
+
+
+
+declare
+v_ename employees.last_name%type;
+v_emp_sal employees.salary%type :=6000;
+
+begin
+select last_name into v_ename from employees
+where salary =v_emp_sal;
+
+insert into messages (reasults)
+values(v_ename || '' || v_emp_sal);
+dbms_output.put_line(v_ename || v_emp_sal);
+exception
+when no_data_found then
+dbms_output.put_line('No employee with a salary of :'||v_emp_sal);
+when too_many_rows then
+dbms_output.put_line('More than one rows employee with a salary of :'||v_emp_sal);
+when others then
+dbms_output.put_line('Some other error occurred');
+end;
+/
 
 
 
 
+
+declare
+e_childrecord_exists exception;
+pragma exception_init(e_childrecord_exists,-02292);
+begin
+delete from departments 
+where department_id=40;
+dbms_output.put_line('Deleting department 40..........');
+exception
+when e_childrecord_exists then
+dbms_output.put_line('Cannot delete this department.There are employees in this department (child records exist).');
+end;
+/
 
 
 
@@ -846,4 +938,174 @@ BEGIN
   END LOOP;
   CLOSE c_top_salary_cursor;
 END;
+/
+
+
+--book-----
+
+-- cha_5
+begin
+insert into employees()
+values();
+end;
+/
+begin
+update employees
+set column=value
+where r.column= value;
+end;
+/
+begin
+delete from employees
+where column= value;
+end;
+/
+begin
+merge into target_tabel
+using source_table 
+on(reference.source_table column=reference.targert_table column)
+when matched then
+update set 
+targert_table.column=source_table.column
+when not matched then
+insert values
+source_table column;
+end;
+/
+
+--cha_6
+declare
+v_num number:=7;
+begin
+if 
+mod(v_num,2)=0 then
+dbms_output.put_line('even');
+else
+dbms_output.put_line('odd');
+end if;
+end;
+/
+
+-- insert by basic loop 
+declare
+v_countryid locations.country_id%type :='CA';
+v_loc_id locations.location_id%type ;
+v_new_city locations.city%type :='Montreal';
+v_counter number := 1;
+begin
+select max(location_id) into v_loc_id from locations
+where country_id=v_countryid;
+loop
+insert into locations(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_countryid);
+v_counter:=v_counter+1;
+exit when v_counter>3;
+end loop;
+end;
+/
+
+-- insert by while loop 
+
+declare
+v_countryid locations.country_id%type :='CA';
+v_loc_id locations.location_id%type ;
+v_new_city locations.city%type :='Montreal';
+v_counter number := 1;
+begin
+select max(location_id) into v_loc_id from locations
+where country_id=v_countryid;
+
+while  v_counter<=3 
+loop
+insert into locations(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_countryid);
+v_counter:=v_counter+1;
+end loop;
+end;
+/
+-- insert by for loop 
+
+declare
+v_countryid locations.country_id%type :='CA';
+v_loc_id locations.location_id%type ;
+v_new_city locations.city%type :='Montreal';
+
+begin
+select max(location_id) into v_loc_id from locations
+where country_id=v_countryid;
+for i in 1..3
+loop
+insert into locations(location_id,city,country_id)
+values(v_loc_id+i,v_new_city,v_countryid);
+end loop;
+end;
+/
+
+-- cha_8 
+
+-- cursor with basic loop 
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id=30;
+v_empno employees.employee_id%type;
+v_lname employees.last_name%type;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_empno,v_lname;
+exit when c_emp_cursor%notfound;
+dbms_output.put_line(v_empno||' '||v_lname);
+end loop;
+close c_emp_cursor;
+
+end;
+/
+
+
+-- cursor with basic loop and %rowcound and %notfound
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id=30;
+v_empno employees.employee_id%type;
+v_lname employees.last_name%type;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_empno,v_lname;
+exit when c_emp_cursor%rowcount>10 or c_emp_cursor%notfound;
+dbms_output.put_line(v_empno||' '||v_lname);
+end loop;
+close c_emp_cursor;
+
+end;
+/
+-- cursor with for loop 
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id=30;
+begin
+for v_emp_record in c_emp_cursor
+loop
+dbms_output.put_line(v_emp_record.employee_id||' '||v_emp_record.last_name);
+end loop;
+end;
+/
+-- cursor with for loop and with rowtype%
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id=30;
+v_emp_record c_emp_cursor%rowtype;
+begin
+for v_emp_record in c_emp_cursor
+loop
+dbms_output.put_line(v_emp_record.employee_id||' '||v_emp_record.last_name);
+end loop;
+end;
 /
