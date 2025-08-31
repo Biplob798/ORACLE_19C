@@ -480,3 +480,99 @@ SET starts = i.asteriks
 WHERE EMPLOYEE_ID = i.EMPLOYEE_ID;
 END LOOP;
 END;
+
+
+
+
+
+-- ______________________activity book_____________________________
+
+
+create table message( result number);
+
+
+
+begin
+for i in 1..10 
+loop
+if i=6 or i=10 then 
+null;
+else
+insert into message(result)
+values(i);
+dbms_output.put_line(i);
+end if;
+end loop;
+end;
+/
+
+
+declare
+
+begin
+for i in 1..10
+loop
+if 
+mod(i,2)=0 then
+dbms_output.put_line('even');
+else
+dbms_output.put_line('odd');
+end if;
+end loop;
+end;
+/
+
+
+
+
+create table emp as select * from employees;
+
+
+alter table emp
+add stars varchar2(100);
+
+
+declare
+v_empno emp.employee_id%type :=176;
+v_asterisk emp.stars%type :=null;
+v_sal emp.salary%type;
+begin
+select round(nvl(salary/1000,0)) into v_sal 
+from employees
+where employee_id=v_empno;
+for i in 1..v_sal
+loop
+v_asterisk:=v_asterisk||'*';
+end loop;
+update emp 
+set stars = v_asterisk
+where employee_id =v_empno;
+commit;
+end;
+/
+
+
+
+declare
+v_empno emp.employee_id%type :=177;
+v_sal emp.salary%type;
+v_asterisk emp.stars%type :=null;
+begin
+select round(nvl(salary/1000,0)) into v_sal from  employees
+where employee_id =v_empno;
+dbms_output.put_line(v_sal);
+for i in 1..v_sal
+loop
+v_asterisk:=v_asterisk||'*';
+dbms_output.put_line(v_asterisk);
+end loop;
+update emp
+set stars=v_asterisk
+where employee_id=v_empno;
+end;
+/
+
+
+
+
+

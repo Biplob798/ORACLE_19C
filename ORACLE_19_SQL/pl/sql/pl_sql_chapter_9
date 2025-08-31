@@ -318,3 +318,103 @@ end;
 /
 
 
+-- ______________________activity book_____________________________
+
+
+create table messages(results number);
+
+
+declare
+v_ename  employees.last_name%type;
+v_emp_sal employees.salary%type:=6000;
+begin
+select last_name into v_ename 
+from EMPLOYEES
+where salary=v_emp_sal;
+insert into messages(results)
+values (v_ename||' - '||v_emp_sal);
+exception 
+when no_data_found then
+insert into messages(results)
+values(' no employee with a salary of :' || v_emp_sal);
+when too_many_rows then
+insert into messages(results)
+values('more than one employee with a salary of :' || v_emp_sal);
+when others then
+insert into messages(results)
+values('some other error occurred');
+end;
+/
+
+
+
+
+declare
+v_ename  employees.last_name%type;
+v_emp_sal employees.salary%type:=2000;
+begin
+select last_name into v_ename 
+from EMPLOYEES
+where salary=v_emp_sal;
+insert into messages(results)
+values (v_ename||' - '||v_emp_sal);
+
+exception 
+when no_data_found then
+insert into messages(results)
+values(' no employee with a salary of :' || v_emp_sal);
+when too_many_rows then
+insert into messages(results)
+values('more than one employee with a salary of :' || v_emp_sal);
+when others then
+insert into messages(results)
+values('some other error occurred');
+end;
+/
+
+
+
+
+declare
+v_ename  employees.last_name%type;
+v_emp_sal employees.salary%type:=10000;
+
+begin
+select last_name into v_ename 
+from EMPLOYEES
+where salary=v_emp_sal;
+insert into messages(results)
+values (v_ename||' - '||v_emp_sal);
+
+exception 
+when no_data_found then
+insert into messages(results)
+values(' no employee with a salary of :' || v_emp_sal);
+when too_many_rows then
+insert into messages(results)
+values('more than one employee with a salary of :' || v_emp_sal);
+when others then
+insert into messages(results)
+values('some other error occurred');
+end;
+/
+
+
+
+
+
+
+
+declare
+e_childrecord_exists exception;
+pragma exception_init(e_childrecord_exists,-02292);
+begin
+delete from departments
+where department_id=40;
+dbms_output.put_line('Deleting department 40....');
+exception
+when  e_childrecord_exists then
+dbms_output.put_line('child exist');
+end;
+/
+

@@ -614,4 +614,110 @@ end;
 /
 
 
+-- ______________________activity book_____________________________
+
+declare
+v_deptno number :=10;
+cursor c_emp_cursor is
+select last_name,salary,manager_id
+from employees 
+where department_id=v_deptno; 
+begin
+for i in c_emp_cursor 
+loop
+if 
+i.salary <5000 and
+i.manager_id in(101,124) then
+dbms_output.put_line('Due for a raise' || i.last_name);
+else
+dbms_output.put_line('Not Due for a raise' || i.last_name);
+end if;
+end loop;
+end;
+/
+
+
+declare
+v_deptno number :=20;
+cursor c_emp_cursor is
+select last_name,salary,manager_id
+from employees 
+where department_id=v_deptno; 
+begin
+for i in c_emp_cursor 
+loop
+if 
+i.salary <5000 and
+i.manager_id in(101,124) then
+dbms_output.put_line('Due for a raise' || i.last_name);
+else
+dbms_output.put_line('Not Due for a raise' || i.last_name);
+end if;
+end loop;
+end;
+/
+
+
+declare
+v_deptno number:=10;
+cursor c_emp_cursor is
+select last_name,salary,manager_id
+from employees
+where department_id=v_deptno;
+begin
+for i in c_emp_cursor
+loop
+if 
+i.salary<5000 and i.manager_id in(101,124) THEN
+dbms_output.put_line(i.last_name || 'Due for a raise');
+else
+dbms_output.put_line(i.last_name || 'Not Due for a raise');
+end if;
+end loop;
+end;
+/
+
+
+
+
+create table top_salaries(salary number);
+declare
+v_num number :=5;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+begin
+open c_emp_cursor;
+fetch c_emp_cursor into v_sal;
+while c_emp_cursor%rowcount<=v_num and c_emp_cursor%found
+loop
+insert into top_salaries(salary)
+values(v_sal);
+fetch c_emp_cursor into v_sal;
+end loop;
+close c_emp_cursor;
+end;
+/
+
+
+declare
+v_num number :=10;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc; 
+begin
+open c_emp_cursor;
+fetch c_emp_cursor into v_sal;
+while c_emp_cursor%rowcount <=v_num and c_emp_cursor%found 
+loop
+insert into top_salaries(salary)
+values(v_sal);
+fetch c_emp_cursor into v_sal;
+end loop;
+close c_emp_cursor;
+end;
+/
+
 
