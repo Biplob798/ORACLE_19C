@@ -278,7 +278,7 @@ select * from messages;
 
 declare
 v_ename employees.first_name%TYPE;
-v_emp_sal employees.salary%TYPE := doc;
+v_emp_sal employees.salary%TYPE :3000;
 begin
 select last_name into v_ename
 from employees

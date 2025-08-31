@@ -1109,3 +1109,435 @@ dbms_output.put_line(v_emp_record.employee_id||' '||v_emp_record.last_name);
 end loop;
 end;
 /
+
+
+
+
+
+
+
+-- book practice 
+-- 5
+
+declare
+v_emp_hiredate employees.hire_date%type ;     
+v_emp_salary employees.salary%type ;     
+begin
+select hire_date,salary into v_emp_hiredate,v_emp_salary 
+from employees
+where employee_id=140;
+dbms_output.put_line('hire date is :'|| v_emp_hiredate);
+dbms_output.put_line('salary is :'||v_emp_salary);
+end;
+/
+
+declare
+v_emp_sum_salary employees.salary%type;
+v_deptno employees.department_id%type :=40;
+begin
+select sum(salary) into v_emp_sum_salary from employees
+where department_id =v_deptno;
+dbms_output.put_line('sum of salary of deptno 40 is:'||v_emp_sum_salary);
+end;
+/
+
+
+
+
+declare
+v_sal_increse employees.salary%type:=800;
+begin
+update employees
+set salary =salary + v_sal_increse
+where job_id='ST_CLERK';
+end;
+/
+
+DECLARE
+V_DEPTNO EMPLOYEES.DEPARTMENT_ID%TYPE :=10;
+BEGIN
+DELETE FROM EMPLOYEES
+WHERE DEPARTMENT_ID =V_DEPTNO ;
+END;
+/
+
+CREATE TABEL COPY_EMP AS SELECT * FROM EMPLOYEES WHERE DEPARTMENT_ID=90;
+
+BEGIN
+MERGE INTO COPY_EMP C
+USING EMPLOYEES E 
+ON (E.EMPLOYEE_ID=C.COPY_EMP)
+WHEN MATCHED THEN 
+UPDATE SET 
+C.FIRST_NAME=E.FIRST_NAME,
+C.last_name=E.last_name,
+C.EMAIL=E.EMAIL,
+C.PHONE_NUMBER=E.PHONE_NUMBER,
+C.HIRE_DATE=E.HIRE_DATE,
+C.job_id=E.job_id,
+C.salary=E.salary,
+C.COMMISSION_PCT=E.COMMISSION_PCT,
+C.MANAGER_ID=E.MANAGER_ID,
+C.DEPARTMENT_ID=E.DEPARTMENT_ID
+WHEN NOT MATCHED THEN 
+INSERT VALUES(E.EMPLOYEE_ID,E.FIRST_NAME,E.last_name,E.EMAIL,E.PHONE_NUMBER,E.HIRE_DATE,E.job_id,E.salary,E.COMMISSION_PCT,E.MANAGER_ID,E.DEPARTMENT_ID);
+END;
+/
+
+
+
+DECLARE
+V_EMPNO EMPLOYEES.EMPLOYEE_ID%TYPE :=176;
+
+BEGIN
+DELETE FROM EMPLOYEES
+WHERE EMPLOYEE_ID=V_EMPNO;
+dbms_output.put_line('ROW DELETE :'|| SQL%ROWCOUNT);
+END;
+/
+
+
+
+-- 6
+DECLARE
+V_GRADE varchar2(100) := UPPER('&GRADE');
+v_result VARCHAR2(100);
+BEGIN
+v_result:=CASE V_GRADE
+WHEN 'A' THEN 'EXCELLENT'
+WHEN 'B' THEN 'VERY GOOD'
+WHEN 'C' THEN 'GOOD'
+ELSE 'NO SUCH GRADE'
+END;
+dbms_output.put_line('GRADE :' || V_GRADE);
+END;
+/
+DECLARE
+V_GRADE varchar2(100) := UPPER('&GRADE');
+v_result VARCHAR2(100);
+BEGIN
+v_result:=CASE 
+WHEN V_GRADE ='A' THEN 'EXCELLENT'
+WHEN V_GRADE='B' THEN 'VERY GOOD'
+WHEN V_GRADE ='C' THEN 'GOOD'
+ELSE 'NO SUCH GRADE'
+END;
+dbms_output.put_line('GRADE :' || V_GRADE);
+END;
+/
+
+
+DECLARE
+V_DEPTID NUMBER;
+V_DEPTNAME VARCHAR2(100);
+V_EMPID NUMBER;
+V_MNGID NUMBER :=108;
+BEGIN
+CASE V_MNGID
+WHEN 108 THEN
+SELECT DEPARTMENT_ID,department_name INTO V_DEPTID,V_DEPTNAME FROM DEPARTMENTS
+WHERE MANAGER_ID=V_MNGID;
+END;
+/
+
+DECLARE
+v_countryid locations.country_id%TYPE :='CA';
+v_loc_id locations.location_id%TYPE;
+v_new_city locations.city%TYPE:='Montreal';
+v_counter number := 1;
+BEGIN
+select max(location_id)into v_loc_id from locations
+where country_id=v_countryid;
+loop
+insert into locations(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_countryid);
+v_counter:=v_counter+1;
+exit when v_counter>4;
+end loop;
+END;
+/
+
+
+
+DECLARE
+v_countryid locations.country_id%TYPE :='CA';
+v_loc_id locations.location_id%TYPE;
+v_new_city locations.city%TYPE:='Montreal';
+v_counter number := 1;
+BEGIN
+select max(location_id)into v_loc_id from locations
+where country_id=v_countryid;
+while  v_counter<4
+loop
+insert into locations(location_id,city,country_id)
+values(v_loc_id+v_counter,v_new_city,v_countryid);
+v_counter:=v_counter+1;
+
+end loop;
+END;
+/
+
+
+DECLARE
+v_countryid locations.country_id%TYPE :='CA';
+v_loc_id locations.location_id%TYPE;
+v_new_city locations.city%TYPE:='Montreal';
+
+BEGIN
+select max(location_id)into v_loc_id from locations
+where country_id=v_countryid;
+for i in 1..4
+loop
+insert into locations(location_id,city,country_id)
+values(v_loc_id+i,v_new_city,v_countryid);
+
+end loop;
+END;
+/
+
+
+-- 8 
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id =50;
+v_empno employees.employee_id%type;
+v_lname employees.last_name%type;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_empno,v_lname;
+exit when c_emp_cursor%notfound;
+dbms_output.put_line(v_empno ||v_lname);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id =50;
+v_empno employees.employee_id%type;
+v_lname employees.last_name%type;
+begin
+open c_emp_cursor;
+while c_emp_cursor%rowcount<5
+loop
+fetch c_emp_cursor into v_empno,v_lname;
+dbms_output.put_line(v_empno ||v_lname);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id =50;
+begin
+for i in c_emp_cursor
+loop
+dbms_output.put_line(i.employee_id ||i.last_name);
+end loop;
+end;
+/
+
+declare
+cursor c_emp_cursor(p_deptno number) is
+select employee_id,last_name from employees
+where department_id =p_deptno;
+begin
+for i in c_emp_cursor(50)
+loop
+dbms_output.put_line(i.employee_id ||i.last_name);
+end loop;
+end;
+/
+
+
+
+
+begin
+for i in (select employee_id,last_name from employees
+where department_id =50)
+loop
+dbms_output.put_line(i.employee_id ||i.last_name);
+end loop;
+end;
+/
+
+
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id =50;
+v_empno employees.employee_id%type;
+v_lname employees.last_name%type;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_empno,v_lname;
+exit when c_emp_cursor%rowcount>10 or c_emp_cursor%notfound;
+dbms_output.put_line(v_empno ||v_lname);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+declare
+cursor c_emp_cursor is
+select employee_id,last_name from employees
+where department_id =50;
+v_empno employees.employee_id%type;
+v_lname employees.last_name%type;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_empno,v_lname;
+exit when c_emp_cursor%rowcount>10 and c_emp_cursor%notfound;
+dbms_output.put_line(v_empno ||v_lname);
+end loop;
+close c_emp_cursor;
+end;
+/
+
+-- 9
+
+
+
+declare
+v_lname varchar2(15);
+begin
+select last_name into v_lname
+from employees
+where department_id=10;
+dbms_output.put_line(v_lname || ' ' || 'department is 30.');
+exception
+when no_data_found then
+dbms_output.put_line('No row found :' ||v_lname ||sqlerrm||sqlcode);
+when too_many_rows then
+dbms_output.put_line('more than one rows : ' ||v_lname);
+when others then
+dbms_output.put_line('Others occerd happend : '||v_lname );
+end;
+/
+
+
+declare
+v_lname varchar2(15);
+begin
+select last_name into v_lname
+from employees
+where department_id=5000;
+dbms_output.put_line(v_lname || ' ' || 'department is 30.');
+exception
+when no_data_found then
+dbms_output.put_line('No row found :' ||v_lname);
+when too_many_rows then
+dbms_output.put_line('more than one rows : ' ||v_lname);
+when others then
+dbms_output.put_line('Others occerd happend : '||v_lname );
+end;
+/
+
+
+
+
+declare
+v_lname varchar2(15);
+v_num number :=100;
+begin
+select last_name into v_lname
+from employees
+where department_id=v_num/0;
+dbms_output.put_line(v_lname || ' ' || 'department is 30.');
+exception
+when no_data_found then
+dbms_output.put_line('No row found :' ||v_lname);
+when too_many_rows then
+dbms_output.put_line('more than one rows : ' ||v_lname);
+when others then
+dbms_output.put_line('Others occerd happend : '||v_lname );
+end;
+/
+
+
+
+
+declare
+e_insert_excep exception;
+pragma exception_init(e_insert_excep,-01400);
+begin
+insert into DEPARTMENTS
+(department_id,department_name)
+values(500,null);
+exception
+when e_insert_excep then
+dbms_output.put_line('insert operation faild'||sqlerrm ||sqlcode );
+end;
+/
+
+
+
+declare
+v_deptno number :=500;
+v_name varchar2(100) :='Testing';
+e_invalid_department exception;
+begin
+update DEPARTMENTS
+set department_name= v_name
+where department_id =v_deptno;
+if sql%notfound then
+raise e_invalid_department ;
+end if;
+exception
+when e_invalid_department then
+dbms_output.put_line('NO such department id');
+end;
+/
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- drop tabel massages;
+-- create table massages(reults number);
+-- begin
+-- for i in 1..10
+-- loop
+-- if i =6 or i =8 then
+-- null;
+-- else 
+-- insert into massages(reults)
+-- values(i);
+-- end if;
+-- dbms_output.put_line(I);
+-- end loop;
+-- end;
+-- /
+-- select * from massages;
+
