@@ -719,5 +719,59 @@ end loop;
 close c_emp_cursor;
 end;
 /
+-- or 
+
+declare
+v_num number :=6;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+begin
+open c_emp_cursor;
+while c_emp_cursor%rowcount<v_num
+loop
+fetch c_emp_cursor into v_sal;
+dbms_output.put_line(v_sal);
+end loop;
+close c_emp_cursor;
+end;
+/
 
 
+-- for loop solve
+
+declare
+v_num number := 5;
+v_counter number := 0;
+cursor c_emp_cursor is
+select salary 
+from employees
+order by salary desc;
+begin
+for rec in c_emp_cursor 
+loop
+v_counter := v_counter + 1;
+exit when v_counter > v_num;
+dbms_output.put_line(rec.salary);
+end loop;
+end;
+/
+
+
+declare
+v_num number :=6;
+v_sal employees.salary%type;
+cursor c_emp_cursor is
+select salary from employees
+order by salary desc;
+begin
+open c_emp_cursor;
+loop
+fetch c_emp_cursor into v_sal;
+exit when  c_emp_cursor%rowcount>v_num;
+dbms_output.put_line(v_sal);
+end loop;
+close c_emp_cursor;
+end;
+/

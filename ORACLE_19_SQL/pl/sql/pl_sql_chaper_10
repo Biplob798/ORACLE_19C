@@ -1,0 +1,162 @@
+-- PROCEDURE AND FUNCTION 
+----------------------------------------------------------
+
+
+-- PROCEDURE without parameter------------------------------------------------------------------
+create table dept as select * from departments;
+
+--  STORE FOR DATABASE 
+
+create or replace procedure add_dept is
+v_dept_id dept.department_id%type;
+v_dept_name dept.department_name%type;
+begin
+v_dept_id:=280;
+v_dept_name:='ST_Curriculum';
+insert into dept(department_id,department_name)
+values(v_dept_id,v_dept_name);
+dbms_output.put_line('Insert'||sql%rowcount||'Row');
+end;
+/
+
+
+
+-- USER_OBJECTS TABEL FOR STORE CREATE USER_OBJECTS
+
+SELECT OBJECT_NAME,OBJECT_TYPE FROM USER_OBJECS;
+
+-- THO SOURCE OF THE PROCEDURE IS STORE INTHE USEER_SOURCE TABEL
+SELECT * FROM USER SOURCE WHERE NAME='ADD_DEPT';
+
+
+-- USE OF PROCEDURE IN ANONYMOUSE BLOCK 
+
+-- OUT/IN OUT parameters or DML statements.
+
+--  CALL IN PL/SQL 
+BEGIN
+ADD_DEPT;
+END;
+/
+-- CALL IN SQL 
+EXEC ADD_DEPT;
+-- or
+CALL ADD_DEPT();
+
+
+-- PROCEDURE with parameter------------------------------------------------------------------
+
+create or replace procedure add_dept(p_dept_id dept.department_id%type) is
+v_dept_name dept.department_name%type;
+begin
+v_dept_name:='ST_Curriculum';
+insert into dept(department_id,department_name)
+values(p_dept_id,v_dept_name);
+dbms_output.put_line('Insert'||sql%rowcount||'Row');
+end;
+/
+
+
+
+-- USER_OBJECTS TABEL FOR STORE CREATE USER_OBJECTS
+
+SELECT OBJECT_NAME,OBJECT_TYPE FROM USER_OBJECS;
+
+-- THO SOURCE OF THE PROCEDURE IS STORE INTHE USEER_SOURCE TABEL
+SELECT * FROM USER SOURCE WHERE NAME='ADD_DEPT';
+
+
+-- USE OF PROCEDURE IN ANONYMOUSE BLOCK 
+
+-- OUT/IN OUT parameters or DML statements.
+
+--  CALL IN PL/SQL 
+BEGIN
+ADD_DEPT(280);
+END;
+/
+-- CALL IN SQL 
+EXEC ADD_DEPT;
+-- or
+CALL ADD_DEPT();
+
+-- FUNCTION WITHOUT PARAMETER------------------------------------------------------------------
+
+CREATE OR REPLACE FUNCTION CHECK_SAL RETURN BOOLEAN IS
+v_dept_id employees.department_id%type;
+v_empno employees.employee_id%type;
+v_sal employees.salary%type;
+v_avg_sal employees.salary%type;
+BEGIN
+v_empno:=205;
+select salary,department_id into v_sal,v_dept_id from employees
+where employee_id=v_empno;
+select avg(salary) into v_avg_sal from employees
+where department_id=v_dept_id;
+if v_sal> v_avg_sal then
+RETURN true;
+else
+RETURN false;
+end if;
+EXCEPTION
+when no_data_found then
+RETURN null;
+END;
+/
+
+
+ SELECT * FROM USER_SOURCE WHERE NAME= 'CHECK_SAL';
+
+--  CALL FUNCTION OR USED
+-- expressions (like in SELECT, WHERE, CASE).
+
+BEGIN
+IF(CHECK_SAL IS NULL) THEN
+dbms_output.put_line('THE FUNCTION RETURNED NULL DUE TO EXCEPTION');
+ELSIF(CHECK_SAL) THEN
+dbms_output.put_line('SALARY>AVERAGE');
+else
+dbms_output.put_line('SALARY<AVERAGE');
+END IF;
+END;
+/
+
+-- FUNCTION WITH PARAMETER------------------------------------------------------------------
+CREATE OR REPLACE FUNCTION CHECK_SAL(p_empno employees.employee_id%type) RETURN BOOLEAN IS
+v_dept_id employees.department_id%type;
+v_sal employees.salary%type;
+v_avg_sal employees.salary%type;
+BEGIN
+select salary,department_id into v_sal,v_dept_id from employees
+where employee_id=p_empno;
+select avg(salary) into v_avg_sal from employees
+where department_id=v_dept_id;
+if v_sal> v_avg_sal then
+RETURN true;
+else
+RETURN false;
+end if;
+EXCEPTION
+when no_data_found then
+RETURN null;
+END;
+/
+
+
+ SELECT * FROM USER_SOURCE WHERE NAME= 'CHECK_SAL';
+
+--  CALL FUNCTION OR USED
+-- expressions (like in SELECT, WHERE, CASE).
+
+BEGIN
+IF(CHECK_SAL(205) IS NULL) THEN
+dbms_output.put_line('THE FUNCTION RETURNED NULL DUE TO EXCEPTION');
+ELSIF(CHECK_SAL(205)) THEN
+dbms_output.put_line('SALARY>AVERAGE');
+else
+dbms_output.put_line('SALARY<AVERAGE');
+END IF;
+END;
+/
+
+
