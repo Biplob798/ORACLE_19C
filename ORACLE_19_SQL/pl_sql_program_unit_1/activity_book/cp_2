@@ -19,7 +19,9 @@ end;
 
 
 
-create or replace procedure upd_job(p_job_id jobs.job_id%type, p_new_title jobs.job_title%type)
+create or replace procedure upd_job
+(p_job_id in jobs.job_id%type, 
+p_new_title in jobs.job_title%type)
 is
 begin
 update jobs
@@ -39,4 +41,21 @@ end;
 begin
 upd_job('IT_WEB','Web Master');
 end;
-/
+/CREATE OR REPLACE PROCEDURE update_bonus
+(p_emp_id IN employees.employee_id%TYPE,
+ p_bonus  IN OUT NUMBER)
+IS
+BEGIN
+   -- Bonus 10% বাড়ানো হলো
+   p_bonus := p_bonus + (p_bonus * 0.10);
+
+   UPDATE employees
+   SET salary = salary + p_bonus
+   WHERE employee_id = p_emp_id;
+END;
+DECLARE
+   v_bonus NUMBER := 1000;  -- শুরুতে 1000
+BEGIN
+   update_bonus(100, v_bonus);
+   DBMS_OUTPUT.PUT_LINE('Updated bonus: ' || v_bonus);
+END;
