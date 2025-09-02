@@ -1,0 +1,209 @@
+1.
+
+-- create a procedure called add_dept to insert a new deptartment into departments table.
+-- provide the department nam and location id of the department using two parameter.
+
+
+
+create or replace procedure add_dept
+(p_dept_name departments.department_name%type,
+p_loc_id departments.location_id%type)
+is
+begin
+insert into departments(department_id,department_name,location_id)
+values(dept_id_seq.nextval,p_dept_name,p_loc_id);
+end;
+/
+
+
+begin
+ add_dept('Education', 1800);
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+drop sequence dept_id_seq;
+
+create sequence dept_id_seq 
+start with 280
+increment by 10
+maxvalue 10000;
+
+create or replace procedure 
+add_dept
+(
+    p_dept_name departments.department_name%type,
+    p_loc_id departments.location_id%type
+) is
+begin
+insert into departments(department_id,department_name,location_id)
+values(dept_id_seq.nextval,p_dept_name,p_loc_id);
+end;
+/
+
+execute add_dept('Eudcation',2500);
+begin
+add_dept('Eudcation',2500);
+end;
+/
+
+
+create sequence departments_seq
+start with 280
+increment by 10
+maxvalue 10000;
+
+create or replace procedure add_dept(
+p_dept_name in departments.department_name%type,
+p_loc_id in departments.location_id%type
+) is
+begin
+insert into departments(department_id,department_name,location_id)
+values(departments_seq.nextval,p_dept_name,p_loc_id );
+end add_dept;
+/
+
+begin
+add_dept('EDUCATION',1900);
+end;
+/
+
+
+
+
+
+
+create or replace procedure update_dept
+(p_dept_name departments.department_name%type,
+p_loc_id departments.location_id%type)
+is
+begin
+update departments
+set department_name='Education' , location_id=1700
+where department_name=p_dept_name
+and location_id=p_loc_id;
+end;
+/
+Recruiting                                       1700
+
+begin
+update_dept('Recruiting',1700);
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+2.
+-- write a function that returns the total number of employees in the employee table.
+
+create or replace function TOTAL_EMP_ID return number
+is
+v_emp_id employees.employee_id%type;
+begin
+select count(employee_id) into v_emp_id from employees;
+return v_emp_id;
+end;
+/
+
+
+select TOTAL_EMP_ID from dual;
+
+
+CREATE OR REPLACE FUNCTION TOTAL_EMP_ID
+RETURN NUMBER IS
+V_ID EMPLOYEES.EMPLOYEE_ID%TYPE;
+BEGIN
+SELECT COUNT(EMPLOYEE_ID) INTO V_ID FROM EMPLOYEES;
+RETURN V_ID ;
+END TOTAL_EMP_ID;
+/
+
+
+SELECT TOTAL_EMP_ID FROM DUAL;
+
+
+
+SELECT TOTAL_EMP_ID FROM EMPLOYEES;
+
+
+
+3.
+-- create a procedure calle get_employee to query the employees table,
+-- retrieving the salary and job id for an employee when provided with the employee id.
+-- SELECT SALARY,JOB_ID FROM EMPLOYEES WHERE EMPLOYEE_ID=100;
+
+
+
+create or replace procedure get_employee
+(p_empno in employees.employee_id%type, 
+p_salary out employees.salary%type,
+p_job_id out employees.job_id%type)
+is
+begin
+select salary,job_id into p_salary,p_job_id from employees
+where employee_id=p_empno;
+end;
+/
+
+DECLARE
+v_salary employees.salary%type;
+v_job_id employees.job_id%type;
+begin
+get_employee(150,v_salary,v_job_id) ;
+DBMS_OUTPUT.PUT_LINE(v_salary || v_job_id);
+end;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE PROCEDURE GET_EMPLOYEE (P_EMP_ID EMPLOYEES.EMPLOYEE_ID%TYPE) IS
+V_SAL EMPLOYEES.SALARY%TYPE;
+V_JOB_ID EMPLOYEES.JOB_ID%TYPE;
+BEGIN
+SELECT SALARY,JOB_ID INTO V_SAL,V_JOB_ID FROM EMPLOYEES WHERE EMPLOYEE_ID=P_EMP_ID ;
+END GET_EMPLOYEE;
+/
+
+DECLARE
+V_SAL EMPLOYEES.SALARY%TYPE;
+V_JOB_ID EMPLOYEES.JOB_ID%TYPE;
+BEGIN
+GET_EMPLOYEE(100);
+DBMS_OUTPUT.PUT_LINE('EMPLOYEES SALARY IS : '|| V_SAL || ' - '|| 'EMPLOYEES JOB_ID IS : '|| V_JOB_ID);
+END;
+/
