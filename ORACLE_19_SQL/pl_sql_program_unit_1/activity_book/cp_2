@@ -1,5 +1,6 @@
 
 
+1.
 
 create or replace procedure add_job 
 (p_job_id in jobs.job_id%type,
@@ -18,6 +19,8 @@ end;
 
 
 
+
+2.
 
 create or replace procedure upd_job
 (p_job_id in jobs.job_id%type, 
@@ -41,21 +44,56 @@ end;
 begin
 upd_job('IT_WEB','Web Master');
 end;
-/CREATE OR REPLACE PROCEDURE update_bonus
-(p_emp_id IN employees.employee_id%TYPE,
- p_bonus  IN OUT NUMBER)
-IS
-BEGIN
-   -- Bonus 10% বাড়ানো হলো
-   p_bonus := p_bonus + (p_bonus * 0.10);
 
-   UPDATE employees
-   SET salary = salary + p_bonus
-   WHERE employee_id = p_emp_id;
-END;
-DECLARE
-   v_bonus NUMBER := 1000;  -- শুরুতে 1000
-BEGIN
-   update_bonus(100, v_bonus);
-   DBMS_OUTPUT.PUT_LINE('Updated bonus: ' || v_bonus);
-END;
+3.
+
+create or replace procedure del_job 
+(p_job_id jobs.job_id%type)
+is
+begin
+delete from jobs
+where job_id=p_job_id;
+IF SQL%NOTFOUND then
+raise_application_error(-20203,'NO JOBS DELETED.');
+END IF;
+end del_job;
+/
+
+EXECUTE del_job('IT_DBA');
+EXECUTE del_job('IT_WEB');
+
+
+4.
+
+CREATE OR REPLACE PROCEDURE get_employee
+(p_empno in employees.employee_id%type,
+p_salary out employees.salary%type,
+p_job_id out employees.job_id%type)
+is
+begin
+select salary,job_id into p_salary,p_job_id from employees
+where employee_id=p_empno;
+end get_employee;
+/
+
+-- invoke get_employee  by host variable 
+
+variable b_salary number
+variable b_job_id varchar2(50)
+execute get_employee(120,:b_salary,:b_job_id);
+print b_salary 
+print b_job_id
+
+
+variable b_salary number
+variable b_job_id varchar2(50)
+execute get_employee(300,:b_salary,:b_job_id);
+print b_salary 
+print b_job_id
+
+
+
+begin
+
+end;
+/

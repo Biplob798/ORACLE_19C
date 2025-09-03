@@ -1,0 +1,62 @@
+
+
+create or replace function get_sal
+(p_id employees.employee_id%type)
+return number
+is
+v_sal employees.salary%type;
+begin
+select salary into v_sal from employees
+where employee_id=p_id;
+return v_sal;
+end get_sal;
+/
+
+
+-- use function as expression
+-- or as a parameter value
+
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100));
+
+
+-- use function as pl/sql expression with host variable
+
+variable b_salary number
+
+execute :b_salary:= get_sal(100);
+print b_salary
+
+
+-- use function as pl/sql expression with local variable
+
+DECLARE
+v_salary employees.salary%type;
+BEGIN
+v_salary := get_sal(100);
+DBMS_OUTPUT.PUT_LINE('The salary is :'|| v_salary);
+END;
+/
+
+-- use function as a prameter in another parameter
+
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100));
+
+--  use function in sql statement 
+
+select job_id,get_sal(employee_id) from employees;
+
+select job_id,get_sal(100) from employees
+where employee_id=100;
+
+-- use function in sql expression
+create or replace function tax(p_value in number)
+return number
+is
+begin
+return(p_value*0.08);
+end tax;
+/
+
+select employee_id,last_name,salary,tax(salary)
+from employees
+where employee_id=100;
