@@ -1,0 +1,87 @@
+select employee_id,last_name,salary,tax(salary)
+from employees
+where employee_id=100;
+
+
+-- create PACKAGE 
+1.specification
+2.body
+
+
+-- create specification of PACKAGE 
+
+create or replace PACKAGE test_pkg 
+is
+PROCEDURE add_dept
+(
+    p_name varchar2,
+    p_loc number
+);
+FUNCTION tax
+(
+    p_value in number
+)
+RETURN number;
+END test_pkg;
+
+
+
+-- create specification of PACKAGE 
+
+
+CREATE or REPLACE PACKAGE BODY test_pkg
+is
+-- without create or replace
+procedure add_dept
+(
+     p_name in varchar2,
+    p_loc in number
+)
+is
+BEGIN
+insert into departments(department_id,department_name,location_id)
+values (departments_seq.nextval,p_name,p_loc);
+END add_dept;
+-- without create or replace
+FUNCTION tax
+(p_value in number)
+RETURN number
+is
+begin
+RETURN(p_value*0.08);
+end tax;
+END test_pkg;
+/
+
+EXECUTE test_pkg.add_dept('TEST',1700)
+SELECT test_pkg.tax(1000) AS tax_value FROM dual;
+SELECT employee_id,last_name,salary,test_pkg.tax(salary)
+FROM EMPLOYEES
+WHERE employee_id=100;
+
+
+-- CREATE PACKAGE WITHOUT BODY
+CREATE OR REPLACE PACKAGE GOLOBAL_CONSTS 
+IS
+C_MILE_2_KILO CONSTANT NUMBER := 1.6093;
+C_KILO_2_MILE CONSTANT NUMBER := 0.6214;
+C_YARD_2_METER CONSTANT NUMBER := 0.9144;
+C_METER_2_YARD CONSTANT NUMBER := 1.0936;
+END GOLOBAL_CONSTS;
+/
+
+BEGIN
+DBMS_OUTPUT.PUT_LINE('20 MILES = '||20* GOLOBAL_CONSTS.C_KILO_2_MILE||' KM');
+END;
+/
+
+
+CREATE FUNCTION MTR2YRD(P_M NUMBER)
+RETURN NUMBER
+IS
+BEGIN
+RETURN(P_M* GOLOBAL_CONSTS.C_METER_2_YARD);
+END MTR2YRD;
+/
+
+EXECUTE DBMS_OUTPUT.PUT_LINE(MTR2YRD(1))
