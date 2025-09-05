@@ -1,0 +1,401 @@
+-- join 
+-- 1.natural join
+-- 2.using clause
+-- 3.on clause
+-- 4.self join 
+-- 5.outer join
+--     a.left outer join
+--     b.right outer join
+--     c.full outer join
+-- 6.cartesian product
+--     a.cross join
+
+
+select employee_id,last_name,
+department_name
+from 
+employees
+join
+departments
+using(department_id);
+
+
+select employee_id,job_id,
+job_title
+from 
+employees
+join
+jobs
+using(job_id);
+
+
+
+-- natural join 
+
+-- table ar 
+-- column name and
+-- data type 
+-- must be same.
+
+select employee_id,last_name,job_id,department_name
+from
+employees
+natural join
+departments;
+
+-- akhanya 60 department_id ar manager_id 103 a 5 jon employee_id ase.
+-- kintu  ai quarey te 4 jon employee_id dekhabe .
+-- karon 1 jon ar employee_id nijye manager tai
+select employee_id,last_name,job_id,department_name,manager_id
+from
+employees
+natural join
+departments;
+
+-- using join 
+
+-- table ar 
+-- column name 
+-- must be same.
+
+select employee_id,last_name,job_id,department_name
+from
+employees 
+join
+departments
+using(department_id);
+
+select employee_id,last_name,job_id,department_name
+from
+employees 
+join
+departments
+using(manager_id); 
+
+-- qualifyin ambiguous column names
+
+select employee_id,last_name,job_id,department_id,department_name
+from
+employees 
+join
+departments
+using(manager_id); 
+
+-- use prfix column name
+select employee_id,last_name,job_id,departments.department_id,department_name
+from
+employees 
+join
+departments
+using(manager_id); 
+
+select employee_id,last_name,job_id,employees.department_id,department_name
+from
+employees 
+join
+departments
+using(manager_id); 
+
+
+-- instead of full table name prefixes,use table aliases
+
+select employee_id,last_name,job_id,e.department_id,department_name
+from
+employees e
+join
+departments d
+using(manager_id); 
+
+-- if the same column is userd elsewhere in the sql statement, do not alias it .
+-- column part of USING clause cannot have qualifier
+select employee_id,last_name,job_id,e.department_id,department_name
+from
+employees e
+join
+departments d
+using(department_id); 
+
+
+
+-- column part of where clause cannot have qualifier
+select  employees.employee_id,
+employees.last_name,
+employees.job_id,
+manager_id,
+departments.department_id,
+departments.department_name
+from
+employees 
+join
+departments 
+using(manager_id)
+where employees.manager_id=100; 
+
+select  employees.employee_id,
+employees.last_name,
+employees.job_id,
+manager_id,
+departments.department_id,
+departments.department_name
+from
+employees 
+join
+departments 
+using(manager_id)
+where manager_id=100; 
+
+-- use short table alias
+
+select  e.employee_id,
+e.last_name,
+e.job_id,
+manager_id,
+d.department_id,
+d.department_name
+from
+employees e
+join
+departments d
+using(manager_id)
+where manager_id=100; 
+
+
+
+
+-- on  join 
+
+-- jodi 
+-- table ar 
+-- column name and
+-- data type 
+-- same na hoa taw cholbe.
+
+select employee_id,last_name,job_id,department_name
+from
+employees e
+join
+departments d
+on
+(d.department_id=e.department_id);
+
+select e.employee_id,e.salary,e.department_id,d.department_name
+from 
+employees e 
+join 
+departments d
+on
+e.department_id=d.department_id;
+
+
+-- create a three way join 
+-- with using clause
+select employee_id,last_name,salary,
+department_name,
+city
+from 
+employees
+join
+departments
+using
+department_id
+join
+using
+location_id
+locations; 
+
+
+-- with on clause 
+
+select employee_id,last_name,salary,
+department_name,
+city
+from 
+employees
+join
+employees.departments=departments.department_id
+on
+department_id
+join
+on
+departments.location_id=locations.location_id
+locations; 
+
+-- example defferent 
+
+/*akhanya employees table ar shathya location table ar kono 
+relation nai.kintu departments table ar shathya locations table ar relation asy.
+ajono first a employees table ar shathya departments table join kore then 
+departments table ar shathya locations table ar join korya 
+employees table ar shathya locations table ar relation kora hoasya. */
+
+select last_name,salary,
+department_name,
+city
+from 
+employees
+join
+employees.departments=departments.department_id
+on
+department_id
+join
+on
+departments.location_id=locations.location_id
+locations; 
+
+
+
+
+select last_name,salary,
+city
+from 
+employees
+join
+departments
+using (department_id)
+join
+locations
+using (location_id)
+; 
+
+-- self join 
+
+/*employees table ar employee_id = manager_id akhanya manager_id foreign key.
+employees (worker) 
+employees (manager)
+*/ 
+
+select 
+worker.last_name emp,
+manager.last_name mgr
+from 
+employees worker
+join
+employees manager
+on
+(worker.manager_id=manager.employee_id);
+
+
+
+-------------------------------
+-- nonequijoins
+desc employees;
+desc jobs;
+
+select * from jobs;
+
+/*  joto bar condition ar modhe porbe totoh bar dekhabe 
+    ata nonequijoins ar khetrya*/
+
+select e.employee_id,e.last_name,e.salary,
+j.job_id,j.min_salary,j.max_salary
+from 
+employees e
+join
+jobs j
+on
+e.salary 
+between 
+j.min_salary
+and 
+j.max_salary
+order by 1
+;
+
+select employee_id,job_id,salary,department_id
+from 
+employees
+;
+--total row 109
+
+
+select last_name from 
+employees 
+where department_id is null;
+/* 2 join
+ Islam
+ Grantv
+ */
+select * from departments;
+-- total row 43
+
+/*departments table a total department_id-43
+but employees a department_id use -12 
+*/
+
+
+select employee_id,last_name,job_id,salary,department_id,department_name from 
+employees 
+join
+departments
+using
+(department_id);
+-- show 107 row because 2 employee_id have no department_id 
+
+-- equijoin a only give us matching data 
+
+/* outer join 
+1.left outer join
+2.right outer join
+3.full outer join
+*/
+
+/*outer join give us
+matching data + unmatching data
+thats why we use outer join
+*/
+
+
+select employee_id,last_name,job_id,salary,
+department_name
+from
+employees
+join
+departments
+on
+employees.department_id=departments.department_id;
+
+-- this query give us only matching data 
+
+-- left out join 
+
+select employee_id,last_name,job_id,salary,
+department_name
+from
+employees
+left outer join
+departments
+on
+employees.department_id=departments.department_id;
+
+-- right out join 
+
+
+select employee_id,last_name,job_id,salary,
+department_name
+from
+employees
+right outer join
+departments
+on
+employees.department_id=departments.department_id;
+
+-- right out join 
+
+select employee_id,last_name,job_id,salary,
+department_name
+from
+employees
+full outer join
+departments
+on
+employees.department_id=departments.department_id;
+
+
+-- cross join or cartesian product
+
+select last_name,department_name
+from
+employees
+cross join
+departments;
+

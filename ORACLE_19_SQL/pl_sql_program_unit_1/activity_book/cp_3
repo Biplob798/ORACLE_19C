@@ -1,0 +1,107 @@
+
+1.
+
+create or replace function get_job
+(p_job_id in jobs.job_id%type)
+return jobs.job_title%type
+is
+v_job_title jobs.job_title%type;
+begin
+select job_title into v_job_title from jobs
+where job_id=p_job_id;
+return v_job_title;
+end get_job;
+/
+
+variable b_title varchar2(50)
+
+EXECUTE :b_title:= get_job('SA_REP');
+print b_title
+
+
+2.
+
+create or replace function get_annual_comp
+(
+    p_salary in employees.salary%type default null,
+    p_comm in employees.commission_pct%type default null
+)
+return number
+is
+begin
+return (nvl(p_salary,0)*12+(nvl(p_comm,0)*nvl(p_salary,0)*12));
+end get_annual_comp;
+/
+
+select employee_id,last_name,
+get_annual_comp(salary,commission_pct) as annual_commission
+from employees
+where department_id=30;
+
+
+
+3.
+
+create or replace function valid_deptid
+(p_deptno in departments.department_id%type)
+return boolean
+is
+v_dummy pls_integer;
+begin
+select 1 into v_dummy from departments 
+where department_id=p_deptno;
+return true;
+exception
+when no_data_found then
+return false;
+end valid_deptid;
+/
+
+create or replace procedure add_employee
+(
+    p_first_name in employees.first_name%type,
+    p_last_name in  employees.last_name%type,
+    p_email in  employees.email%type,
+    p_job in  employees.job_id%type default 'SA_REP',
+    p_mgr in  employees.manager_id%type default 145,
+    p_sal in  employees.salary%type default 1000,
+    p_com in  employees.commission_pct%type default 0,
+    p_deptid in  employees.department_id%type default 30
+)
+is
+begin
+if valid_deptid(p_deptid) then
+insert into 
+employees
+(   employee_id,
+    first_name,
+    last_name, 
+    email,
+    job_id,
+    manager_id,
+    hire_date,
+    salary,
+    commission_pct,
+    department_id
+)
+values
+(   
+    employees_seq.nextval,
+    p_first_name,
+    p_last_name,
+    p_email,
+    p_job,
+    p_mgr,
+    trunc(sysdate),
+    p_sal,
+    p_com,
+    p_deptid
+);
+else 
+raise_application_error(-20204,'Invalid department id. Try again.');
+end if;
+end add_employee;
+/
+
+EXECUTE add_employee('Jane','Harris','JAHARRIS',p_deptid=>15)
+EXECUTE add_employee('Joe','Harris','JAHARRIS',p_deptid=>80)
