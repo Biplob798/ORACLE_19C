@@ -1,0 +1,257 @@
+
+-- subquery
+-------------------------------------------
+/*subquery 
+1.single row subquery
+    operator: =,>,<,<>,>=,<=
+2.multiple row subquery
+    operator: in,any,all
+
+****we can write subquery in
+1.where clause
+2.having clause
+3.from clause    
+*/
+SELECT last_name, job_id, salary
+FROM employees
+WHERE salary > (SELECT salary FROM employeesWHERE last_name = 'Abel');
+                
+SELECT job_id, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY job_id
+HAVING AVG(salary) > (SELECT AVG(salary) FROM employees WHERE department_id = 50);
+                    
+SELECT e.last_name, e.salary, t.avg_salary
+FROM employees e
+JOIN (SELECT AVG(salary) AS avg_salary FROM employees) t
+ON e.salary > t.avg_salary;
+
+
+
+-- we know the hire_date 
+
+select last_name,hire_date
+from
+employees
+where hire_date> '29-JAN-05';
+
+-- we know the last_name but not know to hire_date
+-- thats why we us subquery
+
+-- its execute after subquery with subquery result
+select last_name,hire_date
+from
+employees
+where hire_date> 
+-- work first
+(select hire_date from employees 
+where last_name='Davies');
+
+
+
+
+-- single row subquery
+--------------------------------
+-- With out subquery
+
+select last_name,job_id
+from employees
+where job_id=ST_CLERK;
+
+-- With  subquery
+select last_name,job_id
+from employees
+where job_id=(select job_id from employees where employee_id=141);
+
+-- akhanya
+-- main or outer query 
+select last_name,job_id
+from employees
+where job_id 
+
+-- single row subquery operator
+=
+-- subquery or inner query
+(select job_id from employees where employee_id=141)
+-- return only one row.
+
+
+-- single row subquery operator >
+
+select last_name,job_id
+from employees
+where job_id>(select job_id from employees where employee_id=141);
+
+
+-- single row subquery operator <
+
+select last_name,job_id
+from employees
+where job_id<(select job_id from employees where employee_id=141);
+
+-- single row subquery operator <>
+
+select last_name,job_id
+from employees
+where job_id<>(select job_id from employees where employee_id=141);
+
+-- single row subquery operator >=
+
+select last_name,job_id
+from employees
+where job_id>=(select job_id from employees where employee_id=141);
+
+-- single row subquery operator <=
+
+select last_name,job_id
+from employees
+where job_id<=(select job_id from employees where employee_id=141);
+
+-- single row subquery with (and) condition
+
+select last_name,job_id,salary
+from employees
+where job_id=(select job_id from employees where last_name='Abel')
+and salary>(select salary from   employees where last_name='Abel');
+
+
+-- single row subquery with (or) condition
+
+select last_name,job_id,salary
+from employees
+where job_id=(select job_id from employees where last_name='Abel')
+or salary>(select salary from   employees where last_name='Abel');
+
+-- single row subquery with (or) condition
+
+select last_name,job_id,salary
+from employees
+where job_id=(select job_id from employees where last_name='Abel')
+and not salary>(select salary from   employees where last_name='Abel');
+
+-- single row subquery with group function
+
+select last_name,job_id,salary
+from employees
+where salary=(select min(salary) from employees);
+
+select last_name,job_id,salary
+from employees
+where salary=(select max(salary) from employees);
+
+select last_name,job_id,salary
+from employees
+where salary=(select avg(salary) from employees);
+
+select last_name,job_id,salary
+from employees
+where salary=(select sum(salary) from employees);
+
+select last_name,job_id,salary
+from employees
+where salary=(select count(salary) from employees);
+
+
+-- single row subquery with group function with having clause
+
+select department_id,min(salary)
+from employees
+group by department_id
+having min(salary)=(select min(salary) from employees where department_id=30);
+
+
+
+select job_id,avg(salary) from employees
+group by job_id
+having avg(salary)
+=
+(select min(avg(salary)) from employees group by job_id);
+
+
+
+-- multiple row subquery
+--------------------------------
+
+-- with out subquery
+
+select  employee_id,last_name,department_id from employees
+where salary in ( 3025, 7865,10043,12100,20570,3025,5324,8470,7260,14529.68,8349,7381);
+
+
+-- with  subquery 
+select  employee_id,last_name,department_id from employees
+where salary in (select min(salary) from employees group by department_id);
+
+
+-- (any , all) operator must includ with single opertar 
+-- they are not use singlely 
+
+
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary > any ( 496100,67760,66308,66308, 65582,73810);
+
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary > any (select salary from employees where job_id='IT_PROG');
+
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary > all ( 496100,67760,66308,66308, 65582,73810);
+
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary > all (select salary from employees where job_id='IT_PROG');
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary <all ( 496100,67760,66308,66308, 65582,73810);
+
+-- faceing froblem
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary < all (select salary from employees where job_id='IT_PROG');
+-- SOLVE: ITS RETURN NO ROW BECAUSE ONE SALARY IS NULL THATS WHEY 
+
+select employee_id,last_name,job_id,salary
+from employees
+where salary < all (select salary from employees where job_id='ST_MAN');
+
+-------------------------------
+-- multiple column subquery
+-- 1.pair_wise
+-- 2.non_paire_wise
+
+
+
+-- 1.pair_wise
+select first_name,department_id,salary
+from employees
+where (salary,department_id)in(select min(salary),department_id from employees group by department_id)
+order by department_id;
+-- 2.non_paire_wise
+select first_name,department_id,salary
+from employees
+where salary
+in(select min(salary) from employees group by department_id)
+and department_id in(select department_id from employees)
+order by department_id;
+
+
+-- null values in subquery
+select last_name from employees
+where employee_id in (select manager_id from employees);
+
+
+select last_name from employees
+where employee_id not in (select manager_id from employees);
+-- result =null but show now row 
+
+select last_name from employees
+where employee_id not in (select manager_id from employees where manager_id is not null);
+-- null value bad dibe
