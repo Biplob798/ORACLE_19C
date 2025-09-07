@@ -1,0 +1,158 @@
+
+-- overloading subprogram
+
+-- create overloading subprogram PACKAGE specification
+
+
+create or replace PACKAGE dept_pkg is
+procedure add_dept
+(
+    p_deptno departments.department_id%type,
+    p_name departments.department_name%type := 'Unkonwn',
+    p_loc departments.location_id%type :=1700);
+procedure add_dept 
+(
+    p_name departments.department_name%type := 'Unkonwn',
+    p_loc departments.location_id%type :=1700
+);
+end dept_pkg;
+/
+
+-- create overloading subprogram PACKAGE body
+create or replace PACKAGE body dept_pkg is
+procedure add_dept
+(
+    p_deptno in departments.department_id%type,
+    p_name in departments.department_name%type := 'Unkonwn',
+    p_loc in departments.location_id%type :=1700)
+    is
+begin
+insert into departments (department_id,department_name,location_id)
+values (p_deptno,p_name,p_loc);
+end add_dept;
+procedure add_dept
+(
+    p_name in departments.department_name%type := 'Unkonwn',
+    p_loc in departments.location_id%type :=1700)
+    is
+begin
+insert into departments (department_id,department_name,location_id)
+values (departments_seq.nextval,p_name,p_loc);
+end add_dept;
+end dept_pkg;
+/
+
+execute dept_pkg.add_dept(980,'Education',2500)
+select * from departments
+where department_id=980;
+
+execute dept_pkg.add_dept('Training',2400)
+select * from departments
+where department_name='Training';
+
+/*most built-in function are overloaded*/
+-- to_char function
+function to_char(p1 date) return varchar2;
+function to_char(p1 date,p2 varchar2) return varchar2;
+
+function to_char(p2 number) return number;
+function to_char(p1 number,p2 varchar2) return varchar2;
+
+/*if we want to write package name befor built-in subprogram
+to use (standard.to_char)*/
+
+-- all parameter are return only one data type thats one (varchar2).
+
+  /*  allow forward declaration 
+not allow forward reference */
+
+
+
+-- illegal reference package 
+
+create or replace package forward_pkg 
+is
+procedure award_bonus(p_id number,p_pct number,p_amount out number);
+end forward_pkg;
+/
+
+create or replace package body forward_pkg
+is
+v_id number;
+v_pct number;
+procedure award_bonus(p_id number,p_pct number,p_amount out number)
+is 
+begin
+v_id :=p_id;
+v_pct :=p_pct;
+p_amount := calc_rating;
+end award_bonus;
+function calc_rating return number is
+v_sal number;
+v_bonus number;
+begin
+select salary into v_sal
+from employees
+where employee_id=v_id;
+v_bonus:=v_sal * v_pct;
+return(v_bonus);
+end;
+end forward_pkg;
+/
+
+/*use forward declaration to 
+SOLVE -- illegal reference package */
+
+create or replace package forward_pkg 
+is
+procedure award_bonus(p_id number,p_pct number,p_amount out number);
+end forward_pkg;
+/
+
+create or replace package body forward_pkg
+is
+v_id number;
+v_pct number;
+function calc_rating return number ;
+procedure award_bonus(p_id number,p_pct number,p_amount out number)
+is 
+begin
+v_id :=p_id;
+v_pct :=p_pct;
+p_amount := calc_rating;
+end award_bonus;
+function calc_rating return number is
+v_sal number;
+v_bonus number;
+begin
+select salary into v_sal
+from employees
+where employee_id=v_id;
+v_bonus:=v_sal * v_pct;
+return(v_bonus);
+end;
+end forward_pkg;
+/
+
+
+-- use package function in sql
+
+create or replace package taxes_pkg is
+function tax(p_value in number)
+return number;
+end taxes_pkg;
+/
+
+create or replace package body taxes_pkg is
+function tax(p_value in number ) return number
+is
+v_rate number :=0.08;
+begin
+return (p_value*v_rate);
+end tax;
+end taxes_pkg;
+/
+
+
+select taxes_pkg.tax(salary),salary,last_name 
+from employees;
