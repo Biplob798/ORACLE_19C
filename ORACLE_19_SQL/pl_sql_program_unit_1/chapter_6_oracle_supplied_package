@@ -1,0 +1,114 @@
+
+
+
+-- list of oracle supplied package
+1.DBMS_OUTPUT
+2.UTL_FILE
+3.UTL_MAIL
+4.DBMS_ALTER
+5.DBMS_LOCK
+6.DBMS_APPLICATION_INFO
+7.DBMS_SCHEDULER
+8.DBMS_SESSION
+9.HTP
+
+
+-- DBMS_OUTPUT
+
+-- using UTL_FILE package
+conn /as sysdba
+
+create or replace directory my_dir as 'D:\my_dir';
+grant read,write on directory my_dir to public;
+GRANT READ, WRITE ON DIRECTORY my_dir TO hr;
+
+-- write or create UTL_FILE 
+
+create or replace procedure sal_status
+(
+    p_dir in varchar2,
+    p_filename in varchar2
+) 
+is
+f_file UTL_FILE.FILE_TYPE; --tamporary storage -f_file
+
+CURSOR cur_emp 
+is
+select last_name,salary,department_id
+from hr.employees 
+order by department_id;
+
+v_newdeptno hr.employees.department_id%type;
+v_olddeptno hr.employees.department_id%type:=0;
+begin
+f_file:=UTL_FILE.fopen(p_dir,p_filename,'W');
+UTL_FILE.PUT_LINE(f_file,'REPORT : GENERATED ON '|| SYSDATE);
+UTL_FILE.NEW_LINE(f_file);
+
+FOR emp_rec in cur_emp 
+LOOP
+if emp_rec.department_id<> v_olddeptno then
+UTL_FILE.PUT_LINE(f_file, 'DEPARTMENT : ' ||  emp_rec.department_id);
+UTL_FILE.NEW_LINE(f_file);
+END IF;
+UTL_FILE.PUT_LINE(f_file, 'EMPLOYEE: ' || emp_rec.last_name || 'earns: ' || emp_rec.salary);
+v_olddeptno:=emp_rec.department_id;
+UTL_FILE.NEW_LINE(f_file);
+END LOOP;
+UTL_FILE.PUT_LINE(f_file,'*** END OF REPORT ***');
+UTL_FILE.PUT_LINE(f_file, 'REPORT: GENARTED BY ' || 'BIPLOB');
+UTL_FILE.FCLOSE(f_file);
+EXCEPTION
+WHEN UTL_FILE.INVALID_FILEHANDLE then
+raise_application_error(-20001,'Invalid File.');
+WHEN UTL_FILE.WRITE_ERROR then
+raise_application_error(-20002,'Uable to write to file');
+end sal_status;
+/
+ 
+-- execute UTL_FILE package procedure
+-- cursor ar data gulo nya akta text file create korbe my_dir te
+
+execute sal_status('MY_DIR','emp_earning');
+
+
+
+
+-- now UTL_FILE  read 
+
+
+create or replace procedure read_file
+(
+    p_dir in varchar2,
+    p_filename in varchar2
+) 
+is
+f_file UTL_FILE.FILE_TYPE; --tamporary storage -f_file
+v_buffer varchar2(100);
+v_lines PLS_INTEGER:=0;
+begin
+DBMS_OUTPUT.PUT_LINE('Start');
+
+if not UTL_FILE.is_open(f_file)then
+DBMS_OUTPUT.PUT_LINE('Open');
+f_file:=UTL_FILE.fopen(p_dir,p_filename,'R');
+DBMS_OUTPUT.PUT_LINE('Opened');
+begin
+LOOP
+UTL_FILE.get_line(f_file,v_buffer);
+v_lines:=v_lines+1;
+DBMS_OUTPUT.PUT_LINE(to_char(v_lines,'099')||' '|| v_buffer);
+
+end LOOP;
+EXCEPTION
+WHEN no_data_found then
+DBMS_OUTPUT.PUT_LINE('***End of file***');
+end;--ends begin
+DBMS_OUTPUT.PUT_LINE(v_lines||'lines read from file');
+UTL_FILE.FCLOSE(f_file);
+end if;
+end read_file;
+/
+ 
+ execute read_file('MY_DIR','emp_earning');
+-- UTL_MAIL

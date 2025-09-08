@@ -60,3 +60,64 @@ end tax;
 select employee_id,last_name,salary,tax(salary)
 from employees
 where employee_id=100;
+
+-- mutating error for function 
+-- it occured because at a time to work query and modify same table
+
+create or replace function dml_call_sql(p_sal in number)
+return number 
+is 
+begin
+insert into employees
+(employee_id,
+last_name,
+email,
+hire_date,
+job_id,
+salary)
+values
+(1,
+'Frost',
+'jfrost@company.com',
+sysdate,
+'SA_MAN',
+p_sal
+);
+return (p_sal+100);
+end dml_call_sql;
+/
+
+update employees
+set salary =dml_call_sql(2000)
+where employee_id=170;
+
+-- named and mixed notation use in function
+
+create or replace function f
+(
+    p_parameter_1 in number default 1,
+    p_parameter_5 in number default 5
+    )
+return number
+is
+v_var number;
+begin
+v_var:=(p_parameter_1+(p_parameter_5*2));
+return v_var;
+end f;
+/
+
+select f(p_parameter_5 =>10) from dual;
+
+
+create or replace function add_number(p_num1 in number,p_num2 in number)
+return number
+is
+v_counter number;
+begin
+v_counter:=p_num1+p_num2;
+return v_counter;
+end add_number;
+/
+
+select add_number(2,4) from dual;
