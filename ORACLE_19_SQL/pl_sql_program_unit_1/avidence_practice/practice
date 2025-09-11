@@ -128,6 +128,9 @@ end;
 select TOTAL_EMP_ID from dual;
 
 
+
+
+
 CREATE OR REPLACE FUNCTION TOTAL_EMP_ID
 RETURN NUMBER IS
 V_ID EMPLOYEES.EMPLOYEE_ID%TYPE;
@@ -207,3 +210,114 @@ GET_EMPLOYEE(100);
 DBMS_OUTPUT.PUT_LINE('EMPLOYEES SALARY IS : '|| V_SAL || ' - '|| 'EMPLOYEES JOB_ID IS : '|| V_JOB_ID);
 END;
 /
+
+-- procedure
+
+Q-1)
+create a procedure named raise_salary that updates the salary of an employee based on a percentage
+increase.
+
+Q-2)
+create a procedure named QUERY_EMP that retrieves the last name and salary of an employee based
+on their employee ID. The procedure should accept the employee ID as an input parameter (p_id).
+
+
+
+
+
+Q-3)
+create a procedure called ADD_DEPT to insert a new department into the departments provide the
+department name and location id of the department using two parameters.
+
+Q-4)
+create a stored procedure named process_employees that processes all employees in the employees
+table and gives a salary raise of 10% to each employee.
+
+
+Q-5)
+create a procedure called GET_EMPLOYEE to query the employees table, retrieving the salary and job
+is for an employee when provided with the employee id.
+
+-- function 
+
+Q-1)Write a PL/SQL function named get_sal that accepts an employee ID as a parameter and returns the
+salary of the specified employee from the employee table. Test the function by retrieving the salary of
+the employee with employee_id given on runtime.
+
+Q-2).Create a PL/SQL function named tax that calculates 8% tax on a given numeric value. Use the function
+to display the employee_id, salary, and the calculated tax for employees in the employees table who
+belong to the department with department_id = 100.
+
+Q-3). Write a function that returns the total number of EMPLOYEES in the employee table. 
+
+
+
+-- activity book procedure
+
+Q1.
+Create a PL/SQL procedure named add_job that inserts a new job into the jobs table, accepts p_jid
+and p_jtitle as input parameters, commits the changes, and test it by adding a job with 'IT_DBA' and
+'Database Administrator', then verify the insertion with a query.
+
+
+Q2.
+Create a PL/SQL procedure named upd_job that updates a job in the jobs table by accepting p_jid and
+p_jtitle as input parameters, updates the JOB_TITLE for the given JOB_ID, and raises an error if no
+rowsare updated. Test the procedure by updating the job with 'IT_DBA' to 'Data Administrator' and
+verify the update.
+
+
+Q3.
+Create a PL/SQL procedure named del_job that deletes a job from the jobs table by accepting p_jid as
+an input parameter. The procedure should delete the job with the given JOB_ID and raise an error if
+no rows are deleted. Test the procedure by attempting to delete a job with JOB_ID = 'IT_DBA' and
+handle the case where no job is deleted.
+
+Q4.
+Create a PL/SQL procedure named get_employee that accepts an employee ID (p_id) and retrieves the
+SALARY and JOB_ID of the employee. The procedure should return these values through output
+parameters (p_sal and p_job).
+
+
+
+
+
+1. 
+Create a procedure called ADD_DEPT to insert a new department into the departments table.
+Provide the DEPARTMENT NAME and LOCATION ID of the department using two parameters.
+2. 
+Write a function that returns the total number of EMPLOYEES in the employee table. 
+3.
+Create a procedure called GET_EMPLOYEE to query the EMPLOYEES table, retrieving the
+salary and job ID for an employee when provided with the employee ID.
+
+
+
+
+-- activity book function
+
+1.create and invoke the get_job function to return  a job ttle.
+a. create and compile a function called get_job to return a job title.
+b. create a varchar2 host variable called b_title.allowing a length of 35 characters.invoke the function with job id sa_rep to return the value in the host variable.and the print host variable to vew the result
+
+2. create a function called get_annual_comp to return th eannual salary computed from an employees monthly salay and commission passed as parameters.
+a. create the get_annual_comp function ,which accepts parameter values for the monthly salary and commission.either or both values passed can be null. but the function should still return a non_null annual salary. use the following basic formula to calculate the annual salary:
+(salary*12)+(commission_pct*salary*12)
+b.use the function in a select statement against the employees table for employees in department 30.
+ 3.create a procedure add_employee to insert a new employee into the employees table .the procedure should call a valid_deptid function to check whether the department id specified for the new employee exists in the departments table 
+ a. create a function called valid_deptid to validate a specified department id and return a bollean value of true if the department exists.
+ b. create a add_employee procedure to add an employee to the employee table.the row should be added to the employees table if the valid_deptid function returns true.otherwise alert the user with an appropiate message.provide the following parameters:
+ empid sequence
+ first_name
+ last_name
+ email
+ job default sa_rep
+ mgr default 145
+ sal default 1000
+ comm default 0
+ deptid default 30
+ hire_date sysdate
+ c.call add_employee for the name 'jane harris' in department 15,leaving other paramentes with their default .what is the result?
+d.add another employee named joe harris in department 80 leaving the remaining paramentes with their default values.what is the result?
+
+
