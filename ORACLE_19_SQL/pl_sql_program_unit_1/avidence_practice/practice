@@ -1,3 +1,116 @@
+create or replace procedure raise_salary
+(p_id in employees.employee_id%type,
+p_percent in number)
+is
+begin
+update employees
+set salary = salary*(1+p_percent/100)
+where employee_id=p_id;
+end raise_salary;
+/
+execute raise_salary(100)
+begin
+raise_salary(100);
+end;
+/
+
+
+create or replace procedure query_emp
+(p_id in employees.employee_id%type,
+p_salary out employees.salary%type,
+p_lname out employees.last_name%type)
+is
+begin
+select salary,last_name into p_salary,p_lname 
+from employees 
+where employee_id=p_id;
+end query_emp;
+/
+DECLARE
+v_salary number;
+v_lname varchar2(100);
+begin
+query_emp(100,v_salary,v_lname);
+DBMS_OUTPUT.PUT_LINE(v_salary||v_lname);
+end;
+/
+
+create or replace procedure query_emp
+(p_id in employees.employee_id%type)
+is
+v_salary employees.salary%type;
+v_lname employees.last_name%type;
+begin
+select salary,last_name into v_salary,v_lname
+from employees
+where employee_id=p_id;
+DBMS_OUTPUT.PUT_LINE(v_salary||v_lname);
+end query_emp;
+/
+
+execute query_emp(100)
+
+
+create sequence departments_seq
+start with 
+
+
+create or replace procedure ADD_DEPT
+(p_dept_name in departments.department_name%type,
+p_loc_id in departments.location_id%type)
+is
+begin
+insert into departments (department_id,department_name,location_id)
+values(departments_seq.nextval,p_dept_name,p_loc_id);
+end ADD_DEPT;
+/
+
+execute add_dept('Teacher',1700)
+
+create or replace function get_sal
+(p_id in employees.employee_id%type
+)
+return number
+is
+p_sal  employees.salary%type :=0;
+BEGIN
+select salary into p_sal 
+from employees
+where employee_id=p_id;
+return p_sal;
+end get_sal;
+/
+
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100))
+
+
+
+DECLARE
+v_salary number;
+begin
+ v_salary:=get_sal(100) ;
+DBMS_OUTPUT.PUT_LINE(v_salary);
+end;
+/
+
+
+create or replace function tax
+(p_value in number)
+return number
+is
+begin
+return (p_value*0.08);
+end tax;
+/
+
+
+select last_name,salary,tax(salary)
+from employees;
+where department_id=100;
+
+
+
+
 1.
 
 -- create a procedure called add_dept to insert a new deptartment into departments table.
@@ -321,3 +434,32 @@ b.use the function in a select statement against the employees table for employe
 d.add another employee named joe harris in department 80 leaving the remaining paramentes with their default values.what is the result?
 
 
+-- write
+-- 1. What are PL/SQL Subprograms?
+-- 2. Write down the Benefits of Subprograms.
+-- 3. What are the Differences Between Anonymous Blocks and Subprograms?
+-- 4. What are Procedures?
+-- 5. What are Parameters and Parameter Modes?
+-- 6. What are Formal and Actual Parameters?
+-- 7. What do you mean by Stored Functions?
+-- 8. Write down the Advantages of User-Defined Functions in SQL Statements.
+-- 9. What are the Differences Between Procedures and Functions?
+-- 10. Write about Calling User-Defined Functions in SQL Statements.
+-- 11. Write down the Restrictions When Calling Functions from SQL Expressions.
+-- 12. What Are PL/SQL Packages?
+-- 13. Describe the Advantages of Using Packages? 
+-- 14. Describe the Guidelines for Writing Packages? 
+-- 15. Describe the Overloading Subprograms in PL/SQL? 
+-- 16. Describe the Overloading and the STANDARD Package?
+-- 17. Using Oracle-Supplied Packages? 
+-- 18.What Is the Difference Between a Variable and an Identifier?
+-- 21.What is meant by function?
+-- 23.What are the different methods available for executing a function?
+-- 24.What is a Package?
+-- 25.What are the advantages of using Packages?
+-- 26.Write five Oracle-Supplied Packages names.
+-- 27.what is pl/sql ?
+-- 28.what are the sectiions avaailable for pl/sql block structure?
+-- 29.what are the availble block abailable block types in pl/sql?
+-- 30.write down the types of pl/sql variable?
+-- 31.how can you comment on the pl/sql code?
