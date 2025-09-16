@@ -10,9 +10,9 @@ set salary = salary*(1+p_percent/100)
 where employee_id=p_id;
 end raise_salary;
 /
-execute raise_salary(100)
+execute raise_salary(100,10)
 begin
-raise_salary(100);
+raise_salary(100,10);
 end;
 /
 
@@ -420,100 +420,436 @@ DBMS_OUTPUT.PUT_LINE('EMPLOYEES SALARY IS : '|| V_SAL || ' - '|| 'EMPLOYEES JOB_
 END;
 /
 
--- procedure
+
+
+
+------------------ procedure------------------------------------
+
 
 Q-1)
 create a procedure named raise_salary that updates the salary of an employee based on a percentage
 increase.
 
+create or replace procedure raise_salary
+(p_id in employees.employee_id%type,
+p_percent in number)
+is
+begin
+update employees 
+set salary =salary*(1+p_percent/100)
+where employee_id=p_id;
+end raise_salary;
+/
+
+CALL PROCEDURE:
+execute raise_salary(100,10)
+begin
+raise_salary(100,10);
+end;
+/
+
 Q-2)
-create a procedure named QUERY_EMP that retrieves the last name and salary of an employee based
-on their employee ID. The procedure should accept the employee ID as an input parameter (p_id).
-
-
-
-
-
-Q-3)
-create a procedure called ADD_DEPT to insert a new department into the departments provide the
-department name and location id of the department using two parameters.
-
-Q-4)
 create a stored procedure named process_employees that processes all employees in the employees
 table and gives a salary raise of 10% to each employee.
 
+create or replace procedure process_employees
+is
+begin
+update employees
+set salary =salary*(1+10/100);
+commit;
+end process_employees;
+/
+CALL PROCEDURE:
+execute process_employees()
 
-Q-5)
+OR
+create or replace procedure raise_salary
+(p_id in employees.employee_id%type,
+p_percent in number)
+is
+begin
+update employees 
+set salary =salary*(1+p_percent/100)
+where employee_id=p_id;
+end raise_salary;
+/
+
+create or replace procedure process_employees
+is
+cursor cur_emp_cursor 
+is
+select employee_id from employees;
+begin
+for emp_rec in cur_emp_cursor
+loop
+raise_salary(emp_rec.employee_id,10);
+end loop;
+commit;
+end process_employees;
+/
+CALL PROCEDURE:
+execute process_employees()
+
+
+Q-3)
+create a procedure named QUERY_EMP that retrieves the last name and salary of an employee based
+on their employee ID. The procedure should accept the employee ID as an input parameter (p_id).
+
+create or replace procedure query_emp
+(p_id in employees.employee_id%type)
+is
+v_lname employees.last_name%type;
+v_salary employees.salary%type;
+begin
+select last_name,salary into v_lname,v_salary 
+from employees
+where employee_id=p_id;
+DBMS_OUTPUT.PUT_LINE('Employee Name is :' || v_lname);
+DBMS_OUTPUT.PUT_LINE('Employee salary is :' || v_salary);
+end query_emp;
+/
+
+CALL PROCEDURE:
+execute query_emp(100)
+OR
+begin
+query_emp(100);
+end;
+/
+
+Q-4)
 create a procedure called GET_EMPLOYEE to query the employees table, retrieving the salary and job
 is for an employee when provided with the employee id.
 
--- function 
-
-Q-1)Write a PL/SQL function named get_sal that accepts an employee ID as a parameter and returns the
-salary of the specified employee from the employee table. Test the function by retrieving the salary of
-the employee with employee_id given on runtime.
-
-Q-2).Create a PL/SQL function named tax that calculates 8% tax on a given numeric value. Use the function
-to display the employee_id, salary, and the calculated tax for employees in the employees table who
-belong to the department with department_id = 100.
-
-Q-3). Write a function that returns the total number of EMPLOYEES in the employee table. 
-
-
-
--- activity book procedure
-
-Q1.
-Create a PL/SQL procedure named add_job that inserts a new job into the jobs table, accepts p_jid
-and p_jtitle as input parameters, commits the changes, and test it by adding a job with 'IT_DBA' and
-'Database Administrator', then verify the insertion with a query.
+create or replace procedure get_employee
+(p_id in employees.employee_id%type)
+is 
+v_salary employees.salary%type;
+v_job_id employees.job_id%type;
+begin
+select salary,job_id into v_salary,v_job_id from employees
+where employee_id=p_id;
+DBMS_OUTPUT.PUT_LINE('Employee salary is :' || v_salary);
+DBMS_OUTPUT.PUT_LINE('Employee job id is :' || v_job_id);
+end get_employee;
+/
 
 
-Q2.
-Create a PL/SQL procedure named upd_job that updates a job in the jobs table by accepting p_jid and
-p_jtitle as input parameters, updates the JOB_TITLE for the given JOB_ID, and raises an error if no
-rowsare updated. Test the procedure by updating the job with 'IT_DBA' to 'Data Administrator' and
-verify the update.
+CALL PROCEDURE:
+execute get_employee(100)
+OR
+begin
+get_employee(100);
+end;
+/
 
-
-Q3.
-Create a PL/SQL procedure named del_job that deletes a job from the jobs table by accepting p_jid as
-an input parameter. The procedure should delete the job with the given JOB_ID and raise an error if
-no rows are deleted. Test the procedure by attempting to delete a job with JOB_ID = 'IT_DBA' and
-handle the case where no job is deleted.
-
-Q4.
+Q5).
 Create a PL/SQL procedure named get_employee that accepts an employee ID (p_id) and retrieves the
 SALARY and JOB_ID of the employee. The procedure should return these values through output
 parameters (p_sal and p_job).
 
 
+create or replace procedure get_employee
+(p_id in employees.employee_id%type,
+p_sal out employees.salary%type,
+p_job out employees.job_id%type)
+is
+begin
+select salary,job_id into p_sal,p_job 
+from employees
+where employee_id=p_id;
+DBMS_OUTPUT.PUT_LINE('Employee salary is :' || p_sal);
+DBMS_OUTPUT.PUT_LINE('Employee job id is :' || p_job);
+end get_employee;
+/
+
+CALL PROCEDURE:
+
+variable b_salary number
+variable b_job varchar2(50)
+execute get_employee(100,:b_salary,:b_job)
+print b_salary b_job
+OR
+
+declare
+v_salary number;
+v_job varchar2(50);
+begin
+get_employee(100,v_salary,v_job);
+DBMS_OUTPUT.PUT_LINE('Employee salary is :' || v_salary);
+DBMS_OUTPUT.PUT_LINE('Employee job id is :' || v_job);
+end;
+/
+
+
+Q-6)
+create a procedure called ADD_DEPT to insert a new department into the departments provide the
+department name and location id of the department using two parameters.
+
+drop sequence departments_seq
+
+select max(department_id)from departments;
+
+create sequence departments_seq
+start with 990
+increment by 10
+maxvalue 10000;
+
+create or replace procedure add_dept
+(p_dept_name in departments.department_name%type,
+p_loc_id in departments.location_id%type)
+is 
+begin
+insert into departments(department_id,department_name,location_id)
+values (departments_seq.nextval,p_dept_name,p_loc_id);
+end add_dept;
+/
+
+CALL PROCEDURE:
+execute add_dept('Teacher',1700)
+OR
+begin
+add_dept('Teacher',1700);
+end;
+/
+select department_name,location_id
+from departments
+where department_name='Teacher';
+
+-- activity book procedure
+
+Q7).
+Create a PL/SQL procedure named add_job that inserts a new job into the jobs table, accepts p_jid
+and p_jtitle as input parameters, commits the changes, and test it by adding a job with 'IT_DBA' and
+'Database Administrator', then verify the insertion with a query.
+
+create or replace procedure add_job
+(p_jid in jobs.job_id%type,
+p_jtitle in jobs.job_title%type)
+is
+begin
+insert into jobs(job_id,job_title)
+values(p_jid,p_jtitle);
+end add_job;
+/
+
+CALL PROCEDURE:
+execute add_job('IT_DBA','Database Administrator')
+OR
+begin
+add_job('IT_DBA','Database Administrator');
+end;
+/
+
+select job_id,job_title from jobs
+where job_id='IT_DBA';
+
+Q8).
+Create a PL/SQL procedure named upd_job that updates a job in the jobs table by accepting p_jid and
+p_jtitle as input parameters, updates the JOB_TITLE for the given JOB_ID, and raises an error if no
+rows are updated. Test the procedure by updating the job with 'IT_DBA' to 'Data Administrator' and
+verify the update.
+
+create or replace procedure upd_job
+(p_jid in jobs.job_id%type,
+p_jtitle in jobs.job_title%type)
+is
+begin
+update jobs
+set job_title=p_jtitle
+where job_id=p_jid;
+
+if sql%notfound then
+raise_application_error(-20202,'no jobs update');
+end if;
+end upd_job;
+/
+
+
+CALL PROCEDURE:
+execute upd_job('IT_DBA','Database Administrator')
+OR
+begin
+upd_job('IT_DBA','Database Administrator');
+end;
+/
+
+ERROR SHOW KORAR JONNO:
+begin
+  upd_job('FAKE_JOB', 'Some Title');
+end;
+/
+
+
+Q9).
+Create a PL/SQL procedure named del_job that deletes a job from the jobs table by accepting p_jid as
+an input parameter. The procedure should delete the job with the given JOB_ID and raise an error if
+no rows are deleted. Test the procedure by attempting to delete a job with JOB_ID = 'IT_DBA' and
+handle the case where no job is deleted.
+
+create or replace procedure del_job
+(p_jid in jobs.job_id%type)
+is
+begin
+delete from jobs
+where job_id=p_jid;
+if sql%notfound then
+raise_application_error(-020203,'no jobs delete');
+end if;
+end del_job;
+/
+
+
+CALL PROCEDURE:
+execute del_job('IT_DBA')
+OR
+begin
+del_job('IT_DBA');
+end;
+/
+
+ERROR SHOW KORAR JONNO:
+begin
+  del_job('FAKE_JOB');
+end;
+/
+
+
+-- function 
+
+Q-10)
+Write a PL/SQL function named get_sal that accepts an employee ID as a parameter and returns the
+salary of the specified employee from the employee table. Test the function by retrieving the salary of
+the employee with employee_id given on runtime.
+
+
+create or replace function get_sal
+(p_id in employees.employee_id%type)
+return number
+is
+v_salary employees.salary%type;
+begin
+select salary into v_salary from employees
+where employee_id=p_id;
+return v_salary;
+end get_sal;
+/
 
 
 
-1. 
-Create a procedure called ADD_DEPT to insert a new department into the departments table.
-Provide the DEPARTMENT NAME and LOCATION ID of the department using two parameters.
-2. 
+CALL FUNCTION:
+
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100))
+or
+declare
+v_sal employees.salary%type;
+begin
+v_sal:=get_sal(100);
+DBMS_OUTPUT.PUT_LINE('The salary is :' || v_sal);
+end;
+/
+or
+select job_id,get_sal(employee_id)
+from employees;
+or
+select get_sal(100)
+from dual;
+or
+variable b_sal number
+execute :b_sal:= get_sal(100)
+print b_sal
+
+Q-11).
+Create a PL/SQL function named tax that calculates 8% tax on a given numeric value. Use the function
+to display the employee_id, salary, and the calculated tax for employees in the employees table who
+belong to the department with department_id = 100.
+
+create or replace function tax 
+(p_value number)
+return number
+is
+begin
+return (p_value*0.08);
+end tax;
+/
+
+CALL FUNCTION:
+select employee_id,salary,tax(salary)
+from employees
+where department_id=100;
+
+
+Q-12). 
 Write a function that returns the total number of EMPLOYEES in the employee table. 
-3.
-Create a procedure called GET_EMPLOYEE to query the EMPLOYEES table, retrieving the
-salary and job ID for an employee when provided with the employee ID.
 
+create or replace function total_emp_id
+return number
+is
+v_count_emp number;
+begin
+select count(employee_id)into v_count_emp
+from employees;
+return v_count_emp;
+end total_emp_id;
+/
 
-
+CALL FUNCTION:
+execute DBMS_OUTPUT.PUT_LINE(total_emp_id())
+or
+select total_emp_id() from dual;
 
 -- activity book function
 
-1.create and invoke the get_job function to return  a job ttle.
+Q-13).
+create and invoke the get_job function to return  a job ttle.
 a. create and compile a function called get_job to return a job title.
-b. create a varchar2 host variable called b_title.allowing a length of 35 characters.invoke the function with job id sa_rep to return the value in the host variable.and the print host variable to vew the result
+b. create a varchar2 host variable called b_title.allowing a length of 35 characters.invoke the function with job id SA_REP to return the value in the host variable.and the print host variable to vew the result
+create or replace function get_job
+(p_job_id in jobs.job_id%type)
+return jobs.job_title%type
+is
+v_jobtitle jobs.job_title%type;
+begin
+select job_title into v_jobtitle
+from jobs
+where job_id=p_job_id;
+return v_jobtitle;
+end get_job;
+/
 
-2. create a function called get_annual_comp to return th eannual salary computed from an employees monthly salay and commission passed as parameters.
+CALL FUNCTION:
+variable b_jtitle varchar2(50)
+execute :b_jtitle:= get_job('SA_REP')
+print b_jtitle
+OR
+execute DBMS_OUTPUT.PUT_LINE(get_job('SA_REP'))
+
+Q-14). 
+create a function called get_annual_comp to return th eannual salary computed from an employees monthly salay and commission passed as parameters.
 a. create the get_annual_comp function ,which accepts parameter values for the monthly salary and commission.either or both values passed can be null. but the function should still return a non_null annual salary. use the following basic formula to calculate the annual salary:
 (salary*12)+(commission_pct*salary*12)
 b.use the function in a select statement against the employees table for employees in department 30.
- 3.create a procedure add_employee to insert a new employee into the employees table .the procedure should call a valid_deptid function to check whether the department id specified for the new employee exists in the departments table 
+
+create or replace function get_annual_comp
+(p_salary employees.salary%type,
+p_commission_pct employees.commission_pct%type)
+return number
+is
+begin
+return((nvl(p_salary,0)*12)+((nvl(p_commission_pct,0))*(nvl(p_salary,0))*12));
+end get_annual_comp;
+/
+
+CALL FUNCTION:
+select employee_id,last_name,get_annual_comp(salary,commission_pct)
+from employees
+where department_id=30;
+OR
+execute DBMS_OUTPUT.PUT_LINE(get_annual_comp(10000,.05))
+
+ Q-15).
+ create a procedure add_employee to insert a new employee into the employees table .the procedure should call a valid_deptid function to check whether the department id specified for the new employee exists in the departments table 
  a. create a function called valid_deptid to validate a specified department id and return a bollean value of true if the department exists.
  b. create a add_employee procedure to add an employee to the employee table.the row should be added to the employees table if the valid_deptid function returns true.otherwise alert the user with an appropiate message.provide the following parameters:
  empid sequence
@@ -528,6 +864,53 @@ b.use the function in a select statement against the employees table for employe
  hire_date sysdate
  c.call add_employee for the name 'jane harris' in department 15,leaving other paramentes with their default .what is the result?
 d.add another employee named joe harris in department 80 leaving the remaining paramentes with their default values.what is the result?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------
+
+1.create  a procedure called add_dept to insert a new department into the departments table.
+provide the department nam and dlocation id of the department using two parameters.
+2.write a functiion that returens the total number of employees in the employee tale.
+3.create  a procedure called get_employee to query the employees table,retrieving th salary and job id for an employee when provied with the employee id.
+4.create a procedure named query_emp that retrieves the last name and salary of an employee based on their employee id.the peocedure should accept the employee id as an input parameter p_id.
+5.create a procedure named raise_salary that updates the salary of an employee based on a percentage increase.
+6.create procrdure called add_dept to inser a new department into a new department into the departments provide the department and location id of the department using two parameters.
+7.create a pl/sql procedure named add_job that inserts a new job into the jobs table,accept p_jid and p_jtitle as input paramenters,commits the changes,and test it by adding a job with 'IT_DBA' and 'database administrator' then verify the insertion with a query.
+8.create a pl/sql procedure named upd_job that updates a job in the jobs table by accepting p_jid and p_jtitle as input parameters ,updates the job_title for the given job_id, and raises an error if no rows are updated.test the procedure by updating the job with 'IT_DBA'TO 'DATA ADMINISTRATOR' and verify the update.
+9.write a pl/sql function named get_sal that accepts an employee id as a paramenter and return the salary of the specified employee from the employee table. test the function by retrieving the salary of the employee with employee_id given on runtime.
+10.create a pl/sql function named tax tha calculates 8% tax on a given numeric value .use the function to dsplay the employee_id,salary ad calculated tax for employees in the employees table who belong to the department with department_id 100.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 -- write
