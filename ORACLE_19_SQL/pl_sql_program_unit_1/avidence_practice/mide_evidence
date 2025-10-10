@@ -1,0 +1,12 @@
+CREATE OR REPLACE TRIGGER dept_id_autoinc_trg
+BEFORE INSERT ON departments
+FOR EACH ROW
+DECLARE
+  v_max_id departments.department_id%TYPE;
+BEGIN 
+  SELECT NVL(MAX(department_id),0) + 1
+  INTO v_max_id
+  FROM departments;
+  :NEW.department_id := v_max_id;
+END;
+/

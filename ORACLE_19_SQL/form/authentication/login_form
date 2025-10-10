@@ -1,0 +1,49 @@
+--for check user
+
+DECLARE
+V_USERNAME NUMBER;
+BEGIN
+SELECT COUNT( USERNAME )
+INTO V_USERNAME
+FROM user_info
+WHERE USERNAME=:CONTROL.USERNAME;
+
+:GLOBAL.USERNAME:=:CONTROL.USERNAME;
+
+IF
+V_USERNAME=1 THEN
+GO_ITEM('CONTROL.PASSWORD');
+:CONTROL.SMS:='PLEASE!ENTER YOUR PASSWORD';
+ELSE
+:CONTROL.SMS:='YOUR('||:CONTROL.USERNAME||')USER NAME INVALID';
+GO_ITEM('CONTROL.USERNAME');
+:CONTROL.USERNAME:=NULL;
+END IF;
+END;
+
+--for check password
+DECLARE
+V_USERNAME NUMBER;
+BEGIN
+SELECT COUNT(username)
+into v_username
+from user_info
+where username=:control.USERNAME
+AND password=:control.PASSWORD; --SAME USER AND SAME PASSWORD MUST MATCH
+IF
+V_USERNAME=1 THEN
+new_form('D:\wapp\product\forms\MASTER_DETAILS.fmx'); --GO AFTER LOGIN WHICH FORM IDENTIFIED BY THIS LINE.new_form('location_path') 
+exit_form(no_commit);
+else
+:CONTROL.SMS:='YOUR Password ****** invalid';
+GO_ITEM('CONTROL.PASSWORD');
+:CONTROL.PASSWORD:=NULL;
+END IF;
+END;
+
+
+----------------------------------------
+go_form('');--move one form to another form(not hidden previous form its remove directly).
+call_form('');--(hidden previous form not remove current session).
+
+open_form('');--one form above another form.just like a modal or popup.

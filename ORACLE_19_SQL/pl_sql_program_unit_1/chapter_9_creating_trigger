@@ -1,0 +1,73 @@
+
+trigger:
+1.database trigger
+    a.simple dml trigger    
+        i.before
+        ii.after
+        iii.instead of
+    b.compund trigger
+    c.non-dml trigger
+2.application trigger
+
+1.STATEMENT LEVEL TRIGGER
+2.ROW LEVEL TRIGGER
+
+create or replace trigger secure_emp
+before insert on employees
+begin
+if
+(to_char(sysdate,'DY')in('SAT','SUN'))
+and
+(to_char(sysdate,'HH24:MI')NOT BETWEEN '08.00' AND '18.00')
+then
+raise_application_error(-20500,'only inser business hours');
+end  if;
+end;
+/
+
+insert into employees(employee_id,last_name,first_name,email,hire_date,job_id,salary,department_id)
+values(300,'Smith','Rob','RSMITH',SYSDATE,'IT_PROG',4500,60);
+
+
+ 1.CREATE ONE TRIGGER TO RESTRICT ALL DATA MANIPULATION EVENTS ON THE EMPLOYEES TABLE TO CERTAIN BUSINESS HOURS,8 AN TO 6 PM,MONDAY THROUGH FRIDADAY
+
+ CREATE OR REPLACE TRIGGER RESTRICT_EMP
+ BEFORE INSERT OR UPDATE OR DELETE ON EMPLOYEES
+ BEGIN
+ IF 
+(to_char(sysdate,'DY')in('SAT','SUN'))
+and
+(to_char(sysdate,'HH24:MI')NOT BETWEEN '08.00' AND '18.00')
+then
+IF INSERTING THEN
+raise_application_error(-20500,'only inserT business hours');
+ELSIF UPDATING THEN
+raise_application_error(-20501,'only UPDATE business hours');
+ELSIF DELETING THEN
+raise_application_error(-20502,'only DELETE business hours');
+else
+raise_application_error(-20503,'only  business hours');
+END IF;
+END IF;
+END;
+
+-- ALTER TRIGGER RESTRICT_EMP DISABLE;
+
+CREATE OR REPLACE TRIGGER RESTRICT_SALARY
+BEFORE INSERT OR UPDATE OF SALARY ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+IF 
+NOT(:NEW.JOB_ID IN('AD_PRES','AD_VP'))
+AND
+(:NEW.SALARY>15000)
+THEN
+RAISE_APPLICATION_ERROR(-20500,'EMPLOYEE CANNOT EARN MORE  THEN $15000.');
+END IF;
+END;
+
+
+UPDATE EMPLOYEES
+SET SALARY=15500
+WHERE EMPLOYEE_ID=127;
+

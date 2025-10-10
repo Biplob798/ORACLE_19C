@@ -866,6 +866,339 @@ execute DBMS_OUTPUT.PUT_LINE(get_annual_comp(10000,.05))
 d.add another employee named joe harris in department 80 leaving the remaining paramentes with their default values.what is the result?
 
 
+---------------------------------------------------------------------------------------------
+
+create or replace procedure raise_salary 
+(p_id in employees.employee_id%type,p_percent in number)
+is
+begin
+update employees
+set salary = salary*(1+p_percent/100)
+where employee_id= p_id;
+end raise_salary;
+/
+execute raise_salary(100,10)
+
+
+create or replace procedure query_emp
+(p_id in employees.employee_id%type,
+p_lname out employees.last_name%type,
+p_salary out employees.salary%type)
+is
+begin
+select last_name,salary into p_lname,p_salary
+from employees
+where employee_id=p_id;
+end query_emp;
+/
+
+declare
+v_lname employees.last_name%type;
+v_sal employees.salary%type;
+begin
+query_emp(100,v_lname,v_sal);
+DBMS_OUTPUT.PUT_LINE('Employee name is :'|| v_lname);
+DBMS_OUTPUT.PUT_LINE('Employee salary is :'|| to_char(v_sal,'$999999.00'));
+end;
+/
+
+
+create or replace procedure add_dept
+(p_dept_name in departments.department_name%type,
+p_loc_id in departments.location_id%type)
+is
+begin
+insert into departments(department_id,department_name,location_id)
+values(departments_seq.nextval,p_dept_name,p_loc_id);
+end add_dept;
+/
+execute add_dept('Teacher',1700)
+
+
+
+
+
+create or replace function get_sal
+(p_id in employees.employee_id%type)
+return number
+is
+v_sal employees.salary%type;
+begin
+select salary into v_sal
+from employees
+where employee_id=p_id;
+return v_sal;
+end get_sal;
+/
+
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100))
+
+
+create or replace function tax
+(p_value in number)
+return number
+is
+begin
+return(p_value*0.08);
+end tax;
+/
+select employee_id,last_name,salary,tax(salary)
+from employees
+where department_id=100;
+
+
+create or replace function get_job
+(p_jid in jobs.job_id%type)
+return jobs.job_title%type
+is
+v_job_title jobs.job_title%type;
+begin
+select job_title into v_job_title
+from jobs
+where job_id=p_jid;
+return v_job_title;
+end get_job;
+/
+
+execute DBMS_OUTPUT.PUT_LINE(get_job('SA_REP'))
+
+select salary from employees
+where employee_id=100;
+
+create or replace procedure raise_salary
+(p_id in employees.employee_id%type,
+p_percent in number)
+is
+begin
+update employees
+set salary =salary*(1+p_percent/100)
+where employee_id=p_id;
+end raise_salary;
+/
+execute raise_salary(100,10)
+
+select salary from employees
+where employee_id=100;
+
+create or replace procedure query_emp
+(p_id in employees.employee_id%type,
+p_lname out employees.last_name%type,
+p_sal out employees.salary%type)
+is
+begin
+select last_name,salary into p_lname,p_sal
+from employees
+where employee_id=p_id;
+end query_emp;
+/
+
+declare
+v_lname employees.last_name%type;
+v_sal employees.salary%type;
+begin
+query_emp(100,v_lname,v_sal);
+DBMS_OUTPUT.PUT_LINE('Employee name is:'||v_lname);
+DBMS_OUTPUT.PUT_LINE('Employee salary is:'|| to_char(v_sal,'$999,999.00'));
+end;
+/
+
+
+create or replace procedure add_dept
+(p_dept_name in departments.department_name%type,
+p_loc_id in departments.location_id%type)
+is 
+begin
+insert into departments(department_id,department_name,location_id)
+values(departments_seq.nextval,p_dept_name,p_loc_id);
+end add_dept;
+/
+
+execute add_dept('Teacher',1700)
+
+
+create or replace procedure  add_job
+(p_jid in jobs.job_id%type,
+p_jtitle in jobs.job_title%type)
+is
+begin
+insert into jobs(job_id,job_title)
+values(p_jid,p_jtitle);
+end add_job;
+/
+execute add_job('IT_DBA','Data Administrator');
+
+
+create or replace procedure upd_job
+(p_jid in jobs.job_id%type,
+p_jtitle jobs.job_title%type)
+is
+begin
+update jobs
+set job_title=p_jtitle
+where job_id=p_jid;
+if sql%notfound then
+raise_application_error(-20202,'No job update');
+end if;
+end upd_job;
+/
+execute upd_job('IT_DBA','Data Administrator')
+
+
+create or replace procedure del_job
+(p_jid in jobs.job_id%type)
+is
+begin
+delete from jobs
+where job_id=p_jid;
+if sql%notfound then
+raise_application_error(-20202,'NO data delete');
+end if;
+end del_job;
+/
+execute del_job('IT_WEB')
+
+create or replace procedure get_employee
+(p_id in employees.employee_id%type,
+p_sal out employees.salary%type,
+p_jobid out employees.job_id%type)
+is
+begin
+select salary,job_id into p_sal,p_jobid 
+from employees
+where employee_id=p_id;
+if sql%notfound then
+raise_application_error(-20202,'NO data found');
+end if;
+end get_employee;
+/
+
+variable b_sal number
+variable b_jobid varchar2(100)
+execute get_employee(100,:b_sal,:b_jobid)
+print b_sal b_jobid
+
+
+create or replace function get_sal
+(p_id employees.employee_id%type)
+return number
+is
+v_sal employees.salary%type ;
+begin
+select salary into v_sal from employees
+where employee_id=p_id;
+return v_sal;
+end get_sal;
+/
+
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100))
+
+create or replace function get_sal
+(p_id  employees.employee_id%type)
+return number
+is
+v_sal employees.salary%type;
+begin
+select salary into v_sal 
+from employees
+where employee_id=p_id;
+return v_sal;
+end get_sal;
+/
+execute DBMS_OUTPUT.PUT_LINE(get_sal(100))
+
+
+create or replace function tax
+(p_value number)
+return number
+is
+begin
+return (p_value*0.1);
+end tax;
+/
+
+select employee_id,last_name,tax(salary)
+from employees
+where department_id=100;
+
+
+
+create or replace tax
+(p_value number)
+return number
+is
+begin
+return (value*0.08);
+end tax;
+/
+select employee_id,last_name,tax(100)
+from employees
+where department_id=100;
+
+
+
+
+create or replace function get_job
+(p_jobid jobs.job_id%type)
+return jobs.job_title%type
+is
+v_job_title jobs.job_title%type;
+begin
+select job_title into v_job_title from jobs
+where job_id=p_jobid;
+return v_job_title;
+end get_job;
+/
+
+variable b_job_title varchar2(35)
+execute :b_job_title:= get_job('SA_REP')
+print b_job_title
+
+
+
+
+
+
+
+
+
+
+
+create or replace function get_job
+(p_jobid in jobs.job_id%type)
+return jobs.job_title%type
+is
+v_job_title jobs.job_title%type;
+begin
+select job_title into v_job_title from jobs
+where job_id=p_jobid;
+return v_job_title;
+end get_job;
+/
+
+variable b_job_title varchar2(45)
+execute :b_job_title:= get_job('SA_REP')
+print b_job_title
+
+
+create or replace function get_annual_comp
+(p_sal in employees.salary%type,
+p_comp in employees.commission_pct%type)
+return number
+is
+begin
+return ((nvl(p_sal,0)*12)+(nvl(p_sal,0)*nvl(p_comp,0)*12));
+end get_annual_comp;
+/
+
+select employee_id,last_name,get_annual_comp(salary,commission_pct)
+from employees
+where department_id=30;
+
+
+
+
+
+
 
 
 

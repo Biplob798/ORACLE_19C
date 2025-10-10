@@ -1,0 +1,16 @@
+create table 
+log_trig_table
+(
+user_id varchar2(50),
+log_date date,
+action varchar2(50)
+);
+
+create or replace  trigger logon_trig
+after logon on schema
+begin
+insert into  log_trig_table(user_id,log_date,action)
+values(user,sysdate,'logon');
+end;
+/
+
