@@ -1,0 +1,24 @@
+
+--EXPORT
+IN CMD RUN AS ADMINSTRATOR
+EXP scm/scm@orclpdb66 file=D:\scm.dmp
+COMPLITED FOR DATABASE OBJECTS EXPORT
+
+--IMPORT
+sqlplus as sysdba
+ALTER SESSION SET CONTAINER=orclpdb66;
+create user scm identified by scm
+grant connect,resource to scm
+GRANT RESOURCE, 
+      CREATE SESSION, 
+      CREATE TABLE, 
+      CREATE VIEW, 
+      CREATE SEQUENCE, 
+      CREATE ANY SYNONYM, 
+      CREATE PROCEDURE 
+TO scm;
+
+
+--in cmd run as administrator
+imp new_user/user_password@orclpdb66 file=D:\scm.dmp full=y 
+COMPLITED FOR DATABASE OBJECTS IMPORT
