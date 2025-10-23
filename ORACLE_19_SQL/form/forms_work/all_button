@@ -1,0 +1,222 @@
+
+--ALL TRIGGERS FOR EMPLOYEES FORM
+
+--for ADD_EMPLOYEE button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+BEGIN
+    -- Make sure the canvas is visible
+    SET_CANVAS_PROPERTY('SCANVAS', VISIBLE, PROPERTY_TRUE);
+
+    -- Display the canvas in a window
+    SHOW_VIEW('SCANVAS');
+
+    -- Optionally, move focus to first item in the canvas
+    GO_ITEM('EMPLOYEES_ADD.FIRST_NAME');
+
+END;
+
+
+--for QUERY_BUTTON on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+begin
+	go_block('EMPLOYEES');
+	execute_query;
+	end;
+
+--for NEXT_RECORD button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+begin
+	go_block('EMPLOYEES');
+	next_record;
+end;
+ --for PREVIOUS_RECORD button on EMPLOYEES form 
+--WHEN-BUTTON-PRESSED
+begin
+	go_block('EMPLOYEES');
+	previous_record;
+end;
+--for EXIT button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+BEGIN
+    -- Go directly to Home Page form
+    NEW_FORM('HOMEPAGE');
+END;
+
+
+--for DELETE_RECORD button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+begin
+	if show_alert('DELETE')=alert_button1 then
+	GO_BLOCK('EMPLOYEES');
+	delete_record;
+	commit_form;
+end if;
+end;
+
+
+--for search field on EMPLOYEES form
+--WHEN-NEW-FORM-INSTANCE
+BEGIN
+SET_BLOCK_PROPERTY
+('EMPLOYEES', ONETIME_WHERE,'EMPLOYEE_ID='||':CONTROL.SEARCH_EMPLOYEE_ID');
+GO_BLOCK('EMPLOYEES');
+EXECUTE_QUERY;
+END;
+
+--for SEARCH button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+BEGIN
+SET_BLOCK_PROPERTY
+('EMPLOYEES', ONETIME_WHERE,'EMPLOYEE_ID='||':CONTROL.SEARCH_EMPLOYEE_ID');
+GO_BLOCK('EMPLOYEES');
+EXECUTE_QUERY;
+END;
+
+ 
+ --for ADD_EMPLOYEE button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+BEGIN
+    -- Make sure the canvas is visible
+    SET_CANVAS_PROPERTY('SCANVAS', VISIBLE, PROPERTY_TRUE);
+
+    -- Display the canvas in a window
+    SHOW_VIEW('SCANVAS');
+
+    -- Optionally, move focus to first item in the canvas
+    GO_ITEM('EMPLOYEES_ADD.FIRST_NAME');
+
+END;
+
+
+
+--for EDIT_EMPLOYEE button on EMPLOYEES form
+--WHEN-BUTTON-PRESSED
+DECLARE
+    v_emp_id EMPLOYEES.EMPLOYEE_ID%TYPE;
+BEGIN
+    v_emp_id := :EMPLOYEES.EMPLOYEE_ID;
+
+    IF v_emp_id IS NOT NULL THEN
+
+       -- show stacked canvas
+       SHOW_VIEW('SCANVAS');
+
+       -- go to edit block (??? block ?? ??? EMPLOYEES_ADD_BLOCK)
+       GO_BLOCK('EMPLOYEES_ADD');
+
+       -- fetch only selected employee
+       SET_BLOCK_PROPERTY('EMPLOYEES_ADD', DEFAULT_WHERE,
+                          'EMPLOYEE_ID = ' || v_emp_id);
+       EXECUTE_QUERY;
+
+    ELSE
+       MESSAGE('Please select an employee.');
+       MESSAGE(' ', NO_ACKNOWLEDGE);
+    END IF;
+END;
+
+
+
+
+--for SAVE button on EMPLOYEES_ADD form
+--WHEN-BUTTON-PRESSED
+DECLARE
+    v_new_id NUMBER;
+    v_user   VARCHAR2(100);
+BEGIN
+    -- 1?? Get current Oracle Forms user
+    v_user := GET_APPLICATION_PROPERTY(USERNAME);
+
+    -- 2?? Generate new Warehouse ID (using sequence or MAX fallback)
+    BEGIN
+        SELECT WAREHOUSE_LIST_SEQ.NEXTVAL INTO v_new_id FROM dual;
+    EXCEPTION
+        WHEN OTHERS THEN
+            SELECT NVL(MAX(WAREHOUSE_ID), 0) + 1 INTO v_new_id FROM WAREHOUSE_LIST;
+    END;
+
+    -- 3?? Insert new record
+    INSERT INTO WAREHOUSE_LIST (
+        WAREHOUSE_ID,
+        WAREHOUSE_CODE,
+        WAREHOUSE_NAME,
+        LOCATION,
+        CITY,
+        CAPACITY,
+        STATUS,
+        REMARKS
+    )
+    VALUES (
+        v_new_id,
+        :ADD_WAREHOUSE_LIST.WAREHOUSE_CODE,
+        :ADD_WAREHOUSE_LIST.WAREHOUSE_NAME,
+        :ADD_WAREHOUSE_LIST.LOCATION,
+        :ADD_WAREHOUSE_LIST.CITY,
+        :ADD_WAREHOUSE_LIST.CAPACITY,
+        NVL(:ADD_WAREHOUSE_LIST.STATUS, 'Active'),
+        :ADD_WAREHOUSE_LIST.REMARKS
+    );
+
+    COMMIT;
+
+    -- 4?? Hide popup stacked canvas (if used)
+    HIDE_VIEW('SCANVAS');
+    SET_CANVAS_PROPERTY('SCANVAS', VISIBLE, PROPERTY_FALSE);
+
+    -- 5?? Refresh main block and show latest warehouse first
+    GO_BLOCK('WAREHOUSE_LIST');
+    SET_BLOCK_PROPERTY('WAREHOUSE_LIST', DEFAULT_WHERE, '1=1 ORDER BY WAREHOUSE_ID DESC');
+    EXECUTE_QUERY;
+    FIRST_RECORD;
+
+    -- 6?? Show success message
+    MESSAGE('? Warehouse added successfully and moved to top.');
+    MESSAGE(' ');
+
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        MESSAGE('?? Duplicate Warehouse Code or ID found.');
+        ROLLBACK;
+    WHEN OTHERS THEN
+        MESSAGE('? Error saving warehouse: ' || SQLERRM);
+        ROLLBACK;
+END;
+
+
+
+--for UPDATE button on ADD_WAREHOUSE_LIST form
+--WHEN-BUTTON-PRESSED
+
+BEGIN
+    UPDATE warehouse_list
+       SET warehouse_code = :ADD_WAREHOUSE_LIST.warehouse_code,
+           warehouse_name = :ADD_WAREHOUSE_LIST.warehouse_name,
+           location       = :ADD_WAREHOUSE_LIST.location,
+           city           = :ADD_WAREHOUSE_LIST.city,
+           capacity       = :ADD_WAREHOUSE_LIST.capacity,
+           status         = :ADD_WAREHOUSE_LIST.status
+     WHERE warehouse_id   = :ADD_WAREHOUSE_LIST.warehouse_id;
+
+    COMMIT;
+
+    MESSAGE('? Warehouse list updated successfully.');
+    MESSAGE(' ', NO_ACKNOWLEDGE);
+
+    -- Optional: Hide stacked canvas after update
+    HIDE_VIEW('ADD_WAREHOUSE_LIST');
+
+    -- Optional: Refresh main block
+    GO_BLOCK('WAREHOUSE_LIST');
+    EXECUTE_QUERY;
+END; 
+
+ --for back button on EMPLOYEES_ADD form
+--WHEN-BUTTON-PRESSED
+BEGIN
+    -- Hide the popup canvas
+    HIDE_VIEW('SCANVAS');
+    SET_CANVAS_PROPERTY('SCANVAS', VISIBLE, PROPERTY_FALSE);
+
+    -- Return focus to main content block
+    GO_BLOCK('EMPLOYEES');
+END;

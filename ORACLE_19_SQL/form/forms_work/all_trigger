@@ -1,0 +1,4 @@
+WHEN-NEW-FORM-INSTANCE--forms level
+    set_window_property('window1',window_state,maximize);
+    execute_query;
+

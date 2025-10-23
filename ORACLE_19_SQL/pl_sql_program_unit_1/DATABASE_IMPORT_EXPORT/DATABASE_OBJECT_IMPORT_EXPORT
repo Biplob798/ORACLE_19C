@@ -3,6 +3,23 @@
 IN CMD RUN AS ADMINSTRATOR
 EXP scm/scm@orclpdb66 file=D:\scm.dmp
 COMPLITED FOR DATABASE OBJECTS EXPORT
+--or
+/*expdp scm/scm@orclpdb66 
+SCHEMAS=scm 
+DIRECTORY=EXAMPLE_DIRECTORY 
+DUMPFILE=scm.dmp 
+LOGFILE=scm_export.log 
+PARALLEL=1 
+FILESIZE=2G 
+CONTENT=ALL
+*/
+
+/*sqlplus sys/sys_password@orclpdb66 as sysdba
+CREATE OR REPLACE DIRECTORY EXAMPLE_DIRECTORY AS 'D:\';
+GRANT READ, WRITE ON DIRECTORY EXAMPLE_DIRECTORY TO scm;
+expdp scm/scm@orclpdb66 SCHEMAS=scm DIRECTORY=EXAMPLE_DIRECTORY DUMPFILE=scm_final.dmp LOGFILE=scm_final.log CONTENT=ALL
+
+*/
 
 --IMPORT
 sqlplus as sysdba
@@ -22,3 +39,12 @@ TO scm;
 --in cmd run as administrator
 imp new_user/user_password@orclpdb66 file=D:\scm.dmp full=y 
 COMPLITED FOR DATABASE OBJECTS IMPORT
+
+--or
+/*
+CREATE USER hr IDENTIFIED BY hr_password;
+GRANT CONNECT, RESOURCE TO hr;
+GRANT CREATE TABLE, CREATE SEQUENCE, CREATE VIEW, CREATE PROCEDURE TO hr;
+GRANT READ, WRITE ON DIRECTORY EXAMPLE_DIRECTORY TO hr;
+
+*/
