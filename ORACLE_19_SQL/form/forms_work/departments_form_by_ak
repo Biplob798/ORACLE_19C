@@ -1,0 +1,137 @@
+
+for search button in departments form
+--WHEN-List_changed
+
+DECLARE
+V_SEARCH VARCHAR2(100);
+V_CURRENT_ITEM VARCHAR2(30);
+BEGIN
+-- STORE CURRENT ITEM
+V_CURRENT_ITEM := :SYSTEM.CURSOR_ITEM;
+
+--PREPARE SEARCH STRING
+V_SEARCH := UPPER(TRIM(:CONTROL.SEARCH));
+
+GO_BLOCK('DEPARTMENTS');
+
+SET_BLOCK_PROPERTY('DEPARTMENTS',DEFAULT_WHERE,
+'UPPER(NVL(DEPARTMENT_ID, '''')) LIKE ''%' || V_SEARCH || '%'' '||
+'OR TO_CHAR(DEPARTMENT_NAME) LIKE ''%' || V_SEARCH ||'%'' ');
+
+EXECUTE_QUERY(NO_VALIDATE);
+
+GO_ITEM(V_CURRENT_ITEM );
+END;
+
+
+for edit button
+--WHEN-BUTTON-PRESSED
+DECLARE
+    v_dept_id DEPARTMENTS.DEPARTMENT_ID%TYPE;
+BEGIN
+    -- 1. Get the DEPARTMENT_ID from the current record where 'Edit' was clicked
+    v_dept_id := :DEPARTMENTS.DEPARTMENT_ID;
+
+    IF v_dept_id IS NOT NULL THEN
+        SHOW_VIEW('SCANVAS');
+        GO_BLOCK('ADD_DEPARTMENTS');
+
+        -- *** THE CRITICAL FIXES ARE HERE ***
+        -- 2. Clear the block's data buffer before fetching new data.
+        CLEAR_BLOCK(NO_VALIDATE);
+
+        -- 3. Set the WHERE clause to fetch only the selected ID.
+        SET_BLOCK_PROPERTY('ADD_DEPARTMENTS', DEFAULT_WHERE,
+                           'DEPARTMENT_ID = ' || v_dept_id);
+
+        -- 4. Execute the query.
+        EXECUTE_QUERY;
+
+        -- 5. Ensure the cursor is on the newly fetched record (usually record 1, since only one is fetched).
+        GO_RECORD(1);
+
+    ELSE
+        MESSAGE('Please select a department to edit.');
+        MESSAGE(' ', NO_ACKNOWLEDGE);
+    END IF;
+END;
+
+
+for refresh button in departments form
+--WHEN-BUTTON-PRESSED
+BEGIN
+    -- 1. Explicitly move to the main data block
+    GO_BLOCK('DEPARTMENTS');
+
+    -- 2. Set the ORDER BY property to sort by DEPARTMENT_ID in ascending order.
+    SET_BLOCK_PROPERTY('DEPARTMENTS', ORDER_BY, 'DEPARTMENT_ID ASC');
+
+    -- 3. Execute the query to fetch and display the data with the new sort order
+    EXECUTE_QUERY;
+
+    -- Optional: Display a confirmation message
+    MESSAGE('Departments refreshed and sorted by ID.');
+    MESSAGE(' ', NO_ACKNOWLEDGE);
+END;
+
+
+for next button in departments form
+--WHEN-BUTTON-PRESSED
+BEGIN
+	GO_BLOCK('DEPARTMENTS');
+NEXT_RECORD;
+END;
+
+
+for previous button in departments form
+--WHEN-BUTTON-PRESSED
+BEGIN
+    GO_BLOCK('DEPARTMENTS');    
+    PREVIOUS_RECORD;
+END;
+
+for insert button in departments form   
+BEGIN
+    -- Make the stacked canvas visible
+    SET_CANVAS_PROPERTY('SCANVAS', VISIBLE, PROPERTY_TRUE);
+
+    -- Display the canvas on top of the main window
+    SHOW_VIEW('SCANVAS');
+
+    -- Move focus to the first item in the popup block
+    GO_ITEM('ADD_DEPARTMENTS.DEPARTMENT_NAME');
+
+    -- Optional: clear previous values
+    CLEAR_BLOCK(NO_VALIDATE);
+END;
+
+
+for exit button in departments form
+--WHEN-BUTTON-PRESSED
+BEGIN
+EXIT_FORM;
+END;
+
+
+for save button in add_departments form
+--WHEN-BUTTON-PRESSED
+BEGIN
+commit;
+END;
+
+
+
+for exit button in departments form
+--WHEN-BUTTON-PRESSED
+BEGIN
+HIDE_VIEW('SCANVAS');
+Go_block('departments');
+execute_query;
+END;
+
+
+
+
+
+
+
