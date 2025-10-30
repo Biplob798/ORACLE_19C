@@ -22,7 +22,11 @@ EXECUTE_QUERY(NO_VALIDATE);
 
 GO_ITEM(V_CURRENT_ITEM );
 END;
-
+-------------------------------
+ for auto id Generate 
+-- key-next-item
+ select nvl(max(REQUISITION_ID),0)+1 into :REQ_MASTER.REQUISITION_ID from REQ_MASTER;
+go_item('REQ_MASTER.REQ_MASTER_DATE');
 
 for edit button
 --WHEN-BUTTON-PRESSED
@@ -90,7 +94,8 @@ BEGIN
     PREVIOUS_RECORD;
 END;
 
-for insert button in departments form   
+for insert button in departments form 
+--WHEN-BUTTON-PRESSED
 BEGIN
     -- Make the stacked canvas visible
     SET_CANVAS_PROPERTY('SCANVAS', VISIBLE, PROPERTY_TRUE);
