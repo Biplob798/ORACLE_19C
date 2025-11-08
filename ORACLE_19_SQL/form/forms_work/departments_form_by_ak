@@ -140,3 +140,14 @@ END;
 
 
 
+for lovs show
+DECLARE
+    l_result BOOLEAN;  -- ? Use a valid variable name
+BEGIN
+    -- ? Show the LOV named DESG_LOV
+    l_result := SHOW_LOV('DEPT_LOV');
+
+EXCEPTIONs
+    WHEN OTHERS THEN
+        NULL;  -- ? Safely handle exceptions (optional)
+END;

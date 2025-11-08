@@ -1,0 +1,184 @@
+CREATE OR REPLACE PROCEDURE ddd66_scm.insert_purchase_history (p_quation_id IN NUMBER)
+IS
+   CURSOR c_master
+   IS
+      SELECT SUPPLIER_ID, SUPPLIER_NAME, QUOT_MASTER_ID
+        FROM QUATATION_APPROVE
+       WHERE QUATATION_APPROVE_ID = p_quation_id;
+
+   CURSOR c_approve_data
+   IS
+      SELECT *
+        FROM QUATATION_APPROVE
+       WHERE QUATATION_APPROVE_ID = p_quation_id;
+
+   V_PURCHASE_ID   NUMBER;
+   v_PURCHASE_DETAIL_ID number;
+BEGIN
+   NULL;
+
+   FOR i IN c_master
+   LOOP
+      SELECT NVL (MAX (PURCHASE_ID), 0) + 1
+        INTO V_PURCHASE_ID
+        FROM PURCHASE_MASTER;
+
+      INSERT INTO PURCHASE_MASTER (PURCHASE_ID,
+                                   QUOT_MASTER_ID,
+                                   SUPPLIER_ID,
+                                   SUPPLIER_NAME)
+           VALUES (V_PURCHASE_ID,
+                   i.QUOT_MASTER_ID,
+                   i.SUPPLIER_ID,
+                   i.SUPPLIER_NAME);
+
+      COMMIT;
+   END LOOP;
+
+   FOR a IN c_approve_data
+   LOOP
+      SELECT NVL (MAX (PURCHASE_DETAIL_ID),0) +1
+        INTO v_PURCHASE_DETAIL_ID
+        FROM PURCHASE_DETAILS;
+
+      INSERT INTO PURCHASE_DETAILS (PURCHASE_DETAIL_ID,
+                                    PURCHASE_ID,
+                                    PRODUCT_ID,
+                                    PRODUCT_NAME,
+                                    QUOTE_QUANTITY  ,
+                                    QUATATION_PRICE)
+           VALUES (v_PURCHASE_DETAIL_ID,
+                   V_PURCHASE_ID,
+                   a.PRODUCT_ID,
+                   a.PRODUCT_NAME,
+                   a.QUOTE_QUANTITY,
+                   a.QUATATION_PRICE );
+   END LOOP;
+   commit;
+END;
+/
+
+
+
+----------------------------------
+CREATE OR REPLACE PROCEDURE ddd66_scm.insert_data_intoQute_approve (
+    P_QUOT_MASTER_ID IN NUMBER
+)
+IS
+    -- Cursor to select all quotation details for the given master ID
+    CURSOR c IS
+        SELECT
+            *
+        FROM
+            QUOTATION_DETAILS
+        WHERE
+            QUOT_MASTER_ID = P_QUOT_MASTER_ID;
+
+    -- Local variable to hold the new ID for the QUATATION_APPROVE table
+    v_QUATATION_APPROVE_ID NUMBER;
+
+    -- Local variable for counting/tracking records (as seen in the image)
+    v_count NUMBER := 0; 
+    
+BEGIN
+    -- Loop through each record fetched by the cursor 'c'
+    FOR rec IN c
+    LOOP
+        -- 1. Get the next available ID for the QUATATION_APPROVE table
+        -- This logic (max(ID) + 1) is generally NOT recommended for production environments 
+        -- where a SEQUENCE should be used instead, but it's what's shown in the image.
+        SELECT 
+            NVL(MAX(QUATATION_APPROVE_ID), 0) + 1
+        INTO 
+            v_QUATATION_APPROVE_ID
+        FROM 
+            QUATATION_APPROVE;
+
+        -- 2. Insert the data into the approval table
+        INSERT INTO QUATATION_APPROVE (
+            QUATATION_APPROVE_ID,
+            QUOT_DET_ID,
+            QUOT_MASTER_ID,
+            SUPPLIER_ID,
+            PRODUCT_ID,
+            REQ_QUANTITY,
+            QUOTE_QUANTITY,
+           
+            QUATATION_PRICE,
+            DELIVERY_DATE,
+            STATUS,
+            REMARKS,
+            PRODUCT_NAME,
+            SUPPLIER_NAME
+        )
+        VALUES (
+            v_QUATATION_APPROVE_ID,
+            rec.QUOT_DET_ID,
+            rec.QUOT_MASTER_ID,
+            rec.SUPPLIER_ID,
+            rec.PRODUCT_ID,
+            rec.REQ_QUANTITY,
+            rec.QUOTE_QUANTITY,
+            
+            rec.QUATATION_PRICE,
+            rec.DELIVERY_DATE,
+            rec.STATUS,
+            rec.REMARKS,
+            rec.PRODUCT_NAME,
+            rec.SUPPLIER_NAME
+        );
+
+        -- Prepare for the next record (as shown in the image)
+        v_count := v_count + 1; 
+
+    END LOOP;
+
+    -- Commit the changes made during the loop
+    COMMIT;
+
+END;
+/
+------------------------------------
+
+--for search button in quotation approve form
+--WHEN-BUTTON-PRESSED   
+BEGIN
+    -- 1. Call the procedure to insert the data
+    ddd66_scm.insert_data_intoQute_approve(P_QUOT_MASTER_ID => :CONTROL.BTN_SEARCH);
+
+    -- 2. Explicitly navigate to the block where the results should appear
+    GO_BLOCK('QUATATION_APPROVE'); 
+
+    -- 3. Set a filter (WHERE clause) to show only the relevant new data
+    SET_BLOCK_PROPERTY('QUATATION_APPROVE', DEFAULT_WHERE, 'QUOT_MASTER_ID = ' || :CONTROL.BTN_SEARCH);
+
+    -- 4. Execute the query to display the newly inserted records
+    EXECUTE_QUERY;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Provide an alert to the user if the procedure or query fails
+        MESSAGE('Error processing quotation approval: ' || SQLERRM);
+        RAISE FORM_TRIGGER_FAILURE;
+
+END;
+
+----------------------------------------
+--for approve button in quotation approve form    
+--WHEN-BUTTON-PRESSED
+
+
+BEGIN
+update QUATATION_APPROVE set approve=1
+where QUOT_DET_ID=:QUATATION_APPROVE.QUOT_DET_ID;
+commit;
+
+UPDATE QUOTATION_MASTER set APPROVEd=1
+where QUOT_MASTER_ID=:QUATATION_APPROVE.QUOT_MASTER_ID;
+COMMIT;
+
+insert_purchase_history (p_quation_id=> :QUATATION_APPROVE.QUOT_MASTER_ID);
+END;
+CLEAR_FORM;
+MESSAGE('Quatation Approved Successfully');
+

@@ -1,0 +1,30 @@
+--(WRITE THE COMMAND ON cmd)
+--EXP USER/PASSWORD@ORCL(SID) FILE=(PATH).dmp
+EXP SUMMIT/SUMMIT@ORCL FILE=D:\summit.dmp
+
+
+drop user SUMMIT cascade;
+
+select username FROM ALL_USERS WHERE USERNAME='SUMMIT';
+
+create user scmdb identified by s;
+
+GRANT RESOURCE,
+CREATE SESSION,
+CREATE TABLE,
+CREATE VIEW,
+CREATE ANY SYNONYM,
+CREATE PROCEDURE,
+CREATE SEQUENCE
+TO scmdb;
+
+conn scmdb/s@orclpdb66
+
+select * from tab;
+
+
+IMP scmdb/s@orclpdb66 FILE=D:\SCMDB.dmp FULL=Y
+
+IMP scmdb/s@orclpdb66 AS SYSDBA FILE=D:\SCMDB.dmp FULL=Y
+
+imp SCMDB.dmp/s@//localhost:1522/orclpdb66 fromuser=scmdb touser=scmdb file=D:\SCMDB.dmp commit=y ignore=y log=C:\temp\SCMDB.dmp.log
