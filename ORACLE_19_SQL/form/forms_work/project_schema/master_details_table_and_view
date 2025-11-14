@@ -144,3 +144,57 @@ CREATE TABLE VW_QUOTATION_SUMMARY (
     QUOTATION_PRICE NUMBER(10,2),
     DELIVERY_DATE DATE
 );
+
+CREATE OR REPLACE PROCEDURE SCMDB.insert_purchase_history (p_quation_id IN NUMBER)
+IS
+    V_PURCHASE_ID NUMBER;
+BEGIN
+    ------------------------------------------------------
+    -- 1. Generate NEW PURCHASE ID (Only once)
+    ------------------------------------------------------
+    SELECT NVL(MAX(PURCHASE_ID), 0) + 1
+    INTO V_PURCHASE_ID
+    FROM PURCHASE_MASTER;
+
+    ------------------------------------------------------
+    -- 2. Insert ONE Purchase Master row
+    ------------------------------------------------------
+    INSERT INTO PURCHASE_MASTER (
+        PURCHASE_ID,
+        QUOT_MASTER_ID,
+        SUPPLIER_ID,
+        SUPPLIER_NAME
+    )
+    SELECT V_PURCHASE_ID,
+           QUOT_MASTER_ID,
+           SUPPLIER_ID,
+           SUPPLIER_NAME
+      FROM QUOTATION_APPROVE
+     WHERE QUOT_APPROVE_ID = p_quation_id
+     FETCH FIRST 1 ROWS ONLY;
+
+    ------------------------------------------------------
+    -- 3. Insert ALL Purchase Details
+    ------------------------------------------------------
+    INSERT INTO PURCHASE_DETAILS (
+        PURCHASE_DETAIL_ID,
+        PURCHASE_ID,
+        PRODUCT_ID,
+        PRODUCT_NAME,
+        QUTE_QUANTITY,
+        QUATATION_PRICE
+    )
+    SELECT NVL((SELECT MAX(PURCHASE_DETAIL_ID) FROM PURCHASE_DETAILS),0)
+           + ROW_NUMBER() OVER (ORDER BY PRODUCT_ID),
+           V_PURCHASE_ID,
+           PRODUCT_ID,
+           PRODUCT_NAME,
+           QUTE_QUANTITY,
+           QUOTATION_PRICE
+      FROM QUOTATION_APPROVE
+     WHERE QUOT_APPROVE_ID = p_quation_id;
+
+    COMMIT;
+END;
+/
+commit;
