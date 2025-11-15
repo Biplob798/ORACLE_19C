@@ -28,3 +28,113 @@ IMP scmdb/s@orclpdb66 FILE=D:\SCMDB.dmp FULL=Y
 IMP scmdb/s@orclpdb66 AS SYSDBA FILE=D:\SCMDB.dmp FULL=Y
 
 imp SCMDB.dmp/s@//localhost:1522/orclpdb66 fromuser=scmdb touser=scmdb file=D:\SCMDB.dmp commit=y ignore=y log=C:\temp\SCMDB.dmp.log
+
+
+
+
+--by akif--------------------
+Conversation opened. 1 read message. 
+
+Skip to content
+Using Gmail with screen readers
+5 of 1,768
+ORACLE FORMS CODE
+Inbox
+
+Akif Tanzim Hamza DDD
+Attachments
+Tue, Nov 4, 8:18 AM (11 days ago)
+to shrabony, hemalovi45, Tender, akiftanzimhamza, Wahid, me, Mahbubur
+
+
+ 19 Attachments
+  •  Scanned by Gmail
+# ==============================================================================
+# ORACLE DATABASE LOGICAL MIGRATION SCRIPT
+#
+# This script demonstrates the two primary commands for a database logical dump
+# and subsequent restore using the Oracle Original Utilities (exp/imp).
+#
+# Note: For modern Oracle versions (10g and later), 'expdp' and 'impdp' 
+# (Data Pump) are the recommended, faster alternatives.
+# ==============================================================================
+
+
+# ------------------------------------------------------------------------------
+# COMMAND 1: ORACLE ORIGINAL EXPORT (exp)
+# Purpose: Create a logical backup (dump file) of the specified schema.
+# ------------------------------------------------------------------------------
+
+# COMMAND BLOCK:
+exp hr_app/hr_app@orclpdb file=H:\hr\Export.DMP
+
+# EXPLANATION OF EXPORT PARAMETERS:
+#
+# exp                   # The executable for the Oracle Original Export utility.
+#
+# hr_app/hr_app         # USER CREDENTIALS: Connects to the database using the 
+#                       # username 'hr_app' and password 'hr_app'. This user 
+#                       # must own the objects or have sufficient privileges.
+#
+# @orclpdb              # CONNECTION STRING: Specifies the database instance 
+#                       # using the Net Service Name 'orclpdb' (defined in TNSNAMES.ORA).
+#                       # This identifies the SOURCE database.
+#
+# file=H:\hr\Export.DMP # DUMP FILE PATH: The full path to the output file where 
+#                       # the binary backup will be stored. This file is portable 
+#                       # but only readable by the 'imp' utility.
+#
+# (Implicit Mode)       # Since 'full', 'owner', or 'tables' are not specified, 
+#                       # this defaults to USER MODE, exporting all objects 
+#                       # (like tables: departments, bank, etc.) owned by 'hr_app'.
+
+
+# ------------------------------------------------------------------------------
+# COMMAND 2: ORACLE ORIGINAL IMPORT (imp)
+# Purpose: Load the data from the dump file into the target database schema.
+# ------------------------------------------------------------------------------
+
+# COMMAND BLOCK:
+imp hr_app/hr_app@//localhost:1522/orclpdb fromuser=hr_app touser=hr_app file=E:\hr\Export.DMP commit=y ignore=y log=C:\temp\hr_app.log
+
+# EXPLANATION OF IMPORT PARAMETERS:
+#
+# imp                                # The executable for the Oracle Original Import utility.
+#
+# hr_app/hr_app                      # USER CREDENTIALS: Connects using 'hr_app' 
+#                                    # and 'hr_app' to the TARGET database.
+#
+# @//localhost:1522/orclpdb          # CONNECTION STRING: Uses the Easy Connect 
+#                                    # syntax (Host:Port/Service Name) to locate the 
+#                                    # target database instance.
+#
+# fromuser=hr_app                    # SOURCE SCHEMA MAPPING: Specifies the schema name 
+#                                    # *inside the dump file* that the utility should look for.
+#
+# touser=hr_app                      # TARGET SCHEMA MAPPING: Specifies the schema name 
+#                                    # *in the target database* where the objects and data 
+#                                    # should be loaded.
+#
+# file=E:\hr\Export.DMP              # INPUT DUMP FILE: The path to the binary file created 
+#                                    # by the 'exp' command.
+#
+# commit=y                           # COMMIT FREQUENCY: Tells the utility to commit data 
+#                                    # after each table is loaded (default is per buffer).
+#
+# ignore=y                           # CRUCIAL FOR RE-IMPORT: Instructs the utility to 
+#                                    # ignore 'table already exists' errors and instead 
+#                                    # proceed with inserting the data into the existing tables.
+#
+# log=C:\temp\hr_app.log             # LOG FILE: Specifies the file path to record all import 
+#                                    # activities, warnings, and errors for verification.
+
+
+
+
+
+
+
+
+
+IMPORT_EXPORT_CODE.txt
+Displaying IMPORT_EXPORT_CODE.txt.
