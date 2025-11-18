@@ -134,7 +134,54 @@ imp hr_app/hr_app@//localhost:1522/orclpdb fromuser=hr_app touser=hr_app file=E:
 
 
 
-
+---------------------------------------
+both are in cmd administor run
+--------------------------------------
+EXP SUMMIT/SUMMIT@ORCL FILE=D:\summit.dmp
 
 IMPORT_EXPORT_CODE.txt
 Displaying IMPORT_EXPORT_CODE.txt.
+
+
+
+
+
+-- 1️⃣ DROP USER (including all objects)
+DROP USER scmdb CASCADE;
+
+
+-- 2️⃣ CREATE USER
+CREATE USER SCMDB IDENTIFIED BY s
+DEFAULT TABLESPACE USERS
+TEMPORARY TABLESPACE TEMP;
+
+
+-- 3️⃣ GRANT BASIC PERMISSIONS
+GRANT CREATE SESSION TO SCMDB;
+GRANT CREATE TABLE TO SCMDB;
+GRANT CREATE VIEW TO SCMDB;
+GRANT CREATE SEQUENCE TO SCMDB;
+GRANT CREATE TRIGGER TO SCMDB;
+GRANT CREATE PROCEDURE TO SCMDB;
+GRANT CREATE SYNONYM TO SCMDB;
+
+
+-- 4️⃣ OPTIONAL: GRANT UNLIMITED SPACE
+ALTER USER SCMDB QUOTA UNLIMITED ON USERS;
+
+
+-- 5️⃣ IF YOU NEED FULL ACCESS FOR DEVELOPMENT
+GRANT CONNECT, RESOURCE TO SCMDB;
+
+-- RESOURCE role already includes:
+-- CREATE TABLE, CREATE TRIGGER, CREATE PROCEDURE
+-- CREATE SEQUENCE, CREATE TYPE
+
+
+-- 6️⃣ IF YOU WANT FULL DBA-LIKE ACCESS (optional)
+-- ⚠ Use only for local development, not production
+GRANT DBA TO SCMDB;
+
+
+
+imp scmdb/s@//localhost:1521/orclpdb fromuser=scmdb touser=scmdb file=D:\scmdd_update.dmp commit=y ignore=y log=C:\temp\scmdb.log
