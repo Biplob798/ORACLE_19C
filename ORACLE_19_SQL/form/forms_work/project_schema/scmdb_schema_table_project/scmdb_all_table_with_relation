@@ -716,6 +716,7 @@ CREATE TABLE SELL_ORDER_DETAILS (
     SELL_ORDER_ID        NUMBER,
     PRODUCT_ID           NUMBER,           -- MATCHES PRODUCTS TABLE
     PRODUCT_NAME         VARCHAR2(100),
+    AVAILABLE_STOCK_QTY NUMBER,
     UNIT_TYPE            VARCHAR2(10),
     PRICE                NUMBER(10, 2),
     QUANTITY             NUMBER,
@@ -746,3 +747,72 @@ ADD CONSTRAINT FK_PRODUCTS
 FOREIGN KEY (PRODUCT_ID)
 REFERENCES PRODUCTS (PRODUCT_ID);
 
+
+
+
+
+CREATE OR REPLACE FORCE VIEW SCMDB.STOCK_VIEW
+(
+    PRODUCT_ID,
+    PRODUCT_NAME,
+    CATEGORY_ID,
+    CATEGORY_NAME,
+    BRAND_ID,
+    BRAND_NAME,
+    TYPE_ID,
+    TYPE_NAME,
+    STOCK_QTY
+)
+BEQUEATH DEFINER
+AS
+SELECT
+       p.product_id,
+       p.product_name,
+
+       pc.category_id,
+       pc.category_name,
+
+       pb.brand_id,
+       pb.brand_name,
+
+       pt.type_id,
+       pt.type_name,
+
+       SUM(iq.stock_qty) AS stock_qty
+FROM
+(
+        -- Purchase (increase stock)
+        SELECT
+               product_id,
+               SUM(qute_quantity) AS stock_qty
+        FROM SCMDB.purchase_details
+        GROUP BY product_id
+
+        UNION ALL
+
+        -- Sales (decrease stock)
+        SELECT
+               product_id,
+               -SUM(quantity) AS stock_qty
+        FROM SCMDB.sell_order_details
+        GROUP BY product_id
+) iq
+JOIN SCMDB.products p
+      ON p.product_id = iq.product_id
+LEFT JOIN SCMDB.product_category pc
+      ON p.category_id = pc.category_id
+LEFT JOIN SCMDB.product_brand pb
+      ON p.brand_id = pb.brand_id
+LEFT JOIN SCMDB.product_type pt
+      ON p.type_id = pt.type_id
+GROUP BY
+       p.product_id,
+       p.product_name,
+       pc.category_id,
+       pc.category_name,
+       pb.brand_id,
+       pb.brand_name,
+       pt.type_id,
+       pt.type_name
+/
+commit;

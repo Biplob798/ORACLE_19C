@@ -1,0 +1,19 @@
+Iconic, Image and Animated Button in Oracle Form
+From-Muhammad Nur E Alam
+
+For 11g Form
+##########
+
+Copy Icons and Paste to this location
+C:\Oracle\Middleware\Oracle_FRHome1\forms\java
+
+Configure formsweb.cfg file for Iconic Image:
+
+C:\Oracle\Middleware\user_projects\domains\ClassicDomain\config\fmwconfig\servers\WLS_FORMS\applications\formsapp_11.1.2\config\formsweb.cfg
+
+# imageBase=DocumentBase
+imageBase=codebase
+
+Functional group
+
+Iconic = Yes
