@@ -1,3 +1,15 @@
+--update
+-----------------------
+exp scmdb/s@//localhost:1521/orclpdb66.mshome.net FILE=C:\Users\%USERNAME%\Documents\SCMDB_FullExport_Last.dmp LOG=C:\Users\%USERNAME%\Documents\SCMDB_FullExport_Last.log OWNER=SCMDB STATISTICS=NONE
+
+CREATE USER NEWUSER IDENTIFIED BY password;
+ALTER USER NEWUSER QUOTA UNLIMITED ON USERS;
+GRANT CREATE SESSION, CREATE TABLE, CREATE PROCEDURE, CREATE SEQUENCE, CREATE VIEW TO NEWUSER;
+
+imp newuser/password@//localhost:1521/orclpdb66.mshome.net FILE=C:\Users\%USERNAME%\Documents\SCMDB_FullExport.dmp FROMUSER=SCMDB TOUSER=NEWUSER LOG=C:\Users\%USERNAME%\Documents\SCMDB_FullImport_NEWUSER.log
+
+
+
 --(WRITE THE COMMAND ON cmd)
 --EXP USER/PASSWORD@ORCL(SID) FILE=(PATH).dmp
 EXP SUMMIT/SUMMIT@ORCL FILE=D:\summit.dmp
