@@ -8,15 +8,15 @@ rwbuilder.conf---
 total file =2
 changes portion:
   <webLayout port="9002"
-   docroot="E:/wap/config/domains/ws/servers/WLS_REPORTS/tmp/_WL_user/reports_12.2.1/5ah7s6/war" />
+   docroot="D:/wapp/config/domains/ws/servers/WLS_REPORTS/tmp/_WL_user/reports_12.2.1/5ah7s6/war" />
 
 rwnetwork.conf---
 tatal count=5
 changes portion
 ----------------
  <namingService name="Cos" host="localhost" port="14021"/>
-E:\wap\config\domains\ws\config\fmwconfig\servers\WLS_REPORTS\applications\reports_12.2.1\configuration not chage
-E:\wap\config\domains\ws\servers\WLS_REPORTS\tmp\_WL_user\reports_12.2.1\4ltj0p\configuration not change
+D:\wapp\config\domains\ws\config\fmwconfig\servers\WLS_REPORTS\applications\reports_12.2.1\configuration not chage
+D:\wapp\config\domains\ws\servers\WLS_REPORTS\tmp\_WL_user\reports_12.2.1\4ltj0p\configuration not change
 
 
 
@@ -28,5 +28,5 @@ all file will change
 ----------------------
 default.env
 total count=4
-COMPONENT_CONFIG_PATH=E:\waap\config\domains\ws\config\fmwconfig\components\ReportsToolsComponent\reptools1
-E:\waap\config\domains\ws\servers\WLS_FORMS\tmp\_WL_user\formsapp_12.2.1\wblalg\config no need to change.
+COMPONENT_CONFIG_PATH=D:\waap\config\domains\ws\config\fmwconfig\components\ReportsToolsComponent\reptools1
+D:\waap\config\domains\ws\servers\WLS_FORMS\tmp\_WL_user\formsapp_12.2.1\wblalg\config no need to change.
