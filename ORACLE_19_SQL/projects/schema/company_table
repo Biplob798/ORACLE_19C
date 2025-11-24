@@ -1,0 +1,64 @@
+CREATE TABLE COMPANY (
+    COMPANY_ID           NUMBER PRIMARY KEY,
+    COMPANY_CODE         VARCHAR2(20) UNIQUE NOT NULL,
+    COMPANY_NAME         VARCHAR2(200) NOT NULL,
+    COMPANY_SHORT_NAME   VARCHAR2(100),
+    TAGLINE              VARCHAR2(255),
+
+    -- Contact & Address
+    ADDRESS_LINE1        VARCHAR2(200),
+    ADDRESS_LINE2        VARCHAR2(200),
+    CITY                 VARCHAR2(100),
+    STATE_NAME           VARCHAR2(100),
+    COUNTRY              VARCHAR2(100),
+    POSTAL_CODE          VARCHAR2(20),
+    PHONE_NUMBER         VARCHAR2(30),
+    EMAIL                VARCHAR2(150),
+    WEBSITE              VARCHAR2(150),
+
+    -- Branding
+    LOGO                 BLOB,
+
+    -- System Info
+    STATUS               VARCHAR2(20) DEFAULT 'ACTIVE',
+    CREATED_BY           VARCHAR2(50),
+    CREATED_DATE         DATE DEFAULT SYSDATE,
+    UPDATED_BY           VARCHAR2(50),
+    UPDATED_DATE         DATE DEFAULT SYSDATE
+);
+
+INSERT INTO COMPANY (
+    COMPANY_ID,
+    COMPANY_CODE,
+    COMPANY_NAME,
+    COMPANY_SHORT_NAME,
+    TAGLINE,
+    ADDRESS_LINE1,
+    CITY,
+    COUNTRY,
+    PHONE_NUMBER,
+    EMAIL,
+    WEBSITE,
+    CREATED_BY
+)
+
+CREATE SEQUENCE COMPANY_SEQ
+START WITH 1
+INCREMENT BY 1
+NOCACHE
+NOCYCLE;
+
+VALUES (
+    COMPANY_SEQ.NEXTVAL,
+    'SCMCORE',
+    'SCMCore Ltd.',
+    'SCMCore',
+    'Smart Supply Chain & Inventory Solutions',
+    'Dhaka, Bangladesh',
+    'Dhaka',
+    'Bangladesh',
+    '+8801521436261',
+    'info@scmcore.com',
+    'www.scmcore.com',
+    'SYSTEM'
+);

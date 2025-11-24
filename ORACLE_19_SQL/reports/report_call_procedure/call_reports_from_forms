@@ -1,0 +1,17 @@
+PROCEDURE print_preview
+IS
+   vc_url        VARCHAR2 (1000);
+   rep_server    VARCHAR2 (1000);
+   format        VARCHAR2 (500);
+   login_user    VARCHAR2 (1000);
+   report_path   VARCHAR2 (1000);
+   parameter     VARCHAR2 (1000);
+BEGIN
+   rep_server := 'http://localhost:9002/reports/rwservlet?&#39;;
+   login_user := 'userid=rems/r@orclpdb';
+   format := '&desformat=pdf&destype=cache';
+   report_path := '&report=D:\DDD62_PROJECTS\reports\Agreement.rdf';
+  -- parameter :='&P_AGREEMENT_ID='|| :AGREEMENT_MASTER.AGREEMENT_ID;
+   vc_url := rep_server || login_user || format || report_path || parameter;
+   WEB.SHOW_DOCUMENT (vc_url, '_blank');
+END;
