@@ -28,5 +28,4 @@ all file will change
 ----------------------
 default.env
 total count=4
-COMPONENT_CONFIG_PATH=D:\waap\config\domains\ws\config\fmwconfig\components\ReportsToolsComponent\reptools1
-D:\waap\config\domains\ws\servers\WLS_FORMS\tmp\_WL_user\formsapp_12.2.1\wblalg\config no need to change.
+COMPONENT_CONFIG_PATH=D:\wapp\config\domains\ws\config\fmwconfig\components\ReportsToolsComponent\reports1
