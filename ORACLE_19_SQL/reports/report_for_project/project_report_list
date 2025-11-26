@@ -27,3 +27,67 @@ Customer-wise Sales Report
 Sales Summary Report
 Sales Invoice Report
 Sales Details Report
+
+
+| Report Name                      | Source Table/View       | Suggested Report Type |
+| -------------------------------- | ----------------------- | --------------------- |
+| Employee List Report             | EMPLOYEES               | Tabular               |
+| Department-wise Employee Report  | EMPLOYEES + DEPARTMENTS | Group Left            |
+| Designation-wise Employee Report | EMPLOYEES + DESIGNATION | Group Left            |
+| Employee Profile Report          | EMPLOYEES               | Master-Detail         |
+
+
+
+
+| Report Name                  | Source Table/View           | Suggested Report Type            |
+| ---------------------------- | --------------------------- | -------------------------------- |
+| Product List Report          | PRODUCTS                    | Tabular                          |
+| Category-wise Product Report | PRODUCTS + PRODUCT_CATEGORY | Group Left                       |
+| Brand-wise Product Report    | PRODUCTS + PRODUCT_BRAND    | Group Left                       |
+| Product Type-wise Report     | PRODUCTS + PRODUCT_TYPE     | Group Left                       |
+| Product Stock Report         | STOCK_VIEW                  | Tabular                          |
+| Low Stock Report             | STOCK_VIEW                  | Tabular / Conditional Formatting |
+
+
+| Report Name                         | Source Table/View        | Suggested Report Type                  |
+| ----------------------------------- | ------------------------ | -------------------------------------- |
+| Requisition Summary Report          | REQ_MASTER               | Tabular                                |
+| Requisition Details Report          | REQ_DETAILS              | Master-Detail                          |
+| Requisition-wise Product Report     | REQ_MASTER + REQ_DETAILS | Master-Detail                          |
+| Pending/Approved Requisition Report | REQ_MASTER + REQ_DETAILS | Master-Detail / Conditional Formatting |
+
+
+
+| Report Name                    | Source Table/View             | Suggested Report Type |
+| ------------------------------ | ----------------------------- | --------------------- |
+| Quotation Summary Report       | VW_QUOTATION_SUMMARY          | Tabular               |
+| Supplier-wise Quotation Report | QUOTATION_DETAILS + SUPPLIERS | Group Left            |
+| Approved Quotation Report      | QUOTATION_APPROVE             | Tabular               |
+| Pending Quotation Report       | QUOTATION_APPROVE             | Tabular               |
+
+
+
+| Report Name              | Source Table/View           | Suggested Report Type      |
+| ------------------------ | --------------------------- | -------------------------- |
+| Purchase Summary Report  | PURCHASE_MASTER             | Tabular                    |
+| Purchase Details Report  | PURCHASE_DETAILS            | Master-Detail              |
+| Supplier Purchase Report | PURCHASE_MASTER + SUPPLIERS | Group Left / Master-Detail |
+| Purchase History Report  | PURCHASE_DETAILS            | Tabular / Master-Detail    |
+
+
+
+| Report Name                    | Source Table/View                      | Suggested Report Type |
+| ------------------------------ | -------------------------------------- | --------------------- |
+| Supplier List Report           | SUPPLIERS                              | Tabular               |
+| Supplier Due Report            | SUPPLIER_DUE_PAYMENT                   | Tabular               |
+| Supplier Due Collection Report | SUPPLIER_DUE_PAYMENT                   | Master-Detail         |
+| Supplier Ledger Report         | PURCHASE_MASTER + SUPPLIER_DUE_PAYMENT | Master-Detail         |
+
+
+| Report Name                | Source Table/View                      | Suggested Report Type |
+| -------------------------- | -------------------------------------- | --------------------- |
+| Customer List Report       | CUSTOMER                               | Tabular               |
+| Customer-wise Sales Report | SELL_ORDER_MASTER + SELL_ORDER_DETAILS | Master-Detail         |
+| Sales Summary Report       | SELL_ORDER_MASTER                      | Tabular               |
+| Sales Invoice Report       | SELL_ORDER_MASTER + SELL_ORDER_DETAILS | Master-Detail         |
+| Sales Details Report       | SELL_ORDER_DETAILS                     | Tabular               |
