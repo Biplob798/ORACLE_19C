@@ -1,3 +1,4 @@
+
 rwserver.conf---
 total file count =3
 changes portion=
@@ -29,3 +30,37 @@ all file will change
 default.env
 total count=4
 COMPONENT_CONFIG_PATH=D:\wapp\config\domains\ws\config\fmwconfig\components\ReportsToolsComponent\reports1
+
+
+--procedure for call report
+
+PROCEDURE report_view
+IS
+   vc_url        VARCHAR2(2000);
+   rep_server    VARCHAR2(500);
+   login_user    VARCHAR2(500);
+   format        VARCHAR2(500);
+   report_path   VARCHAR2(1000);
+   parameter     VARCHAR2(1000);
+BEGIN
+   -- REPORT SERVER URL
+   rep_server := 'http://localhost:9002/reports/rwservlet?';
+
+   -- DB LOGIN
+   login_user := 'userid=scmdb/s@orclpdb';
+
+   -- OUTPUT FORMAT
+   format := '&desformat=pdf&destype=cache';
+
+   -- REPORT FILE PATH (VERY IMPORTANT: Full path must not contain spaces)
+   report_path := '&report=D:\wapp\product\forms\report\REQ_MASTER_DETAILS_REPORT.rdf';
+
+   -- If you want to pass parameter later
+    parameter := '&P_REQUISITION_ID=' || :REQ_MASTER.REQUISITION_ID;
+
+   -- Build the final URL
+   vc_url := rep_server || login_user || format || report_path || parameter;
+
+   -- OPEN REPORT IN BROWSER
+   WEB.SHOW_DOCUMENT (vc_url, '_blank');
+END;
