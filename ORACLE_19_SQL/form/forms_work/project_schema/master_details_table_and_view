@@ -198,3 +198,198 @@ BEGIN
 END;
 /
 commit;
+
+
+CREATE OR REPLACE PROCEDURE SCMDB.insert_purchase_history2
+(
+    p_quation_id IN NUMBER
+)
+IS
+    v_SUPPLIER_ID         NUMBER;
+    v_SUPPLIER_NAME       VARCHAR2(100);
+    v_QUOT_MASTER_ID      NUMBER;
+
+    V_PURCHASE_ID         NUMBER;
+    v_PURCHASE_DETAIL_ID  NUMBER;
+
+    v_exists NUMBER;
+
+    CURSOR c_approve_data IS
+        SELECT *
+        FROM QUOTATION_APPROVE
+        WHERE QUOT_APPROVE_ID = p_quation_id;
+
+BEGIN
+    -----------------------------------------------------------
+    -- 1️⃣ প্রথমে এই quotation master ID বের করো
+    -----------------------------------------------------------
+    SELECT SUPPLIER_ID, SUPPLIER_NAME, QUOT_MASTER_ID
+    INTO   v_SUPPLIER_ID, v_SUPPLIER_NAME, v_QUOT_MASTER_ID
+    FROM   QUOTATION_APPROVE
+    WHERE  QUOT_APPROVE_ID = p_quation_id;
+
+    -----------------------------------------------------------
+    -- 2️⃣ চেক করো এই QUOT_MASTER_ID এর জন্য purchase_master এ data আছে কিনা
+    -----------------------------------------------------------
+    SELECT COUNT(*) INTO v_exists
+    FROM PURCHASE_MASTER
+    WHERE QUOT_MASTER_ID = v_QUOT_MASTER_ID;
+
+    -----------------------------------------------------------
+    -- 3️⃣ যদি না থাকে → নতুন PURCHASE_MASTER insert করো
+    -----------------------------------------------------------
+    IF v_exists = 0 THEN
+        SELECT NVL(MAX(PURCHASE_ID), 0) + 1
+        INTO V_PURCHASE_ID
+        FROM PURCHASE_MASTER;
+
+        INSERT INTO PURCHASE_MASTER
+        (
+            PURCHASE_ID,
+            QUOT_MASTER_ID,
+            SUPPLIER_ID,
+            SUPPLIER_NAME
+        )
+        VALUES
+        (
+            V_PURCHASE_ID,
+            v_QUOT_MASTER_ID,
+            v_SUPPLIER_ID,
+            v_SUPPLIER_NAME
+        );
+    ELSE
+        -- যদি আগেই থাকে → সেই purchase_id নাও
+        SELECT PURCHASE_ID INTO V_PURCHASE_ID
+        FROM PURCHASE_MASTER
+        WHERE QUOT_MASTER_ID = v_QUOT_MASTER_ID;
+    END IF;
+
+    -----------------------------------------------------------
+    -- 4️⃣ এখন APPROVE details → PURCHASE_DETAILS এ নিবে
+    -----------------------------------------------------------
+    FOR a IN c_approve_data LOOP
+        SELECT NVL(MAX(PURCHASE_DETAIL_ID), 0) + 1
+        INTO v_PURCHASE_DETAIL_ID
+        FROM PURCHASE_DETAILS;
+
+        INSERT INTO PURCHASE_DETAILS
+        (
+            PURCHASE_DETAIL_ID,
+            PURCHASE_ID,
+            PRODUCT_ID,
+            PRODUCT_NAME,
+            QUTE_QUANTITY,
+            QUATATION_PRICE
+        )
+        VALUES
+        (
+            v_PURCHASE_DETAIL_ID,
+            V_PURCHASE_ID,
+            a.PRODUCT_ID,
+            a.PRODUCT_NAME,
+            a.QUTE_QUANTITY,
+            a.QUOTATION_PRICE
+        );
+    END LOOP;
+
+    COMMIT;
+END;
+/
+--new update
+CREATE OR REPLACE PROCEDURE SCMDB.insert_purchase_history3
+(
+    p_quation_id IN NUMBER
+)
+IS
+    v_SUPPLIER_ID         NUMBER;
+    v_SUPPLIER_NAME       VARCHAR2(100);
+    v_QUOT_MASTER_ID      NUMBER;
+    V_PURCHASE_ID         NUMBER;
+    v_PURCHASE_DETAIL_ID  NUMBER;
+
+    v_exists NUMBER;
+
+    CURSOR c_approve_data IS
+        SELECT *
+        FROM QUOTATION_APPROVE
+        WHERE QUOT_APPROVE_ID = p_quation_id;
+
+BEGIN
+    -----------------------------------------------------------
+    -- 1️⃣ প্রথমে এই quotation master ID বের করো
+    -----------------------------------------------------------
+    SELECT SUPPLIER_ID, SUPPLIER_NAME, QUOT_MASTER_ID
+    INTO   v_SUPPLIER_ID, v_SUPPLIER_NAME, v_QUOT_MASTER_ID
+    FROM   QUOTATION_APPROVE
+    WHERE  QUOT_APPROVE_ID = p_quation_id;
+
+    -----------------------------------------------------------
+    -- 2️⃣ চেক করো এই QUOT_MASTER_ID এর জন্য purchase_master এ data আছে কিনা
+    -----------------------------------------------------------
+    SELECT COUNT(*) INTO v_exists
+    FROM PURCHASE_MASTER
+    WHERE QUOT_MASTER_ID = v_QUOT_MASTER_ID;
+
+    -----------------------------------------------------------
+    -- 3️⃣ যদি না থাকে → নতুন PURCHASE_MASTER insert করো
+    -----------------------------------------------------------
+    IF v_exists = 0 THEN
+        SELECT NVL(MAX(PURCHASE_ID), 0) + 1
+        INTO V_PURCHASE_ID
+        FROM PURCHASE_MASTER;
+
+        INSERT INTO PURCHASE_MASTER
+        (
+            PURCHASE_ID,
+            QUOT_MASTER_ID
+          
+        )
+        VALUES
+        (
+            V_PURCHASE_ID,
+            v_QUOT_MASTER_ID
+         
+        );
+    ELSE
+        -- যদি আগেই থাকে → সেই purchase_id নাও
+        SELECT PURCHASE_ID INTO V_PURCHASE_ID
+        FROM PURCHASE_MASTER
+        WHERE QUOT_MASTER_ID = v_QUOT_MASTER_ID;
+    END IF;
+
+    -----------------------------------------------------------
+    -- 4️⃣ এখন APPROVE details → PURCHASE_DETAILS এ নিবে
+    -----------------------------------------------------------
+    FOR a IN c_approve_data LOOP
+        SELECT NVL(MAX(PURCHASE_DETAIL_ID), 0) + 1
+        INTO v_PURCHASE_DETAIL_ID
+        FROM PURCHASE_DETAILS;
+
+        INSERT INTO PURCHASE_DETAILS
+        (
+            PURCHASE_DETAIL_ID,
+            PURCHASE_ID,
+            PRODUCT_ID,
+            PRODUCT_NAME,
+            QUTE_QUANTITY,
+              SUPPLIER_ID,
+            SUPPLIER_NAME,
+            QUATATION_PRICE
+        )
+        VALUES
+        (
+            v_PURCHASE_DETAIL_ID,
+            V_PURCHASE_ID,
+            a.PRODUCT_ID,
+            a.PRODUCT_NAME,
+            a.QUTE_QUANTITY,
+               v_SUPPLIER_ID,
+            v_SUPPLIER_NAME,
+            a.QUOTATION_PRICE
+        );
+    END LOOP;
+
+    COMMIT;
+END;
+/
+commit;
