@@ -816,3 +816,202 @@ GROUP BY
        pt.type_name
 /
 commit;
+
+--------------------------------
+update
+--supply_due_payment table
+--from view
+
+--open_form('SCM_SUPPLIER_DUE_PAYMENT');
+
+
+DECLARE
+    v_emp_id VW_PURCHASE_INFO.SUPPLIER_ID%TYPE;
+BEGIN
+    -- 1. Get the EMPLOYEE_ID from the current record where 'Edit' was clicked
+    v_emp_id := :VW_PURCHASE_INFO.SUPPLIER_ID;
+
+    IF v_emp_id IS NOT NULL THEN
+        SHOW_VIEW('SCANVAS');
+        GO_BLOCK('ADD_VW_PURCHASE_INFO');
+
+      
+        -- 2. Clear the block's data buffer before fetching new data.
+        CLEAR_BLOCK(NO_VALIDATE);
+
+        -- 3. Set the WHERE clause to fetch only the selected ID.
+        SET_BLOCK_PROPERTY('ADD_VW_PURCHASE_INFO', DEFAULT_WHERE,
+                           'SUPPLIER_ID = ' || v_emp_id);
+
+        -- 4. Execute the query.
+        EXECUTE_QUERY;
+
+        -- 5. Ensure the cursor is on the newly fetched record (usually record 1, since only one is fetched).
+        GO_RECORD(1);
+
+    ELSE
+        MESSAGE('Please select a EMPLOYEES to edit.');
+        MESSAGE(' ', NO_ACKNOWLEDGE);
+    END IF;
+END;
+
+
+
+
+
+
+/*DECLARE
+    v_emp_id EMPLOYEES.EMPLOYEE_ID%TYPE;  -- variable declaration only
+BEGIN
+    -- Make sure the current record is active
+    GO_RECORD(:SYSTEM.CURSOR_RECORD);
+
+    -- Get EMPLOYEE_ID from the current row
+    v_emp_id := :EMPLOYEES.EMPLOYEE_ID;
+
+    IF v_emp_id IS NOT NULL THEN
+       -- Show the stacked canvas
+       SHOW_VIEW('SCANVAS');
+
+       -- Go to the edit block (stacked canvas block)
+       GO_BLOCK('EMPLOYEES_ADD');
+
+       -- Clear old data in the block
+       CLEAR_BLOCK(NO_VALIDATE);
+
+       -- Clear previous WHERE clause
+       --SET_BLOCK_PROPERTY('EMPLOYEES_ADD', DEFAULT_WHERE, NULL);
+
+       -- Set WHERE clause for the selected employee
+       SET_BLOCK_PROPERTY('EMPLOYEES_ADD', DEFAULT_WHERE,
+                          'EMPLOYEE_ID = ' || v_emp_id);
+
+       -- Execute the query to fetch the selected employee
+       EXECUTE_QUERY;
+
+    ELSE
+       MESSAGE('Please select an employee.');
+       MESSAGE(' ', NO_ACKNOWLEDGE);
+    END IF;
+END;
+*/
+
+
+DECLARE
+    v_search        VARCHAR2(100);
+    v_current_item  VARCHAR2(30);
+BEGIN
+    -- Store current item
+    v_current_item := :SYSTEM.CURSOR_ITEM;
+
+    -- Prepare search text
+    v_search := UPPER(TRIM(:CONTROL.BTN_SEARCH));
+
+    -- Move to block
+    GO_BLOCK('VW_PURCHASE_INFO');
+
+    -- Apply filter
+    SET_BLOCK_PROPERTY(
+        'VW_PURCHASE_INFO',
+        DEFAULT_WHERE,
+        '( UPPER(TO_CHAR(PURCHASE_ID)) LIKE ''%' || v_search || '%''
+           OR UPPER(SUPPLIER_NAME) LIKE ''%' || v_search || '%''
+           OR UPPER(PRODUCT_NAME) LIKE ''%' || v_search || '%'' )'
+    );
+
+    -- Execute query
+    EXECUTE_QUERY;
+
+    -- Return cursor
+    GO_ITEM(v_current_item);
+END;
+
+
+/*BEGIN
+   SET_BLOCK_PROPERTY('VW_PURCHASE_INFO', ORDER_BY, 'PURCHASE_ID DESC');
+   where DUE_AMOUNT is not null
+   EXECUTE_QUERY;
+END;
+*/
+BEGIN
+  -- Make sure we're on the correct block
+  GO_BLOCK('VW_PURCHASE_INFO');
+
+  -- 1) Order by: provide column list (no "ORDER BY" keyword)
+  SET_BLOCK_PROPERTY('VW_PURCHASE_INFO', ORDER_BY, 'PURCHASE_DETAIL_ID DESC');
+
+  -- 2) WHERE: use a valid SQL predicate (no "WHERE" keyword)
+  -- NOTE: correct syntax is "IS NOT NULL" (not "IS not NULL")
+  SET_BLOCK_PROPERTY('VW_PURCHASE_INFO', DEFAULT_WHERE, 'DUE_AMOUNT IS NOT NULL');
+
+  -- 3) Clear any existing query buffer and run the query for this block
+  CLEAR_BLOCK(NO_COMMIT);
+  EXECUTE_QUERY;
+END;
+BEGIN
+    -- Go directly to Home Page form
+    NEW_FORM('HOMEPAGE');
+END;
+--------------------------------------
+
+
+CREATE OR REPLACE FORCE VIEW SCMDB.VW_PURCHASE_INFO2
+(
+    -- **MASTER LEVEL COLUMNS (Header Info)**
+    MASTER_PURCHASE_ID,         -- pm.PURCHASE_ID
+    QUOT_MASTER_ID,             -- pm.QUOT_MASTER_ID
+    MASTER_SUPPLIER_ID,         -- pm.SUPPLIER_ID
+    MASTER_SUPPLIER_NAME,       -- pm.SUPPLIER_NAME
+    PURCHASE_DATE,              -- pm.PURCHASE_DATE
+    MASTER_TOTAL_AMOUNT,        -- pm.TOTAL_AMOUNT (Sum of detail TOTAL_PRICE)
+    MASTER_NET_TOTAL_AMOUNT,    -- pm.NET_TOTAL_AMOUNT
+    MASTER_GIVEN_AMOUNT,        -- pm.GIVEN_AMOUNT (Total payment)
+    MASTER_DUE_AMOUNT,          -- pm.DUE_AMOUNT (Total outstanding)
+
+    -- **DETAIL LEVEL COLUMNS (Line Item Info)**
+    PURCHASE_DETAIL_ID,         -- pd.PURCHASE_DETAIL_ID (Det Id#)
+    DETAIL_PRODUCT_ID,          -- pd.PRODUCT_ID
+    DETAIL_PRODUCT_NAME,        -- pd.PRODUCT_NAME (Prdct Name)
+    DETAIL_SUPPLIER_ID,         -- pd.SUPPLIER_ID (Supp Id# - redundancy)
+    DETAIL_SUPPLIER_NAME,       -- pd.SUPPLIER_NAME (Supplier Name - redundancy)
+    QUTE_QUANTITY,              -- pd.QUTE_QUANTITY (Quantity)
+    QUATATION_PRICE,            -- pd.QUATATION_PRICE (Quat Price)
+    DETAIL_TOTAL_PRICE,         -- pd.TOTAL_PRICE
+    DETAIL_DISCOUNT_AMOUNT,     -- pd.DISCOUNT_AMOUNT (Dis Amnt)
+    VAT_PERCENTAGE,             -- pd.VAT_PERCENTAGE (Vat %)
+    DETAIL_VAT_AMOUNT,          -- pd.VAT (Vat Amount)
+    DETAIL_NET_AMOUNT,          -- pd.NET (Net Price)
+    DETAIL_GIVEN_AMOUNT,        -- pd.GIVEN_AMOUNT (pay Amnt)
+    DETAIL_DUE_AMOUNT           -- pd.DUE_AMOUNT (Due Amnt)
+)
+AS
+    SELECT pm.PURCHASE_ID,
+           pm.QUOT_MASTER_ID,
+           pm.SUPPLIER_ID,
+           pm.SUPPLIER_NAME,
+           pm.PURCHASE_DATE,
+           pm.TOTAL_AMOUNT,
+           pm.NET_TOTAL_AMOUNT,
+           pm.GIVEN_AMOUNT AS MASTER_GIVEN_AMOUNT,
+           pm.DUE_AMOUNT AS MASTER_DUE_AMOUNT,
+           
+           pd.PURCHASE_DETAIL_ID,
+           pd.PRODUCT_ID AS DETAIL_PRODUCT_ID,
+           pd.PRODUCT_NAME AS DETAIL_PRODUCT_NAME,
+           pd.SUPPLIER_ID AS DETAIL_SUPPLIER_ID,
+           pd.SUPPLIER_NAME AS DETAIL_SUPPLIER_NAME,
+           pd.QUTE_QUANTITY,
+           pd.QUATATION_PRICE,
+           pd.TOTAL_PRICE AS DETAIL_TOTAL_PRICE,
+           pd.DISCOUNT_AMOUNT AS DETAIL_DISCOUNT_AMOUNT,
+           pd.VAT_PERCENTAGE,
+           pd.VAT AS DETAIL_VAT_AMOUNT,
+           pd.NET AS DETAIL_NET_AMOUNT,
+           pd.GIVEN_AMOUNT AS DETAIL_GIVEN_AMOUNT,
+           pd.DUE_AMOUNT AS DETAIL_DUE_AMOUNT
+      FROM SCMDB.PURCHASE_MASTER pm
+           JOIN SCMDB.PURCHASE_DETAILS pd
+              ON pm.PURCHASE_ID = pd.PURCHASE_ID
+     WHERE NVL (pm.DUE_AMOUNT, 0) > 0;
+     
+     commit

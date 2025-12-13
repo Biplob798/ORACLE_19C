@@ -96,3 +96,48 @@ for save button on popup
 commit;
 
 
+
+
+CREATE OR REPLACE TRIGGER SCMDB.TR_VW_PURCHASE_INFO2_IU
+INSTEAD OF UPDATE ON SCMDB.VW_PURCHASE_INFO2
+FOR EACH ROW
+BEGIN
+    -- 1. Update the Header Table (PURCHASE_MASTER)
+    -- Includes your new NET_TOTAL_AMOUNT update, plus all master payment/quote fields.
+    UPDATE SCMDB.PURCHASE_MASTER PM
+    SET 
+        PM.GIVEN_AMOUNT = :NEW.MASTER_GIVEN_AMOUNT,
+        PM.DUE_AMOUNT = :NEW.MASTER_DUE_AMOUNT,      
+        PM.QUOT_MASTER_ID = :NEW.QUOT_MASTER_ID,
+        PM.MODIFIED_DATE = SYSDATE,
+        -- **Omitted Supplier Name Update in PM:** -- Based on your schema, if the Forms application sends MASTER_SUPPLIER_NAME
+        -- and you don't update it here, you might still get ORA-01779 if that's the non key-preserved column.
+        -- If you want to include it, use: PM.SUPPLIER_NAME = :NEW.DETAIL_SUPPLIER_NAME, 
+        NULL = NULL  -- Placeholder to maintain structure
+    WHERE PM.PURCHASE_ID = :OLD.MASTER_PURCHASE_ID;
+    
+    
+    -- 2. Update the Detail Table (PURCHASE_DETAILS)
+    -- Includes Quantity (QUTE_QUANTITY) and Price (QUATATION_PRICE) for completeness,
+    -- as they are part of the detailed data and were in the original Forms update statement.
+    UPDATE SCMDB.PURCHASE_DETAILS PD
+    SET 
+        PD.GIVEN_AMOUNT = :NEW.DETAIL_GIVEN_AMOUNT,
+        PD.DUE_AMOUNT = :NEW.DETAIL_DUE_AMOUNT,      
+        -- Re-added the detail line fields that are often included in the Forms UPDATE statement:
+    WHERE PD.PURCHASE_DETAIL_ID = :OLD.PURCHASE_DETAIL_ID;
+    
+    
+    UPDATE SCMDB.PURCHASE_DETAILS PD
+    SET PD.SUPPLIER_NAME = :NEW.DETAIL_SUPPLIER_NAME
+    WHERE PD.PURCHASE_DETAIL_ID = :OLD.PURCHASE_DETAIL_ID;
+    
+    -- **If the supplier name is meant to be updated in PURCHASE_MASTER, uncomment this and comment out the above:**
+    /*
+    UPDATE SCMDB.PURCHASE_MASTER PM
+    SET PM.SUPPLIER_NAME = :NEW.DETAIL_SUPPLIER_NAME
+    WHERE PM.PURCHASE_ID = :OLD.MASTER_PURCHASE_ID;
+    */
+    
+END;
+/
