@@ -1,0 +1,229 @@
+-- 1. Suppliers Table
+CREATE TABLE Suppliers (
+    Supplier_id         NUMBER(10)      PRIMARY KEY,
+    Supplier_name       VARCHAR2(100),
+    Supplier_phone      VARCHAR2(20),
+    Supplier_email      VARCHAR2(100),
+    Supplier_Address    VARCHAR2(255),
+    Contact_person      VARCHAR2(100),
+    Total_purchase      NUMBER(12, 2),
+    Total_paid          NUMBER(12, 2),
+    Supp_due            NUMBER(12, 2)
+);
+
+-- 2. Customers Table
+CREATE TABLE Customers (
+    Customer_id         NUMBER(10)      PRIMARY KEY,
+    Cust_first_name     VARCHAR2(50),
+    Cust_last_name      VARCHAR2(50),
+    Cust_Address        VARCHAR2(255),
+    Cust_city           VARCHAR2(100),
+    Cust_phone          VARCHAR2(20),
+    Reward_points       NUMBER(8)
+);
+
+-- 3. Products Table
+CREATE TABLE Products (
+    Product_id          NUMBER(10)      PRIMARY KEY,
+    Product_name        VARCHAR2(100),
+    Procuct_avail       VARCHAR2(3),
+    Pur_price           NUMBER(8, 2),
+    MRP                 NUMBER(8, 2)
+);
+
+-- 4. Supplier Payments Table (PK is Supplier_Payment_id)
+CREATE TABLE Supplier_Payments (
+    Supplier_Payment_id NUMBER(10)      PRIMARY KEY,
+    Supplier_id         NUMBER(10),
+    Supplier_name       VARCHAR2(100),
+    Payment_date        DATE,
+    Payment_type        VARCHAR2(50),
+    Pay_amount          NUMBER(10, 2),
+    User_id             VARCHAR2(50)
+);
+
+-- 5. Stocks Table (PK is Product_id)
+CREATE TABLE Stocks (
+    Product_id          NUMBER(10)      PRIMARY KEY,
+    Product_name        VARCHAR2(100),
+    Stock_on_hand       NUMBER(8)
+);
+
+-- 6. Orders Table
+CREATE TABLE Orders (
+    Order_id            NUMBER(10)      PRIMARY KEY,
+    Order_date          DATE,
+    Order_total         NUMBER(10, 2),
+    Discount            NUMBER(5, 2),
+    Order_amount        NUMBER(10, 2),
+    Customer_id         NUMBER(10),
+    User_id             VARCHAR2(50)
+);
+
+-- 7. Purchase_Orders Table
+CREATE TABLE Purchase_Orders (
+    Purchase_id         NUMBER(10)      PRIMARY KEY,
+    Purchase_date       DATE,
+    Purchase_total      NUMBER(12, 2),
+    Supplier_id         NUMBER(10),
+    User_id             VARCHAR2(50)
+);
+
+-- 8. Order_Items Table (Requires a composite key, which must be defined at the table level.
+-- Since the instruction specified *only* column-level PKs, and this table's diagram implies a composite key (Order_id and Order_item_id),
+-- I will define Order_item_id as the primary key here, which may not fully represent the ERD, but adheres to the strict instruction of column-level PK.)
+
+CREATE TABLE Order_Items (
+    Order_id            NUMBER(10),
+    Order_item_id       NUMBER(10)      PRIMARY KEY, -- Single column PK to adhere to column-level constraint
+    SL_no               NUMBER(5),
+    Product_id          NUMBER(10),
+    MRP                 NUMBER(8, 2),
+    Quantity            NUMBER(8)
+);
+
+-- 9. Purchase_Items Table (Requires a composite key. Applying the same logic as Order_Items.)
+CREATE TABLE Purchase_Items (
+    Purchase_id             NUMBER(10),
+    Purchase_item_id        NUMBER(10)      PRIMARY KEY, -- Single column PK to adhere to column-level constraint
+    SL_no                   NUMBER(5),
+    Product_id              NUMBER(10),
+    Pur_price               NUMBER(8, 2),
+    Quantity                NUMBER(8)
+);
+
+
+-- Supplier_Payments FK to Suppliers
+ALTER TABLE Supplier_Payments
+ADD CONSTRAINT FK_SupPay_Sup FOREIGN KEY (Supplier_id) REFERENCES Suppliers(Supplier_id);
+
+-- Orders FK to Customers
+ALTER TABLE Orders
+ADD CONSTRAINT FK_Orders_Cust FOREIGN KEY (Customer_id) REFERENCES Customers(Customer_id);
+
+-- Purchase_Orders FK to Suppliers
+ALTER TABLE Purchase_Orders
+ADD CONSTRAINT FK_PO_Sup FOREIGN KEY (Supplier_id) REFERENCES Suppliers(Supplier_id);
+
+-- Stocks FK to Products (1:1 Relationship)
+ALTER TABLE Stocks
+ADD CONSTRAINT FK_Stocks_Prod FOREIGN KEY (Product_id) REFERENCES Products(Product_id);
+
+-- Order_Items FKs
+ALTER TABLE Order_Items
+ADD CONSTRAINT FK_OI_Orders FOREIGN KEY (Order_id) REFERENCES Orders(Order_id);
+
+ALTER TABLE Order_Items
+ADD CONSTRAINT FK_OI_Products FOREIGN KEY (Product_id) REFERENCES Products(Product_id);
+
+-- Purchase_Items FKs
+ALTER TABLE Purchase_Items
+ADD CONSTRAINT FK_PI_PO FOREIGN KEY (Purchase_id) REFERENCES Purchase_Orders(Purchase_id);
+
+ALTER TABLE Purchase_Items
+ADD CONSTRAINT FK_PI_Products FOREIGN KEY (Product_id) REFERENCES Products(Product_id);
+
+
+
+
+-- 1. Company Table
+CREATE TABLE Company (
+    Company_id          NUMBER(10),
+    Company_name        VARCHAR2(100),
+    Company_Address     VARCHAR2(255),
+    Company_phone       VARCHAR2(20)
+);
+
+-- 2. Employees Table
+CREATE TABLE Employees (
+    Emp_id              NUMBER(10),
+    first_name          VARCHAR2(50),
+    last_name           VARCHAR2(50),
+    Address             VARCHAR2(255),
+    Phone               VARCHAR2(20),
+    Email               VARCHAR2(100),
+    Company_id          NUMBER(10)
+);
+
+-- 3. Users Table
+CREATE TABLE Users (
+    Rec_id              NUMBER(10),
+    Userid              VARCHAR2(50),
+    Groupid             NUMBER(10),
+    Password            VARCHAR2(100),
+    Admin               CHAR(1),
+    Emp_id              NUMBER(10)
+);
+
+-- 4. Group_master Table
+CREATE TABLE Group_master (
+    Groupid             NUMBER(10),
+    Grouptitle          VARCHAR2(100)
+);
+
+-- 5. Segments Table
+CREATE TABLE Segments (
+    Segmentid           NUMBER(10),
+    Segmenttitle        VARCHAR2(100),
+    Segmentparent       NUMBER(10),
+    Segmenttype         VARCHAR2(50),
+    Pageid              NUMBER(10),
+    Itemrole            VARCHAR2(50)
+);
+
+-- 6. Group_details Table
+CREATE TABLE Group_details (
+    Groupid             NUMBER(10),
+    Segmentid           NUMBER(10),
+    Segmentparent       NUMBER(10),
+    Segmenttype         VARCHAR2(50),
+    Pageid              NUMBER(10),
+    Itemrole            VARCHAR2(50),
+    Allow_access        CHAR(1)
+);
+
+
+-- Company PK
+ALTER TABLE Company
+ADD CONSTRAINT PK_Company PRIMARY KEY (Company_id);
+
+-- Employees PK
+ALTER TABLE Employees
+ADD CONSTRAINT PK_Employees PRIMARY KEY (Emp_id);
+
+-- Users PK
+ALTER TABLE Users
+ADD CONSTRAINT PK_Users PRIMARY KEY (Rec_id);
+
+-- Group_master PK
+ALTER TABLE Group_master
+ADD CONSTRAINT PK_Group_master PRIMARY KEY (Groupid);
+
+-- Segments PK
+ALTER TABLE Segments
+ADD CONSTRAINT PK_Segments PRIMARY KEY (Segmentid);
+
+-- Group_details PK (Composite Key: Groupid, Segmentid)
+ALTER TABLE Group_details
+ADD CONSTRAINT PK_Group_details PRIMARY KEY (Groupid, Segmentid);
+
+
+-- Employees FK to Company
+ALTER TABLE Employees
+ADD CONSTRAINT FK_Emp_Comp FOREIGN KEY (Company_id) REFERENCES Company(Company_id);
+
+-- Users FK to Group_master
+ALTER TABLE Users
+ADD CONSTRAINT FK_User_Group FOREIGN KEY (Groupid) REFERENCES Group_master(Groupid);
+
+-- Users FK to Employees (Assuming Emp_id in Users is also an FK)
+ALTER TABLE Users
+ADD CONSTRAINT FK_User_Emp FOREIGN KEY (Emp_id) REFERENCES Employees(Emp_id);
+
+-- Group_details FK to Group_master
+ALTER TABLE Group_details
+ADD CONSTRAINT FK_GD_GM FOREIGN KEY (Groupid) REFERENCES Group_master(Groupid);
+
+-- Group_details FK to Segments
+ALTER TABLE Group_details
+ADD CONSTRAINT FK_GD_Seg FOREIGN KEY (Segmentid) REFERENCES Segments(Segmentid);

@@ -1,0 +1,80 @@
+CREATE TABLE DEMO_CUSTOMERS (
+    CUSTOMER_ID         NUMBER                  PRIMARY KEY,
+    CUST_FIRST_NAME     VARCHAR2(20)            NOT NULL,
+    CUST_LAST_NAME      VARCHAR2(20),
+    CUST_STREET_ADDRESS1 VARCHAR2(60),
+    CUST_STREET_ADDRESS2 VARCHAR2(60),
+    CUST_CITY           VARCHAR2(30),
+    CUST_STATE          VARCHAR2(2),
+    CUST_POSTAL_CODE    VARCHAR2(10),
+    CUST_EMAIL          VARCHAR2(30),
+    PHONE_NUMBER1       VARCHAR2(25),
+    PHONE_NUMBER2       VARCHAR2(25),
+    URL                 VARCHAR2(100),
+    CREDIT_LIMIT        NUMBER(9, 2),
+    TAGS                VARCHAR2(4000)
+);
+
+
+CREATE TABLE DEMO_PRODUCT_INFO (
+    PRODUCT_ID          NUMBER                  PRIMARY KEY,
+    PRODUCT_NAME        VARCHAR2(50),
+    PRODUCT_DESCRIPTION VARCHAR2(2000),
+    CATEGORY            VARCHAR2(30),
+    PRODUCT_AVAIL       VARCHAR2(1),
+    LIST_PRICE          NUMBER(8, 2),
+    PRODUCT_IMAGE       BLOB,
+    MIMETYPE            VARCHAR2(255),
+    FILENAME            VARCHAR2(400),
+    IMAGE_LAST_UPDATE   TIMESTAMP(6) WITH LOCAL TIME ZONE
+);
+
+CREATE TABLE DEMO_ORDERS (
+    ORDER_ID            NUMBER                  PRIMARY KEY,
+    CUSTOMER_ID         NUMBER                  NOT NULL,
+    ORDER_TOTAL         NUMBER(8, 2),
+    ORDER_TIMESTAMP     TIMESTAMP(6) WITH LOCAL TIME ZONE,
+    USER_NAME           VARCHAR2(100),
+    TAGS                VARCHAR2(4000)
+);
+
+
+CREATE TABLE DEMO_ORDER_ITEMS (
+    ORDER_ITEM_ID       NUMBER                  PRIMARY KEY, -- Chosen to satisfy column-level PK constraint
+    ORDER_ID            NUMBER                  NOT NULL,
+    PRODUCT_ID          NUMBER                  NOT NULL,
+    UNIT_PRICE          NUMBER(8, 2)            ,
+    QUANTITY            NUMBER(8, 0)            
+);
+
+
+CREATE TABLE DEMO_STATES (
+    STATE_ID            VARCHAR2(2)             PRIMARY KEY,
+    STATE_NAME          VARCHAR2(25)
+);
+
+
+--shared components
+Navigation Menu
+Setup -No target
+Managing Customers -2
+Managing Products -3
+Managing Suppliers -118
+Reset Password -65
+Purchases -100
+Supplier Payments -120
+Orders -4
+Reports -26
+Graphical Reports -26
+Customer Orders -17
+Sales by Category/Products -16
+Sales by Category/Month -5
+Order Calendar -10
+Product Order Tree -19
+Advanced Reports -26
+Customer Invoice -50
+Administration -No Target
+Company/Client -70
+Application Segments -60
+User Group and Group Assign -62
+Application Users -64
