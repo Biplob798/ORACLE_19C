@@ -1,0 +1,29 @@
+CREATE TABLE user_info (
+    user_info_id      NUMBER,
+    user_type_id      NUMBER,
+    username          VARCHAR2(100) CONSTRAINT user_info_username_nn NOT NULL
+                                    CONSTRAINT user_info_username_uk UNIQUE,
+    password          VARCHAR2(100) CONSTRAINT user_info_password_nn NOT NULL,
+    user_image        BLOB,
+    action_user       VARCHAR2(100) DEFAULT USER,
+    action_date_time  DATE          DEFAULT SYSDATE
+);
+
+-- Primary Key Constraint
+ALTER TABLE user_info 
+ADD CONSTRAINT user_info_user_info_id_pk PRIMARY KEY (user_info_id);
+
+-- Foreign Key Constraint
+ALTER TABLE user_info 
+ADD CONSTRAINT user_info_user_type_id_fk FOREIGN KEY (user_type_id) 
+REFERENCES user_type(user_type_id);
+
+
+create or replace view user_view
+as
+select  user_info.user_info_id, user_info.user_type_id,
+        user_type_name, username, password, user_image,
+        user_info.action_user, user_info.action_date_time
+from    user_info , user_type
+where   user_info.user_type_id = user_type.user_type_id(+)
+order by user_info_id ;
