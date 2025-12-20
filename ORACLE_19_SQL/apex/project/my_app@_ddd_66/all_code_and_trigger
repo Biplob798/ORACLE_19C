@@ -1,0 +1,10 @@
+--for primary key and action_user add trigger 
+--processing>process>after submit>pl/sql code likbo.
+begin
+select nvl(max(to_number(user_type_id)),0)+1
+into :P3_USER_TYPE_ID
+from user_type;
+:P3_ACTION_USER:=V('APP_USER');
+exception
+when others then
+null;
