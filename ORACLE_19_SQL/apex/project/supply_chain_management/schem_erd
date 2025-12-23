@@ -576,7 +576,7 @@ CREATE TABLE SELL_ORDER_MASTER (
     TOTAL_AMOUNT         NUMBER(10,2),
     PAID_AMOUNT          NUMBER(10,2),
     DUE_AMOUNT           NUMBER(10,2),
-    DISCOUNT             NUMBER(5,2),
+    DISCOUNT             NUMBER(10,2),
     DISCOUNT_AMOUNT      NUMBER(10,2),
     VAT                  NUMBER(10,2),
     VAT_AMOUNT           NUMBER(10,2),
