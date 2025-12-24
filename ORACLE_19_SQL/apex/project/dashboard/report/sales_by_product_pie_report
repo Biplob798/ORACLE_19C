@@ -1,0 +1,41 @@
+Property Value
+1 Title Sales by Product
+2 Type Chart
+
+3
+
+Location Local Database
+Type SQL Query
+
+SQL Query
+
+SELECT p.product_name||' [$'||p.list_price||']' product,
+
+SUM(oi.quantity *
+
+oi.unit_price) sales
+FROM demo_order_items oi, demo_product_info p
+WHERE oi.product_id = p.product_id
+GROUP BY p.product_id, p.product_name,
+p.list_price
+ORDER BY p.product_name desc
+
+4 Start New Row Off
+5 Column 9
+6 Column Span 4
+7
+Body Height (under Template
+Options)
+240px
+
+Click the Attributes sub-node under the new region and set the following properties:
+8 Type Pie
+9 Show (under Legend) Off
+Click the New sub-node under Series and set the following properties:
+10 Location (under Source) Region Source
+
+11 Label PRODUCT
+12 Value SALES
+13 Show (under Label) On (Specifies whether the label(s) should be rendered
+
+on the chart.)

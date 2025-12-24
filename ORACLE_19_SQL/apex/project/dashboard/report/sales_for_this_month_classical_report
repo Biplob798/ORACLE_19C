@@ -1,0 +1,73 @@
+Property Value
+1 Title Sales for This Month
+2 Type Classic Report
+
+3
+Location Local Database
+Type SQL Query
+
+SQL Query
+
+select sum(o.order_total) total_sales,
+
+count(distinct
+
+o.order_id) total_orders,
+
+count(distinct
+
+o.customer_id) total_customers
+from demo_orders o
+where order_timestamp
+>= to_date(to_char(sysdate,'YYYYMM')||'01','YYYYMMDD')
+
+4 Start New
+Row
+Off
+5 Column 5
+6 Column Span 4
+
+7
+Body Height
+(under
+Template
+Options)
+
+---------------------
+Name P1_THIS_MONTH
+Type Hidden
+Value Protected On (default)
+Type (under Source) PL/SQL Expression
+PL/SQL Expression to_char(sysdate ,'MM')||'01'||to_char(sysdate ,'YYYY')
+------------
+Property Value
+1 Type Link
+2 Format Mask 5,234
+Click No Link Defined under Target and set the following properties:
+3 Type Page in this application
+4 Page 4
+5 Name (under Set
+Items)
+IRGTE_ORDER_DATE
+
+6 Value (under Set
+Items)
+&P1_THIS_MONTH. (do not forget to add the trailing period)
+
+7 Clear Cache RIR,4
+8 Action Reset Pagination
+Click OK to close the Link Builder - Target dialog box
+9
+
+Link Text #TOTAL_SALES# (select this value using the Quick Pick
+
+button )
+-------------------------
+Select the TOTAL_CUSTOMERS column and set the Type attribute of this
+column to Hidden Column. By setting a column’s Type property to Hidden,
+you make it invisible at run-time. Click the Attributes node under Sales for
+This Month region. Switch its Template from Standard to Badge List, click
+the Template Options and set Badge Size to 128px, Layout to Span
+Horizontally, and click OK. By setting these region properties, the derived
+one row summarized report will be presented as a badge list, spanned
+horizontally. Also set Pagination Type to No Pagination (Show All Rows).

@@ -1,0 +1,45 @@
+--how to create a chart
+
+
+
+ Title               =Top Orders by Date
+ Type                =Chart
+Location             =Local Database
+Type                 =SQL Query
+
+                      select to_char(o.order_timestamp,'Mon DD, YYYY')
+                      order_day,
+SQL Query           =SUM(o.order_total) sales
+                     from demo_orders o
+                     group by to_char(o.order_timestamp,'Mon DD, YYYY'),
+                     order_timestamp
+                     order by 2 desc nulls last
+                     fetch first 5 rows only
+Start New Row       =On (default)
+ Column             =Automatic (default)
+ Column Span        =  4
+
+
+Show Region Icon (under
+Template Options)
+
+Place a check mark to select this option
+
+Body Height (under Template
+Options)
+
+240px (Click OK to close the dialog screen)
+Icon fa-lg fa-apex
+
+Click the Attributes node under the new region and set the following properties:
+ Type Bar
+ Orientation Horizontal
+Click the New sub-node under Series and set the following properties:
+ Location (under Source) Region Source
+ Label ORDER_DAY
+ Value SALES
+ Type (under Link) Redirect to Page in this application
+Click No Link Defined under Target and set the following properties in the Link Builder dialog
+box:
+ Type Page in this application
+ Page 4 (Click OK to close the dialog screen)

@@ -1,0 +1,59 @@
+Property Value
+1 Title Top Customers
+2 Type Classic Report (should be already set)
+
+3
+
+Location Local Database
+Type SQL Query
+
+SQL Query
+
+SELECT b.cust_last_name || ', ' || b.cust_first_name
+|| ' - '|| count(a.order_id) ||'
+
+Order(s)' customer_name,
+
+SUM(a.ORDER_TOTAL)
+
+order_total, b.customer_id id
+FROM demo_orders a, DEMO_CUSTOMERS b
+WHERE a.customer_id = b.customer_id
+GROUP BY b.customer_id, b.cust_last_name || ', ' ||
+
+b.cust_first_name
+ORDER BY NVL(SUM(a.ORDER_TOTAL),0) DESC
+
+4 Start New Row Off
+5 Column 5
+6 Column Span 4
+7
+Body Height (under
+Template Options)
+240px
+
+
+----------------
+Property Value
+8 Type Link
+Click No Link Defined under Target and set the following properties:
+9 Type Page in this application
+10 Page 7
+11 Name P7_CUSTOMER_ID
+12 Value #ID#
+13 Clear Cache 7
+
+
+----------------------------------
+Click the ORDER_TOTAL column and set Format Mask to $5,234.10.
+Select the ID column and set the Type property (under Identification) to
+Hidden Column to hide this column at run-time.
+Click the Attributes node under this region to set the following properties:
+
+Property Value
+Pagination Type No Pagination (Show All Rows)
+
+Maximum Row to Process (under
+Performance)
+6
+Type (under Heading) None

@@ -1,0 +1,38 @@
+Property Value
+
+1 Title Sales by Category
+2 Type Chart (this time it is set by default)
+
+3
+
+Location Local Database
+Type SQL Query
+
+SQL Query
+
+SELECT p.category Category, sum(o.order_total)
+Sales
+FROM demo_orders o, demo_order_items oi,
+demo_product_info p
+WHERE o.order_id = oi.order_id AND
+oi.product_id = p.product_id
+
+GROUP BY category
+ORDER BY 2 desc
+
+4 Start New Row On
+5 Column 1
+6 Column Span 4
+7
+Body Height (under Template
+Options)
+240px
+
+Click the Attributes sub-node under the new region and set the following properties:
+8 Type Bar
+9 Show (under Legend) Off
+Click the New sub-node under Series and set the following properties:
+10 Location (under Source) Region Source
+11 Label CATEGORY
+12 Value SALES
+13 Color (under Appearance) #18A0C2
