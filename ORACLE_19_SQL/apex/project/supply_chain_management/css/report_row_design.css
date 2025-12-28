@@ -1,0 +1,28 @@
+/* ================================
+   Interactive Grid (IG)
+   ================================ */
+
+/* Even rows */
+.AlternateRowIG .a-GV-table tr:nth-child(even) .a-GV-cell {
+    background-color: #d9f7be; /* light green */
+}
+
+/* Odd rows */
+.AlternateRowIG .a-GV-table tr:nth-child(odd) .a-GV-cell {
+    background-color: #fff3bf; /* light yellow */
+}
+
+
+/* ================================
+   Interactive Report (IR)
+   ================================ */
+
+/* Odd rows */
+.AlternateRowIR .a-IRR-table tr:nth-child(odd) td {
+    background-color: #dbe5f1; /* light blue */
+}
+
+/* Even rows */
+.AlternateRowIR .a-IRR-table tr:nth-child(even) td {
+    background-color: #ffffff; /* white */
+}

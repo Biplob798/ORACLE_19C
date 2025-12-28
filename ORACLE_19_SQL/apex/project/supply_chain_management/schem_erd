@@ -60,6 +60,18 @@ CREATE TABLE DESIGNATION (
 
     CONSTRAINT PK_DESIGNATION PRIMARY KEY (DESIGNATION_ID)
 );
+CREATE TABLE scm_jobs (
+    job_id          NUMBER(6)        PRIMARY KEY,
+    job_title       VARCHAR2(100)     NOT NULL,
+    min_salary      NUMBER(10,2),
+    max_salary      NUMBER(10,2),
+    status          VARCHAR2(10)      DEFAULT 'ACTIVE',
+    created_by      VARCHAR2(50),
+    created_date    DATE              DEFAULT SYSDATE,
+    updated_by      VARCHAR2(50),
+    updated_date    DATE              DEFAULT SYSDATE
+);
+
 CREATE TABLE EMPLOYEES (
     EMPLOYEE_ID            NUMBER            NOT NULL,
     FIRST_NAME             VARCHAR2(100)     NOT NULL,
@@ -68,8 +80,15 @@ CREATE TABLE EMPLOYEES (
     MOTHER_NAME            VARCHAR2(100),
     PRESENT_ADDRESS        VARCHAR2(350),
     PERMANENT_ADDRESS      VARCHAR2(350),
+     degree_name       VARCHAR2(150),
+    institution_name  VARCHAR2(200),
+    major_subject     VARCHAR2(150),
+    result_gpa        VARCHAR2(20),
+    passing_year      NUMBER(4),
     SALARY                 NUMBER(10,2),
-
+    job_id          Number(10) ,
+    commission_pct  NUMBER(2,2),
+    manager_id      NUMBER(6)
     JOIN_DATE              DATE DEFAULT SYSDATE,
     DATE_OF_BIRTH          DATE ,
 
@@ -106,6 +125,16 @@ ALTER TABLE EMPLOYEES
 ADD CONSTRAINT FK_EMP_DEPARTMENT
 FOREIGN KEY (DEPARTMENT_ID)
 REFERENCES DEPARTMENTS (DEPARTMENT_ID);
+
+ALTER TABLE employees
+ADD CONSTRAINT fk_employees_job
+FOREIGN KEY (job_id)
+REFERENCES scm_jobs (job_id);
+
+ALTER TABLE employees
+ADD CONSTRAINT fk_emp_manager
+FOREIGN KEY (manager_id)
+REFERENCES employees (employee_id);
 
 
 
