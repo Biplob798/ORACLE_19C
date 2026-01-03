@@ -1,0 +1,9 @@
+set property >type>display image>table name>blob column>primary key column
+
+
+--add css at node level >inline css>
+td img{
+    width: 60px;
+    height: auto;
+    border: 2px solid #f2f2f2;
+}

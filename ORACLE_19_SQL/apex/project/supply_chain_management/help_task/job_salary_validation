@@ -1,0 +1,7 @@
+:p31_min_salary>=5000
+Minimun Salary Must Be Grater Than Or Equal To 5000
+
+
+
+:p31_max_salary>=50000
+Maximun Salary Must Be Less Than Or Equal To 50000

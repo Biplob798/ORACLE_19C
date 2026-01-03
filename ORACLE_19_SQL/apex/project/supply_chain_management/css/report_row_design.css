@@ -1,13 +1,14 @@
 /* ================================
    Interactive Grid (IG)
    ================================ */
-
+/* to add this css must add a (staic id=AlternateRowIG) at resion level. Then go>inline css>add css */
 /* Even rows */
 .AlternateRowIG .a-GV-table tr:nth-child(even) .a-GV-cell {
     background-color: #d9f7be; /* light green */
 }
 
 /* Odd rows */
+/* use (.) for class and use (#) for id. */
 .AlternateRowIG .a-GV-table tr:nth-child(odd) .a-GV-cell {
     background-color: #fff3bf; /* light yellow */
 }
@@ -24,5 +25,5 @@
 
 /* Even rows */
 .AlternateRowIR .a-IRR-table tr:nth-child(even) td {
-    background-color: #ffffff; /* white */
+    background-color: #d6cfcf; /* white */
 }

@@ -1,0 +1,10 @@
+create >validation>type>function body return boolean >
+begin
+for i in (select 1 from employees where job_id=:P31_JOB_ID) loop
+return false;
+end loop;
+return true;
+end;
+
+
+>error message>This Job has employees so that it can't be deleted!>set server-side-condition>delete

@@ -1,0 +1,5 @@
+--PROCESS AUTO_ID_GENERATE
+
+select nvl(max(employee_id), 0) + 1
+into :P13_EMPLOYEE_ID
+from employees;

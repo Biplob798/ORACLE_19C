@@ -1,0 +1,2 @@
+Adding Login Background Image in APEX
+How to Add a Custom Login Background in Oracle APEX 1. Upload the Image: - Go to Shared Components > Static Application Files. - Click Upload File and upload your image. - Note the reference (e.g., #APP_FILES#image.png). 2. Add CSS: - In Page Designer, select the Login Page. - Under CSS > Inline, add: .t-PageBody--login { background: url("#APP_FILES#your_image.png") no-repeat center center fixed !important; background-size: cover !important; } 3. Save and Run.
