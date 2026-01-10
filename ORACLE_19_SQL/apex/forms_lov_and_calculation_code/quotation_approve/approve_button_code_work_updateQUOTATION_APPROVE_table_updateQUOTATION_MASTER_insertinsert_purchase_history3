@@ -1,0 +1,34 @@
+BEGIN
+    -- Update quotation approve table
+    UPDATE QUOTATION_APPROVE
+       SET APPROVED      = 1,
+           APPROVED_DATE = SYSDATE,
+           APPROVE_STATUS        = 'APPROVED'
+     WHERE QUOT_APPROVE_ID = :QUOTATION_APPROVE.QUOT_APPROVE_ID;
+
+    -- Update quotation master table
+    UPDATE QUOTATION_MASTER
+       SET APPROVED      = 1,
+           APPROVED_DATE = SYSDATE
+     WHERE QUOT_MASTER_ID = :QUOTATION_APPROVE.QUOT_MASTER_ID;
+
+    -- Insert history
+    insert_purchase_history3 (
+        p_quation_id => :QUOTATION_APPROVE.QUOT_APPROVE_ID
+    );
+
+    COMMIT;
+
+    -- Refresh the block so you can see APPROVED instantly
+    GO_BLOCK('QUOTATION_APPROVE');
+    EXECUTE_QUERY;
+
+    MESSAGE('Quotation Approved Successfully');
+    MESSAGE(' ');
+
+EXCEPTION
+    WHEN OTHERS THEN
+        MESSAGE('Error: ' || SQLERRM);
+        MESSAGE(' ');
+        ROLLBACK;
+END;

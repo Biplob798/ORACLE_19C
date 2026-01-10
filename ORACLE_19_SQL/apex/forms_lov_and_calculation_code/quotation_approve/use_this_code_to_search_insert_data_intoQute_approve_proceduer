@@ -1,0 +1,21 @@
+BEGIN
+    -- 1. Call the procedure to insert the data
+    scmdb.insert_data_intoQute_approve(P_QUOT_MASTER_ID => :CONTROL.BTN_SEARCH);
+
+    -- 2. Explicitly navigate to the block where the results should appear
+    GO_BLOCK('QUOTATION_APPROVE'); 
+
+    -- 3. Set a filter (WHERE clause) to show only the relevant new data
+    SET_BLOCK_PROPERTY('QUOTATION_APPROVE', DEFAULT_WHERE, 'QUOT_MASTER_ID = ' || :CONTROL.BTN_SEARCH);
+
+    -- 4. Execute the query to display the newly inserted records
+    EXECUTE_QUERY;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        -- Provide an alert to the user if the procedure or query fails
+        MESSAGE('Error processing quotation approval: ' || SQLERRM);
+        RAISE FORM_TRIGGER_FAILURE;
+
+        END;
+    

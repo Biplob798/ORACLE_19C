@@ -1,0 +1,11 @@
+SELECT DISTINCT
+       req_details.product_id,
+       req_details.product_name,
+       req_details.qty_requested,
+       req_master.requisition_id
+  FROM req_master
+       JOIN req_details
+         ON req_master.requisition_id = req_details.requisition_id
+ WHERE NVL(req_details.qty_requested, 0) > 0
+   AND req_master.requisition_id = :QUOTATION_MASTER.REQ_ID
+ ORDER BY req_details.product_id ASC 

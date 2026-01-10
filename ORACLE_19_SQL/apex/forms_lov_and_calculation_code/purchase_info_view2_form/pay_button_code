@@ -1,0 +1,30 @@
+
+DECLARE
+    v_emp_id VW_PURCHASE_INFO2.PURCHASE_DETAIL_ID%TYPE;
+BEGIN
+    -- 1. Get the EMPLOYEE_ID from the current record where 'Edit' was clicked
+    v_emp_id := :VW_PURCHASE_INFO2.PURCHASE_DETAIL_ID;
+
+    IF v_emp_id IS NOT NULL THEN
+        SHOW_VIEW('SCANVAS');
+        GO_BLOCK('ADD_VW_PURCHASE_INFO2');
+
+      
+        -- 2. Clear the block's data buffer before fetching new data.
+        CLEAR_BLOCK(NO_VALIDATE);
+
+        -- 3. Set the WHERE clause to fetch only the selected ID.
+        SET_BLOCK_PROPERTY('ADD_VW_PURCHASE_INFO2', DEFAULT_WHERE,
+                           'PURCHASE_DETAIL_ID = ' || v_emp_id);
+
+        -- 4. Execute the query.
+        EXECUTE_QUERY;
+
+        -- 5. Ensure the cursor is on the newly fetched record (usually record 1, since only one is fetched).
+        GO_RECORD(1);
+
+    ELSE
+        MESSAGE('Please select a EMPLOYEES to edit.');
+        MESSAGE(' ', NO_ACKNOWLEDGE);
+    END IF;
+END;

@@ -1,0 +1,21 @@
+--step-1
+Go to Page Designer -> Pre-Rendering -> Before Header.
+
+Right-click and select Create Process.
+
+Name: Initialize Requisition Collection.
+--pl/sql code add
+PL/SQL Code:
+IF NOT APEX_COLLECTION.COLLECTION_EXISTS('REQ_ITEMS') THEN
+    APEX_COLLECTION.CREATE_COLLECTION('REQ_ITEMS');
+END IF;
+
+--step-2
+Region (Static Content)
+Items:
+
+P1_REQ_DATE: Date Picker (Default to SYSDATE).
+
+P1_CREATE_BY: Select List (SQL Query based on users).
+
+P1_PRIORITY: Select List (Static values: Low, Medium, High).

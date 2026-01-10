@@ -1,0 +1,38 @@
+BEGIN 
+    -- Must be numeric
+    IF NOT REGEXP_LIKE(:PURCHASE_DETAILS.VAT, '^[0-9]*\.?[0-9]+$') THEN
+        MESSAGE('VAT must be a numeric value.');
+        MESSAGE(' ');
+        GO_ITEM('PURCHASE_DETAILS.VAT');
+        RAISE FORM_TRIGGER_FAILURE;
+    END IF;
+
+    -- Must be >= 0
+    IF :PURCHASE_DETAILS.VAT < 0 THEN
+        MESSAGE('VAT cannot be negative.');
+        MESSAGE(' ');
+        GO_ITEM('PURCHASE_DETAILS.VAT');
+        RAISE FORM_TRIGGER_FAILURE;
+    END IF;
+
+    -- Must be <= 100%
+    IF :PURCHASE_DETAILS.VAT > 100 THEN
+        MESSAGE('VAT cannot exceed 100%.');
+        MESSAGE(' ');
+        GO_ITEM('PURCHASE_DETAILS.VAT');
+        RAISE FORM_TRIGGER_FAILURE;
+    END IF;
+
+    ----------------------------------------------------
+    -- ONLY your requested NET calculation
+    ----------------------------------------------------
+    :PURCHASE_DETAILS.NET :=
+        (:PURCHASE_DETAILS.DISCOUNT_AMOUNT +
+        (:PURCHASE_DETAILS.DISCOUNT_AMOUNT * :PURCHASE_DETAILS.VAT / 100));
+
+    ----------------------------------------------------
+
+    -- Move to next item
+    GO_ITEM('PURCHASE_DETAILS.NET');
+
+END;

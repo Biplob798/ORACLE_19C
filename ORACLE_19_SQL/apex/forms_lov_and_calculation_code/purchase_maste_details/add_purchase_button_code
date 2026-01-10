@@ -1,0 +1,52 @@
+DECLARE
+    -- Cursor to iterate through all detail records currently in the block
+    CURSOR detail_cur IS
+        SELECT ROWID
+        FROM PURCHASE_DETAILS
+        WHERE PURCHASE_ID = :PURCHASE_MASTER.PURCHASE_ID;
+
+BEGIN
+    -- 1. Update master record manually (as you prefer)
+    UPDATE PURCHASE_MASTER
+    SET 
+        TOTAL_AMOUNT     = :PURCHASE_MASTER.TOTAL_AMOUNT,
+        NET_TOTAL_AMOUNT = :PURCHASE_MASTER.NET_TOTAL_AMOUNT,
+        PERCENTAGE       = :PURCHASE_MASTER.PERCENTAGE,
+        VAT              = :PURCHASE_MASTER.VAT,
+        GIVEN_AMOUNT     = :PURCHASE_MASTER.GIVEN_AMOUNT,
+        DUE_AMOUNT       = :PURCHASE_MASTER.DUE_AMOUNT,
+        NET_AMOUNT       = :PURCHASE_MASTER.NET_AMOUNT,
+        PURCHASE_DONE    = 1
+    WHERE PURCHASE_ID = :PURCHASE_MASTER.PURCHASE_ID;
+    
+    -- 2. Loop through all detail records on the form and update them individually
+    --    This ensures TOTAL_PRICE is saved correctly for every line.
+    GO_BLOCK('PURCHASE_DETAILS');
+    FIRST_RECORD;
+    
+    LOOP
+        -- Check if the record is not null and is a valid purchase detail row
+        IF :PURCHASE_DETAILS.PURCHASE_DETAIL_ID IS NOT NULL THEN
+            UPDATE PURCHASE_DETAILS
+            SET 
+                TOTAL_PRICE     = :PURCHASE_DETAILS.TOTAL_PRICE,
+                VAT             = :PURCHASE_DETAILS.VAT,
+                GIVEN_AMOUNT    = :PURCHASE_DETAILS.GIVEN_AMOUNT,
+                DUE_AMOUNT      = :PURCHASE_DETAILS.DUE_AMOUNT,
+                VAT_PERCENTAGE  = :PURCHASE_DETAILS.VAT_PERCENTAGE,
+                NET             = :PURCHASE_DETAILS.NET,
+                DISCOUNT_AMOUNT = :PURCHASE_DETAILS.DISCOUNT_AMOUNT
+            WHERE PURCHASE_DETAIL_ID = :PURCHASE_DETAILS.PURCHASE_DETAIL_ID;
+        END IF;
+
+        -- Exit the loop if there are no more records
+        EXIT WHEN :SYSTEM.LAST_RECORD = 'TRUE';
+        NEXT_RECORD;
+    END LOOP;
+    
+    -- 3. Commit the transaction
+    COMMIT;
+
+    MESSAGE('Purchase Completed Successfully');
+    SYNCHRONIZE;
+END;
