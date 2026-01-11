@@ -1,0 +1,33 @@
+BEGIN
+    -- Calculate return/change amount
+    :SELL_ORDER_MASTER.RETURN_AMOUNT :=
+        NVL(:SELL_ORDER_MASTER.PAID_AMOUNT, 0)
+      - NVL(:SELL_ORDER_MASTER.NET_PAYABLE_AMO, 0);
+
+    -- If paid amount is less than payable
+    IF :SELL_ORDER_MASTER.RETURN_AMOUNT < 0 THEN
+        :SELL_ORDER_MASTER.RETURN_AMOUNT := 0;
+
+        MESSAGE('Paid amount is less than payable amount.');
+        MESSAGE(' '); -- forces message display
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        MESSAGE('Error while calculating return amount.');
+        MESSAGE(' ');
+        RAISE FORM_TRIGGER_FAILURE;
+END;
+
+
+--to set payment_statuse ata key_next_item
+
+begin
+if
+:SELL_ORDER_MASTER.NET_PAYABLE_AMO= :SELL_ORDER_MASTER.PAID_AMOUNT
+then
+:SELL_ORDER_MASTER.PAYMENT_STATUS := 'Paid';
+else
+:SELL_ORDER_MASTER.PAYMENT_STATUS := 'Due';
+end if;
+end;

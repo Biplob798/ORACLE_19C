@@ -1,0 +1,25 @@
+SELECT 
+    p.product_id,
+    p.product_name,
+    NVL(
+        (SELECT MAX(NVL(x.stock_qty, 0))
+           FROM STOCK_VIEW x
+          WHERE x.product_id = p.product_id),
+        0
+    ) AS total_quantity,
+    MAX(pd.sell_price) AS sell_price
+FROM purchase_details p
+JOIN products pd 
+  ON p.product_id = pd.product_id
+GROUP BY 
+    p.product_id, 
+    p.product_name
+HAVING 
+    NVL(
+        (SELECT MAX(NVL(x.stock_qty, 0))
+           FROM STOCK_VIEW x
+          WHERE x.product_id = p.product_id),
+        0
+    ) > 0
+ORDER BY 
+    p.product_id ASC

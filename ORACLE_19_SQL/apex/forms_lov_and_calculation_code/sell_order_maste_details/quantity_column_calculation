@@ -1,0 +1,34 @@
+BEGIN
+    -- Calculate new available stock
+    :SELL_ORDER_DETAILS.AVAILABLE_STOCK_QTY :=
+        NVL(:SELL_ORDER_DETAILS.AVAILABLE_STOCK_QTY, 0)
+        - NVL(:SELL_ORDER_DETAILS.QUANTITY, 0);
+
+    -- Restrict negative stock
+    IF :SELL_ORDER_DETAILS.AVAILABLE_STOCK_QTY < 0 THEN
+        MESSAGE('Not enough stock available!');
+        MESSAGE(' '); -- force display
+
+        -- Undo subtraction (restore original value)
+        :SELL_ORDER_DETAILS.AVAILABLE_STOCK_QTY :=
+            NVL(:SELL_ORDER_DETAILS.AVAILABLE_STOCK_QTY, 0)
+            + NVL(:SELL_ORDER_DETAILS.QUANTITY, 0);
+
+        RAISE FORM_TRIGGER_FAILURE; -- stay on same item
+    END IF;
+    
+    
+
+
+    ----------------------------------------------------
+    -- Only your required calculation:
+    ----------------------------------------------------
+    :SELL_ORDER_DETAILS.TOTAL_AMOUNT :=
+        :SELL_ORDER_DETAILS.PRICE*:SELL_ORDER_DETAILS.QUANTITY;
+
+
+
+
+
+END;
+
