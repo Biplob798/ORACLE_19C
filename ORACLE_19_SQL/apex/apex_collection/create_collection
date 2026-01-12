@@ -1,0 +1,93 @@
+step-1:
+-------------------
+1.create a region name Collection or anythings as you like.
+2.add item as i want  in region.
+3.item like(Id,Name,Address,Balance)
+
+step-2:
+1.create a button.
+2.give name to save.
+3.after click this save button data save in collection .
+4.two way of save collection 
+    a)Processs ar madhomy.
+    b)Dynamic Action ar madhomy.
+step-3:
+1.Now create a collection name
+2.There storage (id,name,addres,balance)are save.
+step-4:
+1.go to proccess and create a proccess give name (Collection)
+2.then go to pl/sql
+3.frist create collection name by this
+ (begin
+apex_collection.create_collection('EMP');
+end;)
+4.now add member in collection
+by this code
+(begin
+apex_collection.create_collection('EMP');
+apex_collection.add_member(
+    
+)
+end;)
+5.add member what are you want to store in collection.
+6.then read this code
+(begin
+ if not apex_collection.collection_exists('EMP')then
+apex_collection.create_collection('EMP');
+end if;
+apex_collection.add_member(
+    p_collection_name=>'EMP',
+    p_c001=>:P5_ID,
+    p_c002=>:P5_NAME,
+    p_c003=>:P5_ADDRESS,
+    p_c004=>:P5_BALANCE
+);
+end;)
+step-4:
+1.proccess a bolya ditya hoby kokhon a process kaj korbya 
+2.go to property>server-side-condition>when button pressed>bolyadebo>save
+3.othat save a click korlya ay process te kaj korbya.
+step-5:
+1.now run page and input data.
+2.click save button 
+3.add collection after click save button show a message.
+step-6:
+1.collection thyakya data dekharjonno akti report create korbo
+2.now create a region
+3.give name (collection Data)
+4.type any cllasic/repot/grid
+5.source =sql Query
+6.sql Query ty query lektya hoby amra je collection create korce otar uppor base korya orthat follow proccess that i create.
+7.write this code in sql query
+(SELECT  c001  id,c002  name,c003  address,c004  balance FROM apex_collections WHERE collection_name = 'EMP';)
+folloing  this code
+(begin
+ if not apex_collection.collection_exists('EMP')then
+apex_collection.create_collection('EMP');
+end if;
+apex_collection.add_member(
+    p_collection_name=>'EMP',
+    p_c001=>:P5_ID,
+    p_c002=>:P5_NAME,
+    p_c003=>:P5_ADDRESS,
+    p_c004=>:P5_BALANCE
+);
+end;)
+This process Collection is work Reload Page.
+If we want to create a collection without Reload Page we can use (Dynamic Action)
+
+-------------------------------
+step-1:
+1.now we create a dynamic action to create a collection
+2.same porcess as previous.
+3.now click save button a create a dynamic action
+4.give name (Collection)
+5.click true and set>action>execute server-side code
+6.submit item>P10_ID,P10_NAME,P10_ADDRESS,P10_BALANCE
+7.now create another action name (clear)
+8.ation>clear
+9.effect element>items>P10_ID,P10_NAME,P10_ADDRESS,P10_BALANCE
+10.create another action name(refresh)
+11.efect element>region> Create Collection By Dynamic Action
+12.create another action name (alert)
+13.message>Save Collection Successfully!!!
