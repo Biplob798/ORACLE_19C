@@ -91,3 +91,58 @@ step-1:
 11.efect element>region> Create Collection By Dynamic Action
 12.create another action name (alert)
 13.message>Save Collection Successfully!!!
+
+-- Now Submit the page and input data and click save button
+-- Data store in collection without reload page.
+
+step-1:
+1.NOw create a button name(Submit Collection)
+2.solt>edit>
+3.region>Create Collection By Dynamic Action
+-- now create a process
+step-1:
+1.now create a process name(Submit data)
+2.pl/sql code>(if not apex_collection.collection_exists('EMP')then
+apex_collection.create_collection('EMP');
+end if;)
+3.submit data process ay code dibo
+(
+    BEGIN
+    -- Create collection if not exists
+    IF NOT apex_collection.collection_exists('EMP') THEN
+        apex_collection.create_collection('EMP');
+    END IF;
+
+    -- Insert collection data into table
+    FOR x IN (
+        SELECT
+            c001 AS id,
+            c002 AS name,
+            c003 AS address,
+            n001 AS balance   -- balance should be numeric
+        FROM apex_collections
+        WHERE collection_name = 'EMP'
+    )
+    LOOP
+        INSERT INTO collection_emp (
+            id,
+            name,
+            address,
+            balance
+        )
+        VALUES (
+            x.id,
+            x.name,
+            x.address,
+            x.balance
+        );
+    END LOOP;
+
+    -- Clear collection after insert
+    apex_collection.truncate_collection(
+        p_collection_name => 'EMP'
+    );
+END;
+
+)
+ 
