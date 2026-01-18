@@ -998,3 +998,23 @@ BEGIN
 END;
 /
 
+
+
+
+create or replace TRIGGER TR_VW_PURCHASE_INFO_U
+INSTEAD OF UPDATE ON VW_PURCHASE_INFO
+FOR EACH ROW
+BEGIN
+    -- Only update the Master table. 
+    -- We ignore Product and Supplier name updates to avoid the ORA-01779 error.
+    
+    UPDATE PURCHASE_MASTER
+    SET 
+        DUE_AMOUNT       = :NEW.DUE_AMOUNT,        -- From your "Due Amount" field
+        GIVEN_AMOUNT     = :NEW.GIVEN_AMOUNT,      -- From your "Given Amount" field
+        GIVEN_DUE_AMOUNT = :NEW.GIVEN_DUE_AMOUNT,  -- From your "Given Due Amount" field
+        MODIFIED_DATE    = SYSDATE                 -- Good practice to track changes
+    WHERE 
+        PURCHASE_ID      = :OLD.PURCHASE_ID;       -- Uses the ID from the selected row
+END;
+/
