@@ -1,10 +1,10 @@
-create or replace trigger user_info_id_pk_trig
+create or replace trigger dept_id_pk_trig
 before
 insert
-on user_info
+on departments
 for each row
 begin
 select nvl(max(to_number(department_id)),0)+1
 into :new.department_id
-from user_info;
+from departments;
 end;
