@@ -1,0 +1,51 @@
+Section 1: Practical Technical Assessment
+Time Allowed: 60 Minutes
+
+1. Database Schema Design
+
+Write PL/SQL dynamic code to create a table that includes the following fields: Name, Joining Date, Manager Name, Salary, and Commission.
+
+Create a trigger to automatically generate ID column values whenever a new record is inserted into this table.
+
+2. Data Manipulation
+
+Develop one or more stored procedures to insert data into the table you created.
+
+Manually insert at least 5 sample records using your procedures.
+
+3. Oracle Forms Development
+
+Build one or more data entry forms for the table, preferably using a Master-Detail design.
+
+Implement a warning message that must be displayed to the user before a form record is saved.
+
+
+General & Project Background
+
+Q1: Tell about yourself.
+
+Q2: Regarding your project, how many entry forms and Master-Detail forms are there?.
+
+Q3: Are your setup forms single entry forms?.
+
+Q4: How will a user know if an item purchase is required?.
+
+Q5: Why did everyone work on the same project?.
+
+Technical Architecture & Tools
+
+Q6: Explain the different types of trigger levels available in Form Builder.
+
+Q7: Identify specific triggers available at each level and name them.
+
+Q8: How many types of triggers are in Report Builder? Please list their names.
+
+Q9: What are the primary differences between Developer Suite and Oracle APEX?.
+
+SQL & Reporting
+
+Q10: Provide details on the different types of SQL Joins.
+
+Q11: What specific Reports were utilized in your project?.
+
+Q12: Provide details regarding the company you are interviewing for.

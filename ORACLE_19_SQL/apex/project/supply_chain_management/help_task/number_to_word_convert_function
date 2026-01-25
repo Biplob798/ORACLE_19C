@@ -1,0 +1,154 @@
+create or replace FUNCTION VALUE_IN_WORD(a_number NUMBER) RETURN CHAR IS 
+    TYPE numtab IS TABLE OF VARCHAR2(30) 
+    INDEX BY BINARY_INTEGER; 
+    number_chart numtab; 
+--    num_value number; 
+    word_value varchar2(500); 
+    crore number; 
+     lac number; 
+     thou number; 
+     hund number; 
+     doubl number; 
+--     sing number; 
+     deci number; 
+BEGIN 
+   --The number_chart Table 
+     number_chart(1):='One'; 
+     number_chart(2):='Two'; 
+     number_chart(3):='Three'; 
+     number_chart(4):='Four'; 
+     number_chart(5):='Five'; 
+     number_chart(6):='Six'; 
+     number_chart(7):='Seven'; 
+     number_chart(8):='Eight'; 
+     number_chart(9):='Nine'; 
+     number_chart(10):='Ten'; 
+     number_chart(11):='Eleven'; 
+     number_chart(12):='Twelve'; 
+     number_chart(13):='Thirteen'; 
+     number_chart(14):='Fourteen'; 
+     number_chart(15):='Fifteen'; 
+     number_chart(16):='Sixteen'; 
+     number_chart(17):='Seventeen'; 
+     number_chart(18):='Eighteen'; 
+     number_chart(19):='Nineteen'; 
+     number_chart(20):='Twenty'; 
+     number_chart(21):='Twenty one'; 
+     number_chart(22):='Twenty two'; 
+     number_chart(23):='Twenty three'; 
+     number_chart(24):='Twenty four'; 
+     number_chart(25):='Twenty five'; 
+     number_chart(26):='Twenty six'; 
+     number_chart(27):='Twenty seven'; 
+     number_chart(28):='Twenty eight'; 
+    number_chart(29):='Twenty nine'; 
+    number_chart(30):='Thirty'; 
+    number_chart(31):='Thirty One'; 
+    number_chart(32):='Thirty Two'; 
+    number_chart(33):='Thirty Three'; 
+    number_chart(34):='Thirty Four'; 
+    number_chart(35):='Thirty Five'; 
+    number_chart(36):='Thirty Six'; 
+    number_chart(37):='Thirty Seven'; 
+    number_chart(38):='Thirty Eight'; 
+    number_chart(39):='Thirty Nine'; 
+    number_chart(40):='Forty'; 
+    number_chart(41):='Forty One'; 
+    number_chart(42):='Forty Two'; 
+    number_chart(43):='Forty Three'; 
+    number_chart(44):='Forty Four'; 
+    number_chart(45):='Forty Five'; 
+    number_chart(46):='Forty Six'; 
+    number_chart(47):='Forty Seven'; 
+    number_chart(48):='Forty Eight'; 
+    number_chart(49):='Forty Nine'; 
+    number_chart(50):='Fifty'; 
+    number_chart(51):='Fifty One'; 
+    number_chart(52):='Fifty Two'; 
+    number_chart(53):='Fifty Three'; 
+    number_chart(54):='Fifty Four'; 
+    number_chart(55):='Fifty Five'; 
+    number_chart(56):='Fifty Six'; 
+    number_chart(57):='Fifty Seven'; 
+    number_chart(58):='Fifty Eight'; 
+    number_chart(59):='Fifty Nine'; 
+    number_chart(60):='Sixty'; 
+    number_chart(61):='Sixty One'; 
+    number_chart(62):='Sixty Two'; 
+    number_chart(63):='Sixty Three'; 
+    number_chart(64):='Sixty Four'; 
+    number_chart(65):='Sixty Five'; 
+    number_chart(66):='Sixty Six'; 
+    number_chart(67):='Sixty Seven'; 
+    number_chart(68):='Sixty Eight'; 
+    number_chart(69):='Sixty Nine'; 
+    number_chart(70):='Seventy'; 
+    number_chart(71):='Seventy One'; 
+    number_chart(72):='Seventy Two'; 
+    number_chart(73):= 'Seventy Three'; 
+    number_chart(74):= 'Seventy Four'; 
+    number_chart(75):= 'Seventy Five'; 
+    number_chart(76):= 'Seventy Six'; 
+    number_chart(77):= 'Seventy Seven'; 
+    number_chart(78):= 'Seventy Eight'; 
+    number_chart(79):='Seventy Nine'; 
+    number_chart(80):='Eighty'; 
+    number_chart(81):='Eighty One'; 
+    number_chart(82):= 'Eighty Two'; 
+    number_chart(83):= 'Eighty Three'; 
+    number_chart(84):= 'Eighty Four'; 
+    number_chart(85):= 'Eighty Five'; 
+    number_chart(86):= 'Eighty Six'; 
+    number_chart(87):= 'Eighty Seven'; 
+    number_chart(88):= 'Eighty Eight'; 
+    number_chart(89):= 'Eighty Nine'; 
+    number_chart(90):='Ninety'; 
+    number_chart(91):= 'Ninety One'; 
+    number_chart(92):= 'Ninety Two'; 
+    number_chart(93):= 'Ninety Three'; 
+    number_chart(94):= 'Ninety Four'; 
+    number_chart(95):= 'Ninety Five'; 
+    number_chart(96):= 'Ninety Six'; 
+    number_chart(97):= 'Ninety Seven'; 
+    number_chart(98):= 'Ninety Eight'; 
+    number_chart(99):='Ninety Nine'; 
+ 
+    --Converting 
+    crore:=floor(a_number/10000000); 
+     lac:=floor((a_number-trunc(a_number,-7))/100000); 
+     thou:=floor((a_number-trunc(a_number,-5))/1000); 
+     hund:=floor((a_number-trunc(a_number,-3))/100); 
+     doubl:=trunc(a_number-trunc(a_number,-2),0); 
+--     sing:=trunc(a_number-trunc(a_number,-1),0); 
+     deci:=(a_number-trunc(a_number,0))*100; 
+ 
+    if crore<>0 then    --Crore conversion 
+        if crore between 100 and 999 then 
+          word_value:=number_chart(floor(crore/100))||' hundred '||number_chart(substr(crore,2))||' '||'crore '; 
+        else 
+            word_value:=number_chart(crore)||' '||'crore '; 
+        end if; 
+    end if; 
+ 
+    if lac <>0 then    --Lac conversion 
+    word_value:=word_value||number_chart(lac)||' '||'lac '; 
+    end if; 
+ 
+    if thou <>0 then    --Thousand conversion 
+         word_value:=word_value||number_chart(thou)||' '||'thousand '; 
+    end if; 
+ 
+    if hund <>0 then    --Hundred conversion 
+     word_value:=word_value||number_chart(hund)||' '||'hundred '; 
+    end if; 
+ 
+    if doubl <>0 then    --Double conversion 
+     word_value:=word_value||number_chart(doubl)||' '; 
+    end if; 
+ 
+    if deci <>0 then    --Decimal conversion 
+      word_value:=word_value||'point '||number_chart(deci)||' ';--||'paisa '; 
+    end if; 
+    return(INITCAP(word_value)); 
+END; 
+/

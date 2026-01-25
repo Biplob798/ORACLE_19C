@@ -1,0 +1,143 @@
+DECLARE
+    v_from_date DATE := :P39_FROM_DATE;
+    v_to_date   DATE := :P39_TO_DATE;
+
+    v_report_header CLOB;
+    v_report_body   CLOB;
+    v_report_footer CLOB;
+
+    v_row_count    NUMBER := 0;
+    v_total_qty    NUMBER := 0;
+BEGIN
+    /* ===== VALIDATION ===== */
+    IF v_from_date IS NULL OR v_to_date IS NULL THEN
+        htp.p('<div style="padding:30px; text-align:center; border:2px dashed #eee; color:#888; border-radius:8px;">
+                Please select a date range to generate the Requisition Report.
+               </div>');
+        RETURN;
+    END IF;
+
+    /* ===== HEADER & CSS ===== */
+    v_report_header := '
+<div class="no-print" style="display:flex; justify-content:flex-end; margin-bottom:20px;">
+    <button type="button" class="t-Button t-Button--hot t-Button--icon t-Button--withIcon" onclick="window.print();">
+        <span class="t-Icon fa fa-print"></span> Print Official Report
+    </button>
+</div>
+
+<div id="PrintMe" style="background:white; padding:40px; border:1px solid #eee; border-radius:5px;">
+<style>
+    .report-table { width:100%; border-collapse:collapse; margin-top:20px; font-family: "Segoe UI", sans-serif; }
+    .report-table th { background:#0056b3; color:white; padding:12px; text-align:left; font-size:11px; text-transform:uppercase; border:1px solid #004494; }
+    .report-table td { padding:10px; border:1px solid #eee; font-size:13px; color:#333; }
+    .report-table tr:nth-child(even) { background:#f9f9f9; }
+    
+    .total-row { background:#e8f0fe !important; font-weight:bold; color:#0056b3; }
+    .badge { padding:3px 7px; border-radius:3px; font-size:10px; font-weight:bold; text-transform:uppercase; }
+    .priority-1 { background:#ffeded; color:#d32f2f; border:1px solid #ffcdd2; } 
+    .priority-2 { background:#fff4e5; color:#ef6c00; border:1px solid #ffe0b2; }
+    
+    .report-header-container { display:flex; justify-content:space-between; align-items:center; border-bottom:3px solid #0056b3; padding-bottom:15px; }
+    .logo-img { height: 80px; width: auto; object-fit: contain; }
+    .company-info { text-align: right; }
+    .company-info h1 { margin:0; color:#0056b3; font-size:26px; }
+</style>
+
+<div class="report-header-container">
+    <div class="logo-box">
+        <img src="#APP_FILES#loginpage_logo.png" alt="Sonali Logo" class="logo-img">
+    </div>
+    <div class="company-info">
+        <h1>Sonali Supply Network</h1>
+        <p style="margin:4px 0; font-size:13px; color:#555;">Karwan Bazar, Dhaka, Bangladesh</p>
+        <p style="margin:2px 0; font-size:12px; color:#777;">www.sonalisupplynetwork.com</p>
+    </div>
+</div>
+
+<div style="text-align:center; margin-top:20px;">
+    <h2 style="margin:0; letter-spacing:1px; color:#333; text-decoration:underline;">REQUISITION REPORT</h2>
+    <p style="margin:5px 0; font-weight:bold; color:#666;">
+        Period: ' || TO_CHAR(v_from_date, 'DD-MON-YYYY') || ' to ' || TO_CHAR(v_to_date, 'DD-MON-YYYY') || '
+    </p>
+</div>
+
+<table class="report-table">
+<thead>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Requested By</th>
+        <th>Priority</th>
+        <th>Product Name</th>
+        <th style="text-align:center;">Quantity</th>
+        <th>Remarks</th>
+    </tr>
+</thead>
+<tbody>';
+
+    /* ===== DATA FETCHING WITH JOINS ===== */
+    FOR r IN (
+        SELECT 
+            m.REQUISITION_ID,
+            m.REQUISITION_DATE,
+            -- Joining with EMPLOYEES table
+            e.FIRST_NAME || ' ' || e.LAST_NAME as FULL_NAME,
+            m.PRIORITY as P_CODE,
+            -- Priority Labels
+            CASE m.PRIORITY 
+                WHEN 1 THEN 'URGENT' 
+                WHEN 2 THEN 'NORMAL' 
+                ELSE 'LOW' 
+            END as P_NAME,
+            d.PRODUCT_NAME,
+            d.QTY_REQUESTED,
+            d.REMARKS
+        FROM REQ_MASTER m
+        JOIN REQ_DETAILS d ON m.REQUISITION_ID = d.REQUISITION_ID
+        LEFT JOIN EMPLOYEES e ON m.CREATE_BY = e.EMPLOYEE_ID
+        WHERE TRUNC(m.REQUISITION_DATE) BETWEEN TRUNC(v_from_date) AND TRUNC(v_to_date)
+        ORDER BY m.REQUISITION_DATE DESC, m.REQUISITION_ID DESC
+    ) LOOP
+        v_row_count := v_row_count + 1;
+        v_total_qty := v_total_qty + NVL(r.QTY_REQUESTED, 0);
+
+        v_report_body := v_report_body || '
+        <tr>
+            <td style="font-weight:bold;">#' || r.REQUISITION_ID || '</td>
+            <td>' || TO_CHAR(r.REQUISITION_DATE, 'DD-Mon-YYYY') || '</td>
+            <td>' || NVL(r.FULL_NAME, 'N/A') || '</td>
+            <td><span class="badge priority-' || r.P_CODE || '">' || r.P_NAME || '</span></td>
+            <td>' || r.PRODUCT_NAME || '</td>
+            <td align="center" style="font-weight:bold;">' || r.QTY_REQUESTED || '</td>
+            <td style="font-size:12px; color:#666;">' || NVL(r.REMARKS, '-') || '</td>
+        </tr>';
+    END LOOP;
+
+    /* ===== FOOTER & SUMMARY ===== */
+    v_report_footer := '
+    <tr class="total-row">
+        <td colspan="5" align="right" style="padding:12px;">GRAND TOTAL QUANTITY:</td>
+        <td align="center" style="font-size:15px;">' || v_total_qty || '</td>
+        <td></td>
+    </tr>
+</tbody>
+</table>
+
+<div style="margin-top:70px; display:flex; justify-content:space-between; padding: 0 20px;">
+    <div style="width:180px; text-align:center; border-top:1px solid #000; padding-top:5px; font-size:12px;">Prepared By</div>
+    <div style="width:180px; text-align:center; border-top:1px solid #000; padding-top:5px; font-size:12px;">Verified By</div>
+    <div style="width:180px; text-align:center; border-top:1px solid #000; padding-top:5px; font-size:12px;">Authorized Signature</div>
+</div>
+
+<p style="text-align:center; margin-top:40px; font-size:10px; color:#999;">
+    Printed on ' || TO_CHAR(SYSDATE, 'DD-MON-YYYY HH24:MI') || ' | This is a computer generated document.
+</p>
+</div>';
+
+    /* ===== FINAL OUTPUT ===== */
+    IF v_row_count = 0 THEN
+        htp.p('<div style="text-align:center; padding:40px; border:1px solid #ddd; color:#999;">No requisition data found for the selected period.</div>');
+    ELSE
+        htp.p(v_report_header || v_report_body || v_report_footer);
+    END IF;
+END;
