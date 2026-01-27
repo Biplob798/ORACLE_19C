@@ -1,0 +1,91 @@
+DECLARE
+    v_supplier_id   NUMBER := :P56_SUPPLIER_ID;
+    v_supplier_name VARCHAR2(255);
+
+    v_report_header CLOB;
+    v_report_body   CLOB := '';
+    v_report_footer CLOB;
+
+    v_row_count     NUMBER := 0;
+    v_total_bill    NUMBER := 0;
+    v_total_paid    NUMBER := 0;
+    v_total_due     NUMBER := 0;
+BEGIN
+    /* ===== 1. Validation ===== */
+    IF v_supplier_id IS NULL THEN
+        htp.p('
+        <div style="text-align:center;padding:25px;color:#444;font-weight:600;">
+            ⚠️ Please select a supplier first
+        </div>');
+        RETURN;
+    END IF;
+
+    /* ===== 2. Get Supplier Name ===== */
+    SELECT supplier_name
+    INTO v_supplier_name
+    FROM suppliers
+    WHERE supplier_id = v_supplier_id;
+
+    /* ===== 3. Header ===== */
+    v_report_header := '
+    <h2 style="color:#1f3a5f;">Supplier Due Statement</h2>
+    <p><b>Supplier:</b> '||v_supplier_name||'</p>
+    <table border="1" width="100%" cellspacing="0" cellpadding="6">
+        <tr style="background:#f1f4f8;font-weight:bold;">
+            <th>Date</th>
+            <th>Purchase ID</th>
+            <th align="right">Bill</th>
+            <th align="right">Paid</th>
+            <th align="right">Due</th>
+        </tr>';
+
+    /* ===== 4. Data ===== */
+    FOR r IN (
+        SELECT
+            purchase_id,
+            purchase_date,
+            net_total_amount,
+            given_amount,
+            (net_total_amount - NVL(given_amount,0)) AS due_amount
+        FROM purchase_master
+        WHERE supplier_id = v_supplier_id
+        ORDER BY purchase_date
+    ) LOOP
+        v_row_count := v_row_count + 1;
+
+        v_total_bill := v_total_bill + NVL(r.net_total_amount,0);
+        v_total_paid := v_total_paid + NVL(r.given_amount,0);
+        v_total_due  := v_total_due  + NVL(r.due_amount,0);
+
+        v_report_body := v_report_body || '
+        <tr>
+            <td>'||TO_CHAR(r.purchase_date,'DD-Mon-YYYY')||'</td>
+            <td align="center">#'||r.purchase_id||'</td>
+            <td align="right">'||TO_CHAR(r.net_total_amount,'999,999,990.00')||'</td>
+            <td align="right">'||TO_CHAR(r.given_amount,'999,999,990.00')||'</td>
+            <td align="right" style="color:red;font-weight:bold;">'||
+                TO_CHAR(r.due_amount,'999,999,990.00')||'</td>
+        </tr>';
+    END LOOP;
+
+    /* ===== 5. Footer ===== */
+    v_report_footer := '
+        <tr style="background:#eef3f8;font-weight:bold;">
+            <td colspan="2" align="right">TOTAL</td>
+            <td align="right">'||TO_CHAR(v_total_bill,'999,999,990.00')||'</td>
+            <td align="right">'||TO_CHAR(v_total_paid,'999,999,990.00')||'</td>
+            <td align="right" style="color:red;">'||TO_CHAR(v_total_due,'999,999,990.00')||'</td>
+        </tr>
+    </table>';
+
+    /* ===== 6. Output ===== */
+    IF v_row_count = 0 THEN
+        htp.p('<p style="text-align:center;color:#666;">No records found</p>');
+    ELSE
+        htp.p(v_report_header || v_report_body || v_report_footer);
+    END IF;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        htp.p('<div style="color:red;">'||SQLERRM||'</div>');
+END;

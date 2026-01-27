@@ -1,0 +1,220 @@
+DECLARE
+    v_req_id        NUMBER := :P47_REQUISITION_ID; 
+    v_req_date      DATE;
+    v_priority      VARCHAR2(50);
+    v_requested_by  VARCHAR2(200);
+
+    v_report_header CLOB;
+    v_report_body   CLOB;
+    v_report_footer CLOB;
+BEGIN
+    IF v_req_id IS NOT NULL THEN
+        BEGIN
+            /* ===== 1. MASTER DATA FETCH ===== */
+            SELECT 
+                m.REQUISITION_DATE, 
+                CASE m.PRIORITY 
+                    WHEN 1 THEN 'URGENT' 
+                    WHEN 2 THEN 'NORMAL' 
+                    ELSE TO_CHAR(m.PRIORITY) 
+                END,
+                (SELECT e.FIRST_NAME || ' ' || e.LAST_NAME 
+                 FROM EMPLOYEES e 
+                 WHERE e.EMPLOYEE_ID = m.CREATE_BY) 
+              INTO v_req_date, v_priority, v_requested_by
+              FROM req_master m
+             WHERE m.REQUISITION_ID = v_req_id;
+
+            /* ===== 2. HEADER + MODERN CSS ===== */
+            v_report_header := '
+<button type="button" class="t-Button t-Button--hot no-print" 
+        style="margin-bottom:20px; padding: 8px 20px; cursor: pointer;" 
+        onclick="window.print();">
+    <span class="fa fa-print"></span> Print Report
+</button>
+
+<div id="PrintMe">
+<style>
+    #PrintMe {
+        font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        color: #333;
+        background-color: #fff;
+        padding: 40px;
+        max-width: 900px;
+        margin: auto;
+        border: 1px solid #eee;
+        box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 3px solid #006666; /* Sonali Brand Color */
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .company-details h2 { margin: 0; color: #006666; font-size: 24px; text-transform: uppercase; }
+    .company-details p { margin: 2px 0; font-size: 13px; color: #666; }
+
+    .report-title {
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+        text-decoration: none;
+        margin: 20px 0;
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+
+    .master-table { width: 100%; margin-bottom: 25px; }
+    .master-table td { padding: 8px 0; font-size: 14px; width: 50%; }
+
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .data-table th {
+        background-color: #f8f9fa;
+        color: #333;
+        border: 1px solid #dee2e6;
+        padding: 12px 8px;
+        font-size: 13px;
+        text-transform: uppercase;
+    }
+
+    .data-table td {
+        border: 1px solid #dee2e6;
+        padding: 10px 8px;
+        font-size: 13px;
+        text-align: center;
+    }
+
+    .data-table tr:nth-child(even) { background-color: #fafafa; }
+
+    .status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 11px;
+    }
+
+    .footer-section {
+        margin-top: 80px; /* Space for signatures */
+    }
+
+    .signature-row {
+        display: flex;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+    .sig-box { width: 200px; border-top: 1px solid #333; padding-top: 5px; font-weight: bold; font-size: 13px; }
+
+    .system-footer {
+        text-align: center;
+        font-size: 11px;
+        color: #999;
+        margin-top: 40px;
+        border-top: 1px inset #eee;
+        padding-top: 10px;
+    }
+
+    @media print {
+        .no-print { display: none !important; }
+        #PrintMe { border: none; box-shadow: none; padding: 0; width: 100%; max-width: 100%; }
+        body { background: #fff; }
+    }
+</style>
+
+<div class="header-top">
+  <div class="logo">
+    <img src="#APP_FILES#loginpage_logo.png" style="height:70px;">
+  </div>
+  <div class="company-details" style="text-align:right;">
+    <h2>Sonali Supply Network</h2>
+    <p>Karwan Bazar, Dhaka</p>
+    <p>Phone: 01915357107</p>
+    <p>www.sonalisupplynetwork.com</p>
+  </div>
+</div>
+
+<div class="report-title">REQUISITION REPORT</div>
+
+<table class="master-table">
+    <tr>
+        <td><b>Requisition ID:</b> # '||v_req_id||'</td>
+        <td style="text-align:right;"><b>Date:</b> '||TO_CHAR(v_req_date,'DD-MON-YYYY')||'</td>
+    </tr>
+    <tr>
+        <td><b>Requested By:</b> '||NVL(v_requested_by, 'N/A')||'</td>
+        <td style="text-align:right;"><b>Priority:</b> 
+            <span style="color:'||CASE WHEN v_priority = 'URGENT' THEN '#d9534f' ELSE '#333' END||';">'||v_priority||'</span>
+        </td>
+    </tr>
+</table>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Product Name</th>
+            <th style="width:100px;">Qty</th>
+            <th>Remarks</th>
+        </tr>
+    </thead>
+    <tbody>';
+
+            /* ===== 3. BODY LOOP ===== */
+            v_report_body := '';
+            FOR i IN (
+                SELECT PRODUCT_ID, PRODUCT_NAME, QTY_REQUESTED, REMARKS
+                  FROM req_details
+                 WHERE REQUISITION_ID = v_req_id
+            ) LOOP
+                v_report_body := v_report_body || '
+        <tr>
+            <td>'||i.product_id||'</td>
+            <td style="text-align:left;">'||i.product_name||'</td>
+            <td><b>'||i.qty_requested||'</b></td>
+            <td>'||NVL(i.remarks, '-')||'</td>
+        </tr>';
+            END LOOP;
+
+            /* ===== 4. FOOTER ===== */
+            v_report_footer := '
+    </tbody>
+</table>
+
+<div class="footer-section">
+    <div class="signature-row">
+        <div class="sig-box">Requested By</div>
+        <div class="sig-box">Department Head</div>
+    </div>
+    <div class="system-footer">
+        This is an automated system-generated report for Sonali Supply Network.
+    </div>
+</div>
+
+</div>';
+
+            IF v_report_body IS NULL THEN
+                htp.p('<div style="text-align:center; padding:20px; color:red;">No requisition details found for this ID.</div>');
+            ELSE
+                htp.p(v_report_header || v_report_body || v_report_footer);
+            END IF;
+
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                htp.p('<div style="text-align:center; padding:20px; color:red;">Invalid Requisition ID</div>');
+            WHEN OTHERS THEN
+                htp.p('<div style="text-align:center; padding:20px; color:red;">Error: '||SQLERRM||'</div>');
+        END;
+    ELSE
+        htp.p('<div style="text-align:center; padding:20px; color:#666;">Please select a Requisition ID to generate the report.</div>');
+    END IF;
+END;

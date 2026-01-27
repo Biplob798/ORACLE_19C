@@ -1,0 +1,227 @@
+DECLARE
+    v_quot_master_id NUMBER := :P79_QUOT_MASTER_ID;
+    v_req_id         NUMBER;
+    v_quot_date      DATE;
+    v_created_by     VARCHAR2(100); -- employee first name
+
+    v_html CLOB := '';
+BEGIN
+    IF v_quot_master_id IS NULL THEN
+        htp.p('<div style="color:red;text-align:center;padding:20px;font-weight:bold;">
+                Quotation not selected
+               </div>');
+        RETURN;
+    END IF;
+
+    /* ===== FETCH QUOTATION + EMPLOYEE NAME ===== */
+    SELECT qm.req_id,
+           qm.quot_date,
+           e.first_name
+    INTO   v_req_id,
+           v_quot_date,
+           v_created_by
+    FROM   quotation_master qm
+    JOIN   employees e
+           ON e.employee_id = qm.create_by
+    WHERE  qm.quot_master_id = v_quot_master_id;
+
+    /* ================= CSS ================= */
+    v_html := v_html || q'[
+<style>
+.t-Region,
+.t-Region-bodyWrap,
+.t-Region-body,
+.t-Region-body > div {
+    overflow: visible !important;
+    max-height: none !important;
+    height: auto !important;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #f4f4f4;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+#report-container {
+    background: #ffffff;
+    width: 210mm;
+    margin: 20px auto;
+    padding: 40px;
+    box-sizing: border-box;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+}
+
+.report-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 25px 0;
+    letter-spacing: 2px;
+}
+
+.info-grid {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #e5e5e5;
+    background: #fafafa;
+    border-radius: 4px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+}
+
+.data-table th {
+    background: #007a5e;
+    color: #fff;
+    padding: 10px;
+    border: 1px solid #00634d;
+    font-size: 13px;
+}
+
+.data-table td {
+    padding: 9px;
+    border: 1px solid #ddd;
+    font-size: 13px;
+}
+
+.data-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.signature-row {
+    margin-top: 90px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sig-box {
+    width: 220px;
+    text-align: center;
+    border-top: 2px solid #007a5e;
+    padding-top: 10px;
+}
+
+.sig-label {
+    font-weight: bold;
+    color: #007a5e;
+}
+
+@media print {
+    * { overflow: visible !important; }
+    html, body { margin: 0 !important; padding: 0 !important; background: #ffffff !important; overflow: hidden !important; }
+    #report-container { width: 100% !important; margin: 0 !important; padding: 12mm !important; box-shadow: none !important; height: auto !important; min-height: auto !important; }
+    .no-print { display: none !important; }
+    thead { display: table-header-group; }
+    tr { page-break-inside: avoid; }
+}
+</style>
+]';
+
+    /* ================= HTML ================= */
+    v_html := v_html || q'[
+<div id="report-container">
+
+<div class="no-print" style="text-align:right;margin-bottom:20px;">
+    <button onclick="window.print()"
+        style="background:#007a5e;color:#fff;border:none;
+               padding:10px 20px;border-radius:4px;
+               font-weight:bold;cursor:pointer;">
+        Print / Save PDF
+    </button>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;">
+    <img src="#APP_FILES#loginpage_logo.png" style="height:70px;">
+    <div style="text-align:right;">
+        <h2 style="margin:0;color:#007a5e;">Sonali Supply Network</h2>
+        <p style="margin:3px 0;font-size:13px;">Karwan Bazar, Dhaka</p>
+        <p style="margin:3px 0;font-size:13px;">Phone: 01915357107</p>
+    </div>
+</div>
+
+<hr style="border:0;border-top:3px solid #007a5e;margin:20px 0;">
+
+<div class="report-title">Quotation Report</div>
+
+<div class="info-grid">
+    <div>
+        <b>Quotation ID:</b> ]'||v_quot_master_id||q'[<br>
+        <b>Requisition ID:</b> ]'||v_req_id||q'[
+    </div>
+    <div style="text-align:right;">
+        <b>Report Date:</b> ]'||TO_CHAR(v_quot_date,'DD-MON-YYYY')||q'[<br>
+        <span style="font-size:12px;color:#777;">System Generated</span>
+    </div>
+</div>
+
+<table class="data-table">
+<thead>
+<tr>
+    <th>Supplier Name</th>
+    <th>Product Name</th>
+    <th>Req Qty</th>
+    <th>Quote Qty</th>
+    <th>Unit Price</th>
+    <th>Delivery Date</th>
+</tr>
+</thead>
+<tbody>
+]';
+
+    /* ================= DETAILS ================= */
+    FOR i IN (
+        SELECT supplier_name,
+               product_name,
+               req_quantity,
+               qute_quantity,
+               quot_price,
+               delivery_date
+        FROM quotation_details
+        WHERE quot_master_id = v_quot_master_id
+    ) LOOP
+        v_html := v_html || '
+        <tr>
+            <td>'||i.supplier_name||'</td>
+            <td>'||i.product_name||'</td>
+            <td align="center">'||i.req_quantity||'</td>
+            <td align="center">'||i.qute_quantity||'</td>
+            <td align="right" style="font-weight:bold;color:#007a5e;">
+                '||TO_CHAR(i.quot_price,'999,999,990.00')||'
+            </td>
+            <td align="center">'||TO_CHAR(i.delivery_date,'DD-MON-YYYY')||'</td>
+        </tr>';
+    END LOOP;
+
+    /* ================= FOOTER ================= */
+    v_html := v_html || q'[
+</tbody>
+</table>
+
+<div class="signature-row">
+    <div class="sig-box">
+        <span class="sig-label">Prepared By</span><br>
+        <span style="font-size:13px;">]'||v_created_by||q'[</span>
+    </div>
+
+    <div class="sig-box">
+        <span class="sig-label">Authorized Signature</span><br>
+        <span style="font-size:11px;color:#999;">Department Seal</span>
+    </div>
+</div>
+
+<div style="text-align:center;font-size:10px;color:#aaa;margin-top:40px;
+            border-top:1px solid #eee;padding-top:10px;">
+    This is an official document of Sonali Supply Network.
+</div>
+
+</div>
+]';
+
+    htp.p(v_html);
+END;
