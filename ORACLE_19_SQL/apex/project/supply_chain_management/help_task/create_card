@@ -1,0 +1,12 @@
+SELECT 
+    1 ID,
+    'fa fa-building' BADGEICON,
+    COUNT(*) TOTAL,
+    'Total Brand' TXT,
+    'https://cdn-icons-png.flaticon.com/512/5651/5651266.png' ICON
+FROM BRAND
+
+
+in attributes;
+primary key ID;
+subtitle TXT;

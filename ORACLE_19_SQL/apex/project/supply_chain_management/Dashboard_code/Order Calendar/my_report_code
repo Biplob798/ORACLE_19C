@@ -1,0 +1,12 @@
+SELECT 
+    o.SELL_ORDER_ID AS order_id,
+    
+    (c.CUSTOMER_NAME || ' [' || 
+     TO_CHAR(NVL(o.TOTAL_AMOUNT,0), 'FML999G999G999G999G990D00') || ']'
+    ) AS customer,
+    
+    o.SALE_DATE AS order_timestamp
+
+FROM SELL_ORDER_MASTER o
+JOIN CUSTOMER c
+    ON o.CUSTOMER_ID = c.CUSTOMER_ID;

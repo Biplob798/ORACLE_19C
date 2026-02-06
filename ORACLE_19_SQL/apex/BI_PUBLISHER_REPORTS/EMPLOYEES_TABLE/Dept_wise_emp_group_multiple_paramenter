@@ -1,0 +1,23 @@
+SELECT
+    d.department_name,
+    e.employee_id,
+    e.first_name || ' ' || e.last_name AS employee_name,
+    e.job_id,
+    e.gender,
+    e.email,
+    e.contact_no,
+    e.join_date,
+    e.salary,
+    e.employee_status
+FROM employees e
+JOIN departments d
+  ON d.department_id = e.department_id
+WHERE
+      :P89_DEPARTMENTS IS NULL
+   OR INSTR(
+        ':' || :P89_DEPARTMENTS || ':',
+        ':' || e.department_id || ':'
+      ) > 0
+ORDER BY
+    d.department_name,
+    e.first_name;

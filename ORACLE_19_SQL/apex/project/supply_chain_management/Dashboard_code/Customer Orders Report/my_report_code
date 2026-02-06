@@ -1,0 +1,75 @@
+SELECT
+    c.CUSTOMER_ID,
+    c.CUSTOMER_NAME AS CUSTOMER_NAME,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Electronics', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               'Electronic & Electronics', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Electronics,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Laptop', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Laptop,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Monitor', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Monitor,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Furniture', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Furniture,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Accessories', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Accessories,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'AC', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS AC,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Networking', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Networking,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Desktop', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Desktop,
+
+    SUM(
+        DECODE(pc.CATEGORY_NAME,
+               'Refrigerator', NVL(oi.QUANTITY,0) * NVL(oi.PRICE,0),
+               0)
+    ) AS Refrigerator
+
+FROM CUSTOMER c
+JOIN SELL_ORDER_MASTER o
+    ON c.CUSTOMER_ID = o.CUSTOMER_ID
+JOIN SELL_ORDER_DETAILS oi
+    ON o.SELL_ORDER_ID = oi.SELL_ORDER_ID
+JOIN PRODUCTS p
+    ON oi.PRODUCT_ID = p.PRODUCT_ID
+JOIN PRODUCT_CATEGORY pc
+    ON p.CATEGORY_ID = pc.CATEGORY_ID
+
+GROUP BY
+    c.CUSTOMER_ID,
+    c.CUSTOMER_NAME
+
+ORDER BY
+    c.CUSTOMER_NAME;

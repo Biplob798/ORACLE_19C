@@ -1018,3 +1018,174 @@ BEGIN
         PURCHASE_ID      = :OLD.PURCHASE_ID;       -- Uses the ID from the selected row
 END;
 /
+
+
+
+
+CREATE TABLE USERS_AUTH (
+    "ID" NUMBER(5,0),
+    "FIRST_NAME" VARCHAR2(40) NOT NULL ENABLE,
+    "LAST_NAME" VARCHAR2(40),
+    "DEPARTMENT_ID" NUMBER(5,0),
+    "EMPLOYEE_ID" NUMBER(10,0),
+    "PHONE" VARCHAR2(40),
+    "EMAIL_ADDRESS" VARCHAR2(60),
+    "PHOTO" BLOB,
+    "FILE_NAME" VARCHAR2(255),
+    "MIME_TYPE" VARCHAR2(40),
+    "LOGIN_ID" VARCHAR2(40),
+    "LOGIN_PASSWORD" VARCHAR2(40),
+    "ACTIVE_STATUS" VARCHAR2(1) DEFAULT 'Y',
+    UNIQUE ("LOGIN_ID") USING INDEX ENABLE
+);
+
+ALTER TABLE USERS_AUTH ADD CONSTRAINT "PK_USER_AUTH_ID" PRIMARY KEY ("ID");
+
+
+
+-- procedure for purchase_return
+CREATE OR REPLACE PROCEDURE prc_save_purchase_return ( 
+    -- Master Parameters
+    p_purchase_return_id   IN OUT NUMBER,
+    p_purchase_id          IN NUMBER,
+    p_purchase_invoice     IN VARCHAR2,
+    p_supplier_id          IN NUMBER,
+    p_supplier_name        IN VARCHAR2,
+    p_purchase_date        IN DATE,
+    p_return_date          IN DATE,
+    p_return_reason        IN VARCHAR2,
+    p_return_total_amount  IN NUMBER,
+    p_current_due_amount   IN NUMBER,
+    p_total_amount         IN NUMBER,
+    p_net_total_amount     IN NUMBER,
+    p_given_amount         IN NUMBER,
+    p_due_amount           IN NUMBER,
+
+    -- Detail Parameters
+    p_product_id           IN NUMBER,
+    p_product_name         IN VARCHAR2,
+    p_quatation_price      IN NUMBER,
+    p_qute_quantity        IN NUMBER,
+    p_return_quantity      IN NUMBER,
+    p_return_total_price   IN NUMBER,
+    p_total_price          IN NUMBER
+) IS
+    l_new_id NUMBER;
+BEGIN
+    IF p_purchase_return_id IS NULL THEN
+        -- 1️⃣ Insert into Purchase Return Master
+        INSERT INTO PURCHASE_RETURN_MASTER (
+            PURCHASE_ID,
+            PURCHASE_INVOICE,
+            SUPPLIER_ID,
+            SUPPLIER_NAME,
+            PURCHASE_DATE,
+            RETURN_DATE,
+            RETURN_REASON,
+            RETURN_TOTAL_AMOUNT,
+            CURRENT_DUE_AMOUNT,
+            TOTAL_AMOUNT,
+            NET_TOTAL_AMOUNT,
+            GIVEN_AMOUNT,
+            DUE_AMOUNT
+        ) VALUES (
+            p_purchase_id,
+            p_purchase_invoice,
+            p_supplier_id,
+            p_supplier_name,
+            p_purchase_date,
+            NVL(p_return_date, SYSDATE),
+            p_return_reason,
+            p_return_total_amount,
+            p_current_due_amount,
+            p_total_amount,
+            p_net_total_amount,
+            p_given_amount,
+            p_due_amount
+        )
+        RETURNING PURCHASE_RETURN_ID INTO l_new_id;
+
+        p_purchase_return_id := l_new_id;
+
+        -- 2️⃣ Insert into Purchase Return Details
+        INSERT INTO PURCHASE_RETURN_DETAILS (
+            PURCHASE_RETURN_ID,
+            PRODUCT_ID,
+            PRODUCT_NAME,
+            QUATATION_PRICE,
+            QUTE_QUANTITY,
+            RETURN_QUANTITY,
+            RETURN_TOTAL_PRICE,
+            TOTAL_PRICE
+        ) VALUES (
+            l_new_id,
+            p_product_id,
+            p_product_name,
+            p_quatation_price,
+            p_qute_quantity,
+            p_return_quantity,
+            p_return_total_price,
+            p_total_price
+        );
+
+        -- 3️⃣ UPDATE Purchase Master totals
+        UPDATE PURCHASE_MASTER
+        SET
+            TOTAL_AMOUNT     = p_total_amount,
+            NET_TOTAL_AMOUNT = p_net_total_amount,
+            GIVEN_AMOUNT     = p_given_amount,
+            DUE_AMOUNT       = p_due_amount
+        WHERE PURCHASE_ID = p_purchase_id;
+
+        -- 4️⃣ UPDATE Purchase Details quantity and price
+        UPDATE PURCHASE_DETAILS
+        SET
+            QUTE_QUANTITY = p_qute_quantity,
+            TOTAL_PRICE   = p_total_price
+        WHERE PURCHASE_ID = p_purchase_id
+          AND PRODUCT_ID  = p_product_id;
+
+    ELSE
+        -- 5️⃣ Update Purchase Return Master
+        UPDATE PURCHASE_RETURN_MASTER
+        SET
+            RETURN_DATE         = NVL(p_return_date, SYSDATE),
+            RETURN_REASON       = p_return_reason,
+            RETURN_TOTAL_AMOUNT = p_return_total_amount,
+            CURRENT_DUE_AMOUNT  = p_current_due_amount,
+            TOTAL_AMOUNT        = p_total_amount,
+            NET_TOTAL_AMOUNT    = p_net_total_amount,
+            GIVEN_AMOUNT        = p_given_amount,
+            DUE_AMOUNT          = p_due_amount,
+            UPDATED_AT          = CURRENT_TIMESTAMP
+        WHERE PURCHASE_RETURN_ID = p_purchase_return_id;
+
+        -- 6️⃣ Update Purchase Return Details
+        UPDATE PURCHASE_RETURN_DETAILS
+        SET
+            RETURN_QUANTITY    = p_return_quantity,
+            RETURN_TOTAL_PRICE = p_return_total_price,
+            TOTAL_PRICE        = p_total_price,
+            UPDATED_AT         = CURRENT_TIMESTAMP
+        WHERE PURCHASE_RETURN_ID = p_purchase_return_id
+          AND PRODUCT_ID         = p_product_id;
+
+        -- 7️⃣ UPDATE Purchase Master totals
+        UPDATE PURCHASE_MASTER
+        SET
+            TOTAL_AMOUNT     = p_total_amount,
+            NET_TOTAL_AMOUNT = p_net_total_amount,
+            GIVEN_AMOUNT     = p_given_amount,
+            DUE_AMOUNT       = p_due_amount
+        WHERE PURCHASE_ID = p_purchase_id;
+
+        -- 8️⃣ UPDATE Purchase Details quantity and price
+        UPDATE PURCHASE_DETAILS
+        SET
+            QUTE_QUANTITY = p_qute_quantity,
+            TOTAL_PRICE   = p_total_price
+        WHERE PURCHASE_ID = p_purchase_id
+          AND PRODUCT_ID  = p_product_id;
+    END IF;
+END;
+/

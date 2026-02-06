@@ -1,0 +1,1 @@
+AND (Instr( ':' || :P89_DEPARTMENTS || ':', ':' ||  e.department_id || ':' ) > 0 OR :P89_DEPARTMENTS IS NULL)

@@ -1,0 +1,24 @@
+SELECT
+    o.SELL_ORDER_ID AS order_id,
+
+    TO_CHAR(o.SALE_DATE, 'Month YYYY') AS order_month,
+
+    o.SALE_DATE AS order_date,
+
+    c.CUSTOMER_NAME AS customer_name,
+
+    c.ADDRESS AS cust_state,
+
+    o.SALES_REP_ID AS sales_rep,
+
+    (
+        SELECT COUNT(*)
+        FROM SELL_ORDER_DETAILS oi
+        WHERE oi.SELL_ORDER_ID = o.SELL_ORDER_ID
+    ) AS order_items,
+
+    NVL(o.TOTAL_AMOUNT, 0) AS order_total
+
+FROM SELL_ORDER_MASTER o
+JOIN CUSTOMER c
+    ON o.CUSTOMER_ID = c.CUSTOMER_ID;
