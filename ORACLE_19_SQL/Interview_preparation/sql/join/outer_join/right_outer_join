@@ -1,0 +1,14 @@
+
+-- A Left Join returns all rows from the "left" table (Employees), even if they don't have a match in the "right" table (Salary).
+
+
+
+
+SELECT e.emp_name, s.dept, s.salary
+FROM test_Employees e
+RIGHT OUTER JOIN test_Salary s
+ON e.emp_id = s.id AND e.dept_name = s.dept;
+
+
+
+-- Result: You will see 'Abir' even if he doesn't have a salary record yet (his salary will show as NULL).

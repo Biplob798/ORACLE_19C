@@ -1,0 +1,62 @@
+
+
+-- 2. CREATE DEPARTMENTS TABLE
+CREATE TABLE test_Departments (
+    dept_name VARCHAR2(20) PRIMARY KEY,
+    manager_name VARCHAR2(50)
+);
+
+-- Note: We must add 'Buss' here so the Salary table works later
+INSERT INTO test_Departments (dept_name, manager_name) VALUES ('Eng', 'Rasel');
+INSERT INTO test_Departments (dept_name, manager_name) VALUES ('Finan', 'Monir');
+INSERT INTO test_Departments (dept_name, manager_name) VALUES ('Sales', 'Karim');
+INSERT INTO test_Departments (dept_name, manager_name) VALUES ('Buss', 'Unknown');
+
+-- 3. CREATE EMPLOYEES TABLE
+CREATE TABLE test_Employees (
+    emp_name VARCHAR2(50),
+    emp_id NUMBER,
+    dept_name VARCHAR2(20),
+    CONSTRAINT fk_test_dept FOREIGN KEY (dept_name) REFERENCES test_Departments(dept_name)
+);
+
+INSERT INTO test_Employees (emp_name, emp_id, dept_name) VALUES ('Fahim', 1, 'Eng');
+INSERT INTO test_Employees (emp_name, emp_id, dept_name) VALUES ('Hassan', 2, 'Eng');
+INSERT INTO test_Employees (emp_name, emp_id, dept_name) VALUES ('Rama', 1, 'Finan');
+INSERT INTO test_Employees (emp_name, emp_id, dept_name) VALUES ('Abir', 1, 'Sales');
+
+-- 4. CREATE SALARY TABLE WITH FOREIGN KEY
+CREATE TABLE test_Salary (
+    id NUMBER,
+    dept VARCHAR2(20),
+    salary NUMBER
+);
+
+-- Adding the foreign key via ALTER as requested
+ALTER TABLE test_Salary
+ADD CONSTRAINT fk_salary_dept 
+FOREIGN KEY (dept) 
+REFERENCES test_Departments(dept_name);
+
+-- 5. INSERT SALARY DATA
+INSERT INTO test_Salary (id, dept, salary) VALUES (1, 'Eng', 1000);
+INSERT INTO test_Salary (id, dept, salary) VALUES (2, 'Eng', 2000);
+INSERT INTO test_Salary (id, dept, salary) VALUES (1, 'Buss', 1000);
+
+COMMIT;
+
+
+
+
+-- A Natural Join automatically joins tables based on columns with the same name. In your case, it joins test_Employees and test_Departments using the dept_name column.
+
+
+
+
+SELECT emp_name, dept_name, manager_name
+FROM test_Employees
+NATURAL JOIN test_Departments;
+
+
+
+-- Result: Shows each employee and their specific manager.

@@ -1,0 +1,12 @@
+-- This is the most common join. It only returns rows where there is a match in both tables. We can use this to see the Salary for each employee by matching both id and dept.
+
+
+SELECT e.emp_name, s.dept, s.salary
+FROM test_Employees e
+INNER JOIN test_Salary s 
+ON e.emp_id = s.id AND e.dept_name = s.dept;
+
+
+
+
+-- Result: Lists employees like 'Fahim' and 'Hassan' with their respective salaries.

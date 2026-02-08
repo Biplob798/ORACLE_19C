@@ -1,0 +1,8 @@
+-- This combines the results of both Left and Right joins. It shows everyone: employees without salaries AND salaries without assigned employees.
+
+
+
+SELECT e.emp_name, s.salary
+FROM test_Employees e
+FULL OUTER JOIN test_Salary s
+ON e.emp_id = s.id AND e.dept_name = s.dept;

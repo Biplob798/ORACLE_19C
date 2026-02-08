@@ -1,0 +1,16 @@
+A Cross Join produces a result set where every row from the first table is paired with every row from the second table.
+
+
+
+
+
+
+SELECT e.emp_name, d.dept_name
+FROM test_Employees e
+CROSS JOIN test_Departments d;
+
+
+
+
+
+Result: If you have 4 employees and 4 departments, you will get 16 rows ($4 \times 4$). Every employee will be paired with every single department (e.g., Fahim-Eng, Fahim-Finan, Fahim-Sales, Fahim-Buss).

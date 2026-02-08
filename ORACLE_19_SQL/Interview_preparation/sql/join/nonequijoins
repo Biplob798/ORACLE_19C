@@ -1,0 +1,16 @@
+A Nonequijoin is a join condition that does not use the equal sign. It uses operators like <, >, <=, >=, or BETWEEN. It is perfect for finding data within ranges.
+
+To demonstrate this, let's find all employees who earn more than a specific flat rate (e.g., more than 1500).
+
+
+
+
+
+
+
+
+
+SELECT e.emp_name, s.salary, s.dept
+FROM test_Employees e
+JOIN test_Salary s ON (e.emp_id = s.id)
+WHERE s.salary > 1500;

@@ -1,0 +1,15 @@
+-- A Self Join is used when you want to join a table to itself. Since your test_Employees table doesn't have a "Manager ID" column, a classic example is finding employees who work in the same department as a specific colleague (e.g., finding everyone in the same department as 'Fahim').
+
+
+
+
+
+
+SELECT e1.emp_name AS Employee, e2.emp_name AS Colleague, e1.dept_name
+FROM test_Employees e1, test_Employees e2
+WHERE e1.dept_name = e2.dept_name 
+AND e1.emp_name <> e2.emp_name;
+
+
+
+-- Result: This would link 'Fahim' and 'Hassan' because they both belong to 'Eng'.

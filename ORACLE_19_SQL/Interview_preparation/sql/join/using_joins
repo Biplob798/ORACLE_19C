@@ -1,0 +1,7 @@
+The USING clause is a cleaner way to perform an Equijoin when the column names are identical in both tables. It replaces the ON clause.
+
+
+
+SELECT emp_name, dept_name, manager_name
+FROM test_Employees
+JOIN test_Departments USING (dept_name);

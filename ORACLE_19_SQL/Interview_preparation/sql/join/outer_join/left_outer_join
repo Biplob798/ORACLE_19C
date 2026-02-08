@@ -1,0 +1,16 @@
+
+-- This returns all rows from the Salary table, even if the employee isn't in your main employee list.
+
+
+
+
+SELECT e.emp_name, s.salary
+FROM test_Employees e
+LEFT OUTER JOIN test_Salary s
+ON e.emp_id = s.id AND e.dept_name = s.dept;
+
+
+
+
+
+-- Result: You will see the salary for the 'Buss' department (1000) even though no employee is currently assigned to it in your employee table.

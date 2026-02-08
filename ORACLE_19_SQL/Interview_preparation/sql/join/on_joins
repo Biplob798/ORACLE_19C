@@ -1,0 +1,8 @@
+
+The ON clause is the modern, explicit way to specify join conditions. Unlike USING, it allows you to join columns with different names and use table aliases for clarity.
+
+
+SELECT e.emp_name, s.salary
+FROM test_Employees e
+JOIN test_Salary s 
+ON (e.emp_id = s.id AND e.dept_name = s.dept);

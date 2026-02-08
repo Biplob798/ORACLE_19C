@@ -1,0 +1,7 @@
+An Equijoin is a specific type of join that uses only equality comparisons (=) in the join condition to match rows between tables.
+
+
+SELECT e.emp_name, d.manager_name, d.dept_name
+FROM test_Employees e, test_Departments d
+WHERE e.dept_name = d.dept_name;
+
