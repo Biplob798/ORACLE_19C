@@ -1,0 +1,15 @@
+Now in the ords location C:\app\ords
+
+Write ords.bat
+
+Enter the Database password for sys as SYSDAB :s
+
+Enter the Database password for ORDS_PUBLIC_USER:s
+
+Confirm password:s
+
+Now run this command 
+
+setx PATH "%PATH%;c:\app\ords\bin"
+
+set PATH="%PATH%;c:\app\ords\bin"

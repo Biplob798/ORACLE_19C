@@ -1,0 +1,22 @@
+Now go to the cmd command prompt then write
+
+set CATALINA_HOME="c:\Program Files\Apache Software Foundation\Tomcat 9.0"
+
+mkdir %CATALINA_HOME%\webapps\i
+
+Now go to the Apex folder where image file located and copy the images and then go to 
+
+c:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\i this location and keep their
+
+Now go to the ords folder in C drive and copy ords.war file then go to the 
+
+c:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps this location and paste here
+
+now go to the c:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\bin
+
+in the bin there is a file tomcat9w and double click on it and 
+
+then click on java first java options keep it.
+
+-Dconfig.url=c:\app\config\ords
+

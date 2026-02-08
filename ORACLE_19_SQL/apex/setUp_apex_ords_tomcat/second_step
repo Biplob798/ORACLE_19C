@@ -1,0 +1,7 @@
+@apxchpwd.sql
+
+alter user APEX_PUBLIC_USER account unlock;
+
+alter user APEX_PUBLIC_USER identified by s;  // Used this password in this video for all accounts 
+
+@apex_rest_config.sql

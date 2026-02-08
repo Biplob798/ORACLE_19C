@@ -1,0 +1,15 @@
+D:
+
+sqlplus /nolog
+
+conn sys as sysdba
+
+show pdbs;
+
+alter session set container = ORCLPDB66;  // Always execute this command when you open a new sqlplus session
+
+column default_tablespace format A15
+
+column temporary_tablespace format A15
+
+@apexins.sql SYSAUX SYSAUX TEMP /i/

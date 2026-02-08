@@ -1,0 +1,18 @@
+Install ORDS
+
+--------------------
+
+Now go to the sqlplus
+
+sys as sysdba
+
+alter user sys identified by s account unlock container=all;
+
+alter session set container = orclpdb;
+
+alter user apex_listener identified by s account unlock;
+
+alter user apex_public_user identified by s account unlock;
+
+alter user apex_rest_public_user identified by s account unlock; 
+
