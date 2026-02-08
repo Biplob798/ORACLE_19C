@@ -1,0 +1,3 @@
+alter session set container = ORCLPDB;
+alter database open;
+show pdbs;

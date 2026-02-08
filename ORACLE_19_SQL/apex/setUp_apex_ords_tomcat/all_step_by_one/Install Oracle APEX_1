@@ -1,0 +1,23 @@
+Install Oracle APEX 
+
+Go to the Apex folder location:
+
+D:\ApexSetup\apex\apex-latest\apex
+
+
+
+
+
+
+
+sqlplus /nolog
+conn sys as sysdba
+show pdbs;
+alter session set container = ORCLPDB;
+column default_tablespace format A15
+column temporary_tablespace format A15
+@apexins.sql SYSAUX SYSAUX TEMP /i/
+@apxchpwd.sql
+alter user APEX_PUBLIC_USER account unlock;
+alter user APEX_PUBLIC_USER identified by s;
+@apex_rest_config.sql

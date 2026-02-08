@@ -1,0 +1,27 @@
+set CATALINA_HOME="c:\Program Files\Apache Software Foundation\Tomcat 9.0"
+mkdir %CATALINA_HOME%\webapps\i
+
+
+Copy APEX images folder to:
+
+c:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps\i
+
+Copy ords.war from:
+
+C:\app\ords
+
+Paste into:
+
+c:\Program Files\Apache Software Foundation\Tomcat 9.0\webapps
+
+Go to:
+
+c:\Program Files\Apache Software Foundation\Tomcat 9.0\bin
+
+Double-click tomcat9w.exe
+
+Java → Java Options → add:
+
+
+
+-Dconfig.url=c:\app\config\ords

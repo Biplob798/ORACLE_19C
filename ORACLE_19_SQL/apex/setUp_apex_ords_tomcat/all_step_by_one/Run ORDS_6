@@ -1,0 +1,18 @@
+Go to:
+
+C:\app\ords
+
+Run:
+
+
+
+
+ords.bat
+
+
+
+Enter passwords when prompted:
+
+SYS as SYSDBA: s
+ORDS_PUBLIC_USER: s
+Confirm password: s

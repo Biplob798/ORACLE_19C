@@ -1,0 +1,2 @@
+setx PATH "%PATH%;c:\app\ords\bin"
+set PATH="%PATH%;c:\app\ords\bin"

@@ -1,0 +1,13 @@
+Create folders:
+
+C:\app
+C:\app\ords
+C:\app\config
+C:\app\config\ords
+C:\app\config\ords\logs
+
+Copy the ORDS zip file to:
+
+C:\app\ords
+
+Extract it there.
