@@ -1,0 +1,18 @@
+<!-- This is the "heavy lifter." It returns one or more rows and multiple columns. The outer query compares multiple columns at once against the results of the subquery.
+
+When to use: When you need to match a "pair" or "set" of data (e.g., matching both the manager_id and department_id simultaneously).
+
+Example: Find employees who have the same job and manager as 'John Doe'. -->
+
+
+
+
+
+
+
+
+SELECT employee_name, job_id, manager_id
+FROM employees
+WHERE (job_id, manager_id) IN (SELECT job_id, manager_id 
+                               FROM employees 
+                               WHERE employee_name = 'John Doe');

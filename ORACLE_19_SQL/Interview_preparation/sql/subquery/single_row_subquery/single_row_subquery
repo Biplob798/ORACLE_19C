@@ -1,0 +1,11 @@
+<!-- This subquery returns exactly one row and one column (a single value). Because it returns only one value, you use standard comparison operators like =, >, <, or <>.
+
+When to use: When you need to compare a value against a specific metric, like an average or a specific person's salary.
+
+Example: Find employees who earn more than the average salary. -->
+
+
+
+SELECT employee_name, salary
+FROM employees
+WHERE salary > (SELECT AVG(salary) FROM employees);

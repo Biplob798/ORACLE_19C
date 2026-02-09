@@ -1,0 +1,11 @@
+
+-- When a subquery is in the FROM clause, it is often called an Inline View. You are basically creating a temporary table on the fly and then selecting from it.
+
+-- Example: Treat the "post-Davies" group as its own table, then select only the last names from that specific set.
+
+SELECT sub.last_name
+FROM (SELECT last_name, hire_date 
+      FROM employees 
+      WHERE hire_date > (SELECT hire_date 
+                         FROM employees 
+                         WHERE last_name = 'Davies')) sub;

@@ -1,0 +1,6 @@
+SELECT department_id, MIN(hire_date)
+FROM employees
+GROUP BY department_id
+HAVING MIN(hire_date) > (SELECT hire_date 
+                         FROM employees 
+                         WHERE last_name = 'Davies');
