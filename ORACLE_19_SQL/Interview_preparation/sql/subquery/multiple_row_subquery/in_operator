@@ -1,0 +1,16 @@
+-- Find the employees who earn the same salary as the minimum salary for each department.
+
+
+SELECT last_name, salary, department_id
+FROM employees
+WHERE salary IN (SELECT MIN(salary)
+FROM employees
+GROUP BY department_id);
+
+
+
+SELECT last_name, salary, department_id
+FROM employees
+WHERE salary IN (2500, 4200, 4400, 6000, 7000, 8300,
+
+8600, 17000);

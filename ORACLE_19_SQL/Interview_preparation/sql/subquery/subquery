@@ -10,10 +10,6 @@
 -- • The result of the subquery is used by the main query.
 
 
--- You can place the subquery in a number of SQL clauses, including the following:
--- • WHERE clause
--- • HAVING clause
--- • FROM clause
 
 
 SELECT last_name, hire_date
@@ -21,3 +17,12 @@ FROM employees
 WHERE hire_date > (SELECT hire_date
 FROM employees
 WHERE last_name = 'Davies');
+
+
+
+
+
+-- You can place the subquery in a number of SQL clauses, including the following:
+-- • WHERE clause
+-- • HAVING clause
+-- • FROM clause
