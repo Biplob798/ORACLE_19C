@@ -6,3 +6,9 @@ SELECT e.emp_name, s.salary
 FROM test_Employees e
 FULL OUTER JOIN test_Salary s
 ON e.emp_id = s.id AND e.dept_name = s.dept;
+
+
+
+SELECT e.last_name, d.department_id, d.department_name
+FROM employees e FULL OUTER JOIN departments d
+ON (e.department_id = d.department_id) ;

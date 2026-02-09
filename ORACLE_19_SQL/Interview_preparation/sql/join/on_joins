@@ -6,3 +6,33 @@ SELECT e.emp_name, s.salary
 FROM test_Employees e
 JOIN test_Salary s 
 ON (e.emp_id = s.id AND e.dept_name = s.dept);
+
+
+
+
+
+
+SELECT e.employee_id, e.last_name, e.department_id,
+
+d.department_id, d.location_id
+FROM employees e JOIN departments d
+ON (e.department_id = d.department_id);
+
+
+
+
+
+SELECT e.employee_id, e.last_name, e.department_id,
+
+d.department_id, d.location_id
+FROM employees e JOIN departments d
+ON (e.department_id = d.department_id)
+AND e.manager_id = 149 ;
+
+
+SELECT e.employee_id, e.last_name, e.department_id,
+
+d.department_id, d.location_id
+FROM employees e JOIN departments d
+ON (e.department_id = d.department_id)
+WHERE e.manager_id = 149 ;

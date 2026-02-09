@@ -15,7 +15,7 @@ SELECT employee_name, job_id, manager_id
 FROM employees
 WHERE (job_id, manager_id) IN (SELECT job_id, manager_id 
                                FROM employees 
-                               WHERE employee_name = 'John Doe'
+                               WHERE employee_name = 'John Doe')
 
 
 

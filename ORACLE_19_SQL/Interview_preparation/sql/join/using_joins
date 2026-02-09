@@ -5,3 +5,19 @@ The USING clause is a cleaner way to perform an Equijoin when the column names a
 SELECT emp_name, dept_name, manager_name
 FROM test_Employees
 JOIN test_Departments USING (dept_name);
+
+
+
+
+
+
+SELECT employee_id, last_name,
+location_id, department_id
+FROM employees JOIN departments
+USING (department_id) ;
+
+
+
+SELECT first_name, e.department_name, d.manager_id
+FROM employees e JOIN departments d USING (department_id)
+WHERE department_id = 50;

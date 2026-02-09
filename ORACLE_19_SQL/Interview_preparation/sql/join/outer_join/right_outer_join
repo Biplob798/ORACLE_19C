@@ -12,3 +12,13 @@ ON e.emp_id = s.id AND e.dept_name = s.dept;
 
 
 -- Result: You will see 'Abir' even if he doesn't have a salary record yet (his salary will show as NULL).
+
+
+
+
+
+
+
+SELECT e.last_name, d.department_id, d.department_name
+FROM employees e RIGHT OUTER JOIN departments d
+ON (e.department_id = d.department_id) ;

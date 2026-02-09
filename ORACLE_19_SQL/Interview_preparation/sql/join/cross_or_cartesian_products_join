@@ -14,3 +14,9 @@ CROSS JOIN test_Departments d;
 
 
 Result: If you have 4 employees and 4 departments, you will get 16 rows ($4 \times 4$). Every employee will be paired with every single department (e.g., Fahim-Eng, Fahim-Finan, Fahim-Sales, Fahim-Buss).
+
+
+
+SELECT last_name, department_name
+FROM employees
+CROSS JOIN departments ;

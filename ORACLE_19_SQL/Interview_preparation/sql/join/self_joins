@@ -13,3 +13,10 @@ AND e1.emp_name <> e2.emp_name;
 
 
 -- Result: This would link 'Fahim' and 'Hassan' because they both belong to 'Eng'.
+
+
+
+
+SELECT worker.last_name emp, manager.last_name mgr
+FROM employees worker JOIN employees manager
+ON (worker.manager_id = manager.employee_id);

@@ -1,0 +1,71 @@
+
+-- Unlike a normal subquery that runs once, a correlated subquery runs once for every row processed by the outer query. It references a column from the outer table.
+
+-- Example: Find employees who earn more than the average salary of their own department.
+
+
+
+
+SELECT last_name, salary, department_id
+FROM employees e1
+WHERE salary > (SELECT AVG(salary) 
+                FROM employees e2 
+                WHERE e2.department_id = e1.department_id);
+
+
+
+
+-- The subquery references a column from a table in the parent
+-- -- query.
+
+
+
+SELECT column1, column2, ...
+FROM table1 Outer table
+WHERE column1 operator
+
+(SELECT column1, column2
+FROM table2
+WHERE expr1 =
+Outer_table
+.expr2);
+
+
+
+
+-- Find all employees who earn more than the average salary in
+-- their department.
+
+
+
+
+SELECT last name, salary, department id
+Find all employees who earn more than the average salary in
+their department.
+
+SELECT last_name, salary, department_id
+FROM employees outer_table
+WHERE salary >
+
+(SELECT AVG(salary)
+FROM employees inner_table
+WHERE inner_table.department_id =
+outer_table.department_id);
+
+
+
+
+
+-- Display details of highest earning employee in each
+-- department.
+
+
+
+SELECT department_id, employee_id, salary
+FROM EMPLOYEES e FROM EMPLOYEES e
+WHERE 1 =
+
+(SELECT COUNT(DISTINCT salary)
+FROM EMPLOYEES
+WHERE e.department_id = department_id
+AND e.salary <= salary)

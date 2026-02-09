@@ -1,0 +1,37 @@
+
+-- This matches the columns independently. It uses separate subqueries for each column, meaning the values don't have to come from the same row in the subquery result.
+
+-- Example: Find employees who work for any manager of employee 174 AND in any department employee 174 has ever worked in.
+
+
+
+
+SELECT last_name, manager_id, department_id
+FROM employees
+WHERE manager_id IN (SELECT manager_id FROM employees WHERE employee_id = 174)
+  AND department_id IN (SELECT department_id FROM employees WHERE employee_id = 174);
+
+
+-- Display the details of the employees who are managed by the
+-- same manager as the employees with EMPLOYEE_ID 174 or
+-- 141 and work in the same department as the employees with
+-- EMPLOYEE_ID 174 or 141.
+
+
+
+
+SELECT employee_id, manager_id, department_id
+FROM employees
+WHERE manager_id IN
+
+(SELECT manager_id
+FROM employees
+WHERE employee_id IN (174,141))
+
+AND department_id IN
+
+(SELECT department_id
+FROM employees
+WHERE employee_id IN (174,141))
+
+AND employee_id NOT IN(174,141);
