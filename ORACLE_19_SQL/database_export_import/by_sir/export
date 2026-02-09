@@ -1,0 +1,9 @@
+1. First make a directory in your pc's folder like E:\backup
+2. Login as sysdba--- sqlplus / as sysdba
+Alter session set container=orclpdb;
+3. Directory object
+   CREATE OR REPLACE DIRECTORY DP_DIR AS 'E:\backup';
+4.Give the permission GRANT READ, WRITE ON DIRECTORY DP_DIR TO hr;
+
+Now go to cmd and run as administrator:
+expdp hr/hr@//localhost:1521/ORCLPDB schemas=hr directory=DP_DIR dumpfile=hr.dmp logfile=hr.log

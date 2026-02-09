@@ -1,0 +1,17 @@
+--In CMD 
+
+
+D:
+cd \apex\apex
+
+
+
+dir apxremov.sql
+
+
+sqlplus
+
+
+conn / as sysdba
+alter session set container=orclpdb66;
+@apxremov.sql
