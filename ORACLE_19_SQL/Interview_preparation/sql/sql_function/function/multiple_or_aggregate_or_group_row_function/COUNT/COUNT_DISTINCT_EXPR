@@ -1,0 +1,4 @@
+-- COUNT(DISTINCT expr)=ONLY UNIQUE
+
+SELECT COUNT(DISTINCT department_id)
+FROM   employees;

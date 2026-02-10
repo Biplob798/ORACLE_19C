@@ -1,0 +1,17 @@
+
+-- The COALESCE function returns the first non-null expression in the list.
+-- Syntax
+-- COALESCE (expr1, expr2, ... exprn)
+-- In the syntax:
+-- • expr1returns this expression if it is not null
+-- • expr2returns this expression if the first expression is null and this expression is not null
+-- • exprnreturns this expression if the preceding expressions are null
+-- Note that all expressions must be of the same data type.
+
+
+
+
+
+SELECT last_name, salary, commission_pct,
+COALESCE((salary+(commission_pct*salary)), salary+2000)"New Salary'
+FROM EMPLOYEES;

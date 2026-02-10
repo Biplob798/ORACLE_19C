@@ -1,0 +1,22 @@
+SELECT   department_id, AVG(salary)
+FROM     employees
+GROUP BY department_id ;
+
+
+SELECT   AVG(salary)
+FROM   
+  employees
+GROUP BY department_id ;
+
+
+
+SELECT   department_id, AVG(salary)
+FROM     employees
+GROUP BY department_id
+ORDER BY AVG(salary);
+
+
+SELECT   department_id, job_id, sum(salary)
+FROM     employees
+GROUP BY department_id, job_id
+ORDER BY job_id;

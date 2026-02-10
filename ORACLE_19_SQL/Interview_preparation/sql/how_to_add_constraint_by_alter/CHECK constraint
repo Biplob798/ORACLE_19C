@@ -1,0 +1,3 @@
+ALTER TABLE employees
+ADD CONSTRAINT emp_salary_ck 
+CHECK (salary > 0);

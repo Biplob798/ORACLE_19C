@@ -1,0 +1,19 @@
+-- The NULLIF function compares two expressions.
+-- Syntax
+-- NULLIF (expr1, expr2)
+-- In the syntax:
+-- • NULLIFcompares expr1 and expr2. If they are equal, the function returns null. If they 
+-- are not, the
+
+exp-1=exp-2
+the returns null
+exp-1!=exp-2
+the returns exp-1
+
+
+
+
+SELECT first_name, LENGTH(first_name) "expr1", 
+last_name,  LENGTH(last_name)  "expr2",
+NULLIF(LENGTH(first_name), LENGTH(last_name)) result
+FROM   employees;

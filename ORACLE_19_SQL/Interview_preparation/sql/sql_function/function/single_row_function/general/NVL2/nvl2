@@ -1,0 +1,29 @@
+-- The NVL2 function examines the first expression. If the first expression is not null, the NVL2
+-- function returns the second expression. If the first expression is null, the third expression is 
+-- returned. 
+-- Syntax
+-- NVL2(expr1, expr2, expr3)
+-- In the syntax:
+-- • expr1is the source value or expression that may contain a null
+-- • expr2is the value that is returned if expr1 is not null
+-- • expr3is the value that is returned if expr1 is null
+
+
+exp-1=Not Null then exp-2=Return 
+exp-1=Null then exp-3=Return 
+
+
+
+
+
+
+
+
+
+
+
+
+SELECT last_name,  salary, commission_pct,
+NVL2(commission_pct, 
+'SAL+COMM', 'SAL') income
+FROM   employees WHERE department_id IN (50, 80);

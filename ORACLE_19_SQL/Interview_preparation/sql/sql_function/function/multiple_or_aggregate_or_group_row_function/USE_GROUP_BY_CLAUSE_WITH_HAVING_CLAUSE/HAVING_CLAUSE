@@ -1,0 +1,30 @@
+SELECT   department_id, MAX(salary)
+FROM     employees
+GROUP BY department_id
+HAVING   MAX(salary)>10000 ;
+
+
+
+-- The following example displays the department numbers and average salaries for those 
+-- departments with a maximum salary greater than $10,000
+
+SELECT   department_id, AVG(salary)
+FROM     employees
+GROUP BY department_id
+HAVING   max(salary)>10000;
+
+
+
+
+
+-- The example in the slide displays the JOB_ID and total monthly salary for each job that has a 
+-- total payroll exceeding $13,000. The example excludes sales representatives and sorts the 
+-- list by the total monthly salary
+
+
+SELECT   job_id, SUM(salary) PAYROLL
+FROM     employees
+WHERE    job_id NOT LIKE '%REP%'
+GROUP BY job_id
+HAVING   SUM(salary) > 13000
+ORDER BY SUM(salary);

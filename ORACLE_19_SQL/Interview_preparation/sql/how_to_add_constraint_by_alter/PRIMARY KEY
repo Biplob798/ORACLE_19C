@@ -1,0 +1,3 @@
+ALTER TABLE employees
+ADD CONSTRAINT emp_pk 
+PRIMARY KEY (employee_id);

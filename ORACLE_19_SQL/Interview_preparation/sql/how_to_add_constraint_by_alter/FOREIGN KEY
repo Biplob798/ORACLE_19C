@@ -1,0 +1,4 @@
+ALTER TABLE employees
+ADD CONSTRAINT emp_dept_fk 
+FOREIGN KEY (department_id)
+REFERENCES departments(department_id);
