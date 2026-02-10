@@ -1,2 +1,6 @@
+
+--follow set-6 same cmd
+---------------------------------------------------------------
+
 setx PATH "%PATH%;c:\app\ords\bin"
 set PATH="%PATH%;c:\app\ords\bin"

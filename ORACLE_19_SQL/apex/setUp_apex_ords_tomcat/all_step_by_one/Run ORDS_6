@@ -1,3 +1,7 @@
+
+new cmd 
+---------------------------
+
 Go to:
 
 C:\app\ords
@@ -16,3 +20,7 @@ Enter passwords when prompted:
 SYS as SYSDBA: s
 ORDS_PUBLIC_USER: s
 Confirm password: s
+
+
+
+

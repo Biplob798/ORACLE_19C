@@ -1,3 +1,8 @@
+Now in the ords location C:\app\ords
+
+Write ords.bat
+-------------------------------------------------------------
+
 set ORDS_HOME=c:\app\ords
 set ORDS_CONFIG=c:\app\config\ords
 set ORDS_LOGS=%ORDS_CONFIG%\logs
@@ -19,3 +24,34 @@ c:\app\ords\bin\ords.exe ^
   --gateway-mode proxied ^
   --gateway-user APEX_PUBLIC_USER ^
   --proxy-user
+
+
+
+---------------------------------
+for my databse 
+---------------------------------
+@echo off
+set ORDS_HOME=c:\app\ords
+set ORDS_CONFIG=c:\app\config\ords
+set ORDS_LOGS=%ORDS_CONFIG%\logs
+set DB_HOSTNAME=localhost
+set DB_PORT=1521
+set DB_SERVICE=ORCLPDB66.mshome.net
+set SYSDBA_USER=SYS
+
+:: Create log folder if it doesn't exist
+if not exist "%ORDS_LOGS%" mkdir "%ORDS_LOGS%"
+
+"%ORDS_HOME%\bin\ords.exe" ^
+  --config "%ORDS_CONFIG%" install ^
+  --log-folder "%ORDS_LOGS%" ^
+  --admin-user %SYSDBA_USER% ^
+  --db-hostname %DB_HOSTNAME% ^
+  --db-port %DB_PORT% ^
+  --db-servicename %DB_SERVICE% ^
+  --feature-db-api true ^
+  --feature-rest-enabled-sql true ^
+  --feature-sdw true ^
+  --proxy-user
+
+pause

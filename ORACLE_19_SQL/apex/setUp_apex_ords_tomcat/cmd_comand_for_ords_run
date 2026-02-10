@@ -1,0 +1,14 @@
+
+c:\app\ords\bin\ords.exe --config c:\app\config\ords serve --apex-images D:\apex\apex\apex\images
+
+
+
+
+
+
+
+
+
+
+
+http://localhost:8080/ords/apex_admin

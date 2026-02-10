@@ -1,3 +1,6 @@
+
+
+
 set ORDS_HOME=c:\app\ords--courrent location path
 set ORDS_CONFIG=c:\app\config\ords
 set ORDS_LOGS=%ORDS_CONFIG%\logs
