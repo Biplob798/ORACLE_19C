@@ -1,0 +1,13 @@
+
+Single-row functions are used to manipulate data items. They accept one or more arguments 
+and return one value for each row that is returned by the query.
+
+
+Single-row functions:
+• Manipulate data items
+• Accept arguments and return one value
+• Act on each row that is returned
+• Return one result per row
+• May modify the data type
+• Can be nested
+• Accept arguments that can be a column or an expression

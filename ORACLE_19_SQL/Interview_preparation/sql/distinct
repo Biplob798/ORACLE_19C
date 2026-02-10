@@ -1,0 +1,17 @@
+SELECT department_id
+FROM   
+employees;
+
+
+SELECT DISTINCT department_id
+FROM   
+employees;
+
+
+
+
+-- You can specify multiple columns after the DISTINCT qualifier. The DISTINCT qualifier 
+-- affects all the selected columns, and the result is every distinct combination of the columns. 
+
+SELECT  DISTINCT department_id, job_id
+FROM    employees;

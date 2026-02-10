@@ -1,0 +1,7 @@
+SELECT TRUNC(DATE '2026-02-16', 'MONTH') AS truncated_date
+FROM dual;
+
+
+SELECT employee_id,
+       TRUNC(hire_date, 'MONTH') AS payroll_month
+FROM employees;

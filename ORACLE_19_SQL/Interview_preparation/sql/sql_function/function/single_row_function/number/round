@@ -1,0 +1,11 @@
+--  ROUND: Rounds value to a specified decimal
+
+
+SELECT ROUND(45.926, 2) AS result FROM dual;
+
+SELECT ROUND(45.923,2), ROUND(45.923,0),
+ROUND(45.923,-1)
+FROM   DUAL;
+
+SELECT employee_id, ROUND(salary, 2) AS rounded_salary
+FROM employees;

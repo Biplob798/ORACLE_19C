@@ -1,0 +1,10 @@
+
+-- INSTR:Finds the numeric position of a named character
+
+SELECT INSTR('HelloWorld', 'W') AS result
+FROM dual;
+
+
+SELECT email,
+       INSTR(email, '@') AS at_position
+FROM employees;

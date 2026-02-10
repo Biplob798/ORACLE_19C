@@ -1,0 +1,13 @@
+
+-- LPAD:Returns an expression left-padded to the length of n characters with a character 
+-- expression
+
+SELECT LPAD('24000', 12, '*') AS result
+FROM dual;
+
+
+
+
+SELECT last_name,
+       LPAD(salary, 10, '*') AS padded_salary
+FROM employees;

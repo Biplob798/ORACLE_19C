@@ -1,0 +1,7 @@
+SELECT TO_DATE('10-02-2026', 'DD-MM-YYYY') AS result
+FROM dual;
+
+
+SELECT employee_id,
+       TO_DATE('01-01-2025', 'DD-MM-YYYY') AS joining_date
+FROM employees;

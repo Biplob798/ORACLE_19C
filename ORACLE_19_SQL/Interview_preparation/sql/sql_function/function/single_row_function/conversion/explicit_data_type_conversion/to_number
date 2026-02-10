@@ -1,0 +1,7 @@
+SELECT TO_NUMBER('12345') AS result
+FROM dual;
+
+
+SELECT employee_id,
+       TO_NUMBER('1000') + salary AS total_salary
+FROM employees;

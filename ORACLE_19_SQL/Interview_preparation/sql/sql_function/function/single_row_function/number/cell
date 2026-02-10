@@ -1,0 +1,11 @@
+-- CEIL:Returns the smallest whole number greater than or 
+-- -- equal to a specified number
+
+
+
+SELECT CEIL(2.83) AS result FROM dual;
+
+
+
+SELECT employee_id, CEIL(salary / 1000) AS salary_level
+FROM employees;

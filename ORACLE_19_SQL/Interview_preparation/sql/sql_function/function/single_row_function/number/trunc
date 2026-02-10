@@ -1,0 +1,11 @@
+-- TRUNC: Truncates value to a specified decimal
+
+
+SELECT TRUNC(45.926, 2) AS result FROM dual;
+
+SELECT TRUNC(45.923,2), TRUNC(45.923),
+TRUNC(45.923,-1)
+FROM   DUAL;
+
+SELECT employee_id, TRUNC(salary, 2) AS truncated_salary
+FROM employees;

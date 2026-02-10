@@ -1,0 +1,26 @@
+-- Data manipulation language (DML)
+
+SELECT
+INSERT
+UPDATE
+DELETE
+MERGE
+
+-- Data definition language (DDL)
+CREATE
+ALTER
+DROP
+RENAME
+TRUNCATE
+COMMENT
+
+-- Data control language (DCL)
+
+
+GRANT
+REVOKE
+-- Transaction control
+
+COMMIT
+ROLLBACK
+SAVEPOINT

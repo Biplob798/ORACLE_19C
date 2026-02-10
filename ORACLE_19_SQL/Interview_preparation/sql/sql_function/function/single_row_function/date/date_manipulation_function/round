@@ -1,0 +1,7 @@
+SELECT ROUND(DATE '2026-02-16', 'MONTH') AS rounded_date
+FROM dual;
+
+
+SELECT employee_id,
+       ROUND(hire_date, 'MONTH') AS rounded_month
+FROM employees;

@@ -1,0 +1,17 @@
+-- MOD: Returns remainder of division
+
+
+SELECT MOD(1600, 300) AS result FROM dual;
+
+
+SELECT employee_id as "Even Numbers", last_name
+FROM employees 
+WHERE MOD(employee_id,2) = 0;
+
+SELECT employee_id,
+       MOD(salary, 1000) AS remainder
+FROM employees;
+
+
+
+-- Note: The MOD function is often used to determine whether a value is odd or even.

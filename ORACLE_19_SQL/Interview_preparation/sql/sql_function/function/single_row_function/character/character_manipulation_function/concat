@@ -1,0 +1,13 @@
+-- 
+
+
+
+
+SELECT CONCAT('Hello', 'World') AS result
+FROM dual;
+
+
+
+SELECT CONCAT(first_name, last_name) AS full_name
+FROM employees
+WHERE employee_id = 100;

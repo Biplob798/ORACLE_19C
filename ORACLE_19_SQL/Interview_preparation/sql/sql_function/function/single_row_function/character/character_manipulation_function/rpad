@@ -1,0 +1,13 @@
+-- RPAD: Returns an expression right-padded to the length of n characters with a character 
+-- expression
+
+
+SELECT RPAD('24000', 12, '*') AS result
+FROM dual;
+
+
+
+
+SELECT first_name,
+       RPAD(first_name, 12, '-') AS padded_name
+FROM employees;

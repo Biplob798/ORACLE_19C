@@ -1,0 +1,27 @@
+SELECT sysdate
+FROM   dual;
+
+
+
+
+-- CURRENT_DATE returns the current date from the user 
+-- session
+
+
+SELECT SESSIONTIMEZONE, CURRENT_DATE FROM DUAL;
+
+
+
+-- CURRENT_TIMESTAMP returns the current date and time 
+-- from the user session.
+
+
+SELECT SESSIONTIMEZONE, CURRENT_TIMESTAMP FROM DUAL;
+
+
+
+
+
+SELECT last_name, (SYSDATE-hire_date)/7 AS WEEKS
+FROM   employees
+WHERE  department_id = 90;

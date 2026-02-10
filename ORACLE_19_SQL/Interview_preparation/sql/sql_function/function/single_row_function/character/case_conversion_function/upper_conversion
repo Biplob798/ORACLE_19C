@@ -1,0 +1,9 @@
+SELECT employee_id, last_name, department_id
+FROM   employees
+WHERE  last_name = 'HIGGINS';
+
+
+
+SELECT employee_id, last_name, department_id
+FROM   employees
+WHERE  UPPER(last_name) = 'HIGGINS';

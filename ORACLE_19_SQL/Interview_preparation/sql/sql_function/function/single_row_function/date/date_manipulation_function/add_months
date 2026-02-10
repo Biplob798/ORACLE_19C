@@ -1,0 +1,7 @@
+SELECT ADD_MONTHS(DATE '2026-02-01', 3) AS new_date
+FROM dual;
+
+
+SELECT employee_id,
+       ADD_MONTHS(hire_date, 12) AS contract_end
+FROM employees;

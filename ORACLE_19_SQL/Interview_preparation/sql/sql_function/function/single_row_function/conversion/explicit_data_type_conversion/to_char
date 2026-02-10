@@ -1,0 +1,19 @@
+SELECT TO_CHAR(25000) AS result
+FROM dual;
+
+
+SELECT employee_id,
+       TO_CHAR(salary) AS salary_text
+FROM employees;
+
+
+
+
+SELECT TO_CHAR(SYSDATE, 'DD-MON-YYYY') AS today
+FROM dual;
+
+
+
+SELECT employee_id,
+       TO_CHAR(hire_date, 'DD-MM-YYYY') AS hire_date_text
+FROM employees;

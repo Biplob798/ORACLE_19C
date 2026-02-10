@@ -1,0 +1,11 @@
+--  LENGTH:Shows the length of a string as a numeric value
+
+
+
+SELECT LENGTH('HelloWorld') AS result
+FROM dual;
+
+
+SELECT first_name,
+       LENGTH(first_name) AS name_length
+FROM employees;

@@ -1,0 +1,17 @@
+SELECT last_name,
+TO_CHAR(hire_date, 'fmDD Month YYYY')
+AS HIREDATE
+FROM   employees;
+
+
+
+-- Modify the example in the slide to display the dates in a format that appears as “Seventeenth 
+-- of June  2003 12:00:00 AM.”
+
+
+
+SELECT  last_name,
+TO_CHAR(hire_date, 
+'fmDdspth "of" Month YYYY fmHH:MI:SS AM')
+HIREDATE
+FROM    employees;

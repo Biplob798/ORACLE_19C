@@ -1,0 +1,7 @@
+SELECT NEXT_DAY(DATE '2026-02-01', 'FRIDAY') AS next_friday
+FROM dual;
+
+
+SELECT employee_id,
+       NEXT_DAY(hire_date, 'MONDAY') AS next_monday
+FROM employees;

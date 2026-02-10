@@ -1,0 +1,11 @@
+
+-- FLOOR:Returns the largest whole number equal to or less 
+-- than a specified number
+
+SELECT FLOOR(2.83) AS result FROM dual;
+
+
+
+SELECT employee_id,
+       FLOOR(MONTHS_BETWEEN(SYSDATE, hire_date) / 12) AS experience_years
+FROM employees;
