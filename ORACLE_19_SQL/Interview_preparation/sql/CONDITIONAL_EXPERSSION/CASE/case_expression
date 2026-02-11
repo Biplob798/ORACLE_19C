@@ -1,3 +1,10 @@
+
+-- Note: The CASE expression complies with the ANSI SQL. The DECODE function is specific to 
+-- Oracle syntax
+
+-- The two methods that are used to implement conditional processing (IF-THEN-ELSE logic) in 
+-- a SQL statement are the CASE expression and the DECODE function.
+
 SELECT last_name, job_id, salary,
 CASE job_id WHEN 'IT_PROG'  THEN  1.10*salary
 WHEN 'ST_CLERK' THEN  1.15*salary

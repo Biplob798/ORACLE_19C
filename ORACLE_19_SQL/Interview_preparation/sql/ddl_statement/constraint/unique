@@ -1,0 +1,5 @@
+CREATE TABLE hr_emp_uk (
+    emp_id      NUMBER(6),
+    email       VARCHAR2(50),
+    CONSTRAINT uk_emp_email UNIQUE (email)
+);

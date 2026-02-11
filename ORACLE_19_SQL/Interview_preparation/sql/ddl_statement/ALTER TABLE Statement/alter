@@ -1,0 +1,7 @@
+Use the ALTER TABLE statement to:
+• Add a new column
+• Modify an existing column definition
+• Define a default value for the new column
+• Drop a column
+• Rename a column
+• Change table to read-only status

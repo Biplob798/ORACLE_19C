@@ -1,0 +1,29 @@
+
+-- You must match the data type (using the TO_CHAR function or 
+-- any other conversion functions) when columns do not exist in 
+-- one or the other table.
+
+
+
+SELECT location_id, department_name "Department", 
+TO_CHAR(NULL) "Warehouse location"  
+FROM departments
+UNION
+SELECT location_id, TO_CHAR(NULL) "Department", 
+state_province
+FROM locations;
+
+
+
+
+-- Using the UNION operator, display the employee name, 
+-- department_id, and location_id of all employees
+
+
+
+
+SELECT  FIRST_NAME, JOB_ID, TO_DATE(hire_date)"HIRE_DATE"
+FROM employees
+UNION
+SELECT FIRST_NAME, JOB_ID, TO_DATE(NULL)"HIRE_DATE"
+FROM retired_employees;

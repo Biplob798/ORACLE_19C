@@ -1,0 +1,8 @@
+
+-- Removes all rows from a table, leaving the table empty 
+-- and the table structure intact
+-- • Is a data definition language (DDL) statement rather than a 
+-- DML statement; cannot easily be undone
+
+
+TRUNCATE TABLE copy_emp;

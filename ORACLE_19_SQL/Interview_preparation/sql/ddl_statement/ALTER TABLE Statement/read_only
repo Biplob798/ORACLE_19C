@@ -1,0 +1,5 @@
+-- To lock the table
+ALTER TABLE employees READ ONLY;
+
+-- To unlock it later
+ALTER TABLE employees READ WRITE;

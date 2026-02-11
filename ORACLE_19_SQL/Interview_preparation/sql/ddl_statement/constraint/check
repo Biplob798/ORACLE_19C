@@ -1,0 +1,5 @@
+CREATE TABLE hr_emp_ck (
+    emp_id      NUMBER(6),
+    salary      NUMBER(8,2),
+    CONSTRAINT ck_sal_positive CHECK (salary > 0)
+);

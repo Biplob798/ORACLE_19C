@@ -1,3 +1,23 @@
+-- Creating Natural Joins
+-- • The NATURAL JOIN clause is based on all the columns 
+-- that have the same name in two tables.
+-- • It selects rows from the two tables that have equal values 
+-- in all matched columns.
+-- • If the columns having the same names have different data 
+-- types, an error is returned.
+
+
+
+SELECT employee_id, first_name, job_id, job_title
+from employees NATURAL JOIN jobs;
+
+
+SELECT  department_id, department_name,
+location_id, city
+FROM    departments
+NATURAL JOIN locations
+WHERE   department_id IN (20, 50);
+
 
 
 -- 2. CREATE DEPARTMENTS TABLE

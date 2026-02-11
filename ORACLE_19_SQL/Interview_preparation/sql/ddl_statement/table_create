@@ -1,0 +1,30 @@
+
+--  You must have:– The CREATETABLE privilege– A storage area
+-- CREATE TABLE [schema.]table
+-- (column datatype [DEFAULT expr][, ...]);
+-- • You specify:– The table name– The column name, column data type, and column size
+
+
+
+CREATE TABLE dept
+(deptno  
+dname   
+loc     
+    NUMBER(2),
+    VARCHAR2(14),
+    VARCHAR2(13),
+create_date DATE DEFAULT SYSDATE);
+
+-- Confirm table creation:
+
+DESCRIBE dept
+
+
+
+-- The default data type must match the column data type.
+
+
+CREATE TABLE hire_dates
+(id  
+        NUMBER(8),
+hire_date DATE DEFAULT SYSDATE);

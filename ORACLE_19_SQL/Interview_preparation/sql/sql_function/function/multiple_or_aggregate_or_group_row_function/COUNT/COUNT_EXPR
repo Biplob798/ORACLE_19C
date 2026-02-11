@@ -1,5 +1,8 @@
 -- COUNT(EXP)=DUPLICATE
 
+-- COUNT(expr) returns the number of rows with non-null values 
+-- for expr:
+
 SELECT COUNT(commission_pct)
 FROM   employees
 WHERE  department_id = 50;

@@ -1,0 +1,21 @@
+
+--  FOREIGNKEY: Defines the column in the child table at the 
+-- table-constraint level
+-- • REFERENCES: Identifies the table and column in the parent 
+-- table
+-- • ONDELETE CASCADE: Deletes the dependent rows in the 
+-- child table when a row in the parent table is deleted
+-- • ONDELETE SETNULL: Converts dependent foreign key 
+-- values to null
+
+
+
+
+
+CREATE TABLE hr_emp_fk (
+    emp_id      NUMBER(6),
+    dept_id     NUMBER(4),
+    CONSTRAINT fk_dept 
+        FOREIGN KEY (dept_id) 
+        REFERENCES departments(department_id)
+);

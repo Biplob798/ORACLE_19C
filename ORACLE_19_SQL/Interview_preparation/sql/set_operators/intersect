@@ -1,0 +1,13 @@
+-- Rows that are common to both queries 
+-- Display the common manager IDs and department IDs of 
+-- current and previous employees
+
+
+
+SELECT  manager_id,department_id
+FROM   
+employees
+INTERSECT
+SELECT manager_id,department_id
+FROM   
+retired_employees

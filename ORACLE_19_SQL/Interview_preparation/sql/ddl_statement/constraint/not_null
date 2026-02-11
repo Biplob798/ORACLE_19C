@@ -1,0 +1,5 @@
+CREATE TABLE hr_emp_nn (
+    emp_id      NUMBER(6),
+    last_name   VARCHAR2(25) NOT NULL,
+    hire_date   DATE NOT NULL
+);

@@ -1,4 +1,39 @@
-The USING clause is a cleaner way to perform an Equijoin when the column names are identical in both tables. It replaces the ON clause.
+-- Creating Joins with the USING Clause
+-- • If several columns have the same names but the data 
+-- types do not match, use the USING clause to specify the 
+-- columns for the equijoin.
+-- • Use the USING clause to match only one column when 
+-- more than one column matches
+
+SELECT employee_id, last_name, 
+location_id, department_id
+FROM   employees JOIN departments
+USING (department_id) ;
+
+
+
+
+-- Using Table Aliases with the USING Clause
+-- • Do not qualify a column that is used in the NATURAL join or 
+-- a join with a USING clause.
+-- • If the same column is used elsewhere in the SQL 
+-- statement, do not alias it.
+
+
+
+SELECT l.city, d.department_name 
+FROM   
+locations l JOIN departments d
+USING (location_id)
+WHERE d.location_id = 1400;
+
+
+
+SELECT l.city, d.department_name
+FROM   locations l JOIN departments d USING (location_id)
+WHERE  location_id = 1400;
+
+-- The USING clause is a cleaner way to perform an Equijoin when the column names are identical in both tables. It replaces the ON clause.
 
 
 

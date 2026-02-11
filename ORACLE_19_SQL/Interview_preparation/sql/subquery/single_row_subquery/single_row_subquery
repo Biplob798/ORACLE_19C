@@ -1,5 +1,19 @@
 <!-- This subquery returns exactly one row and one column (a single value). Because it returns only one value, you use standard comparison operators like =, >, <, or <>.
 
+
+
+-- The subquery (inner query) executes before the main 
+-- query (outer query).
+-- • The result of the subquery is used by the main query.
+
+
+SELECT last_name, hire_date
+FROM   employees 
+WHERE  hire_date > (SELECT hire_date 
+FROM   employees
+WHERE  last_name = 'Davies');
+
+
 When to use: When you need to compare a value against a specific metric, like an average or a specific person's salary.
 
 
@@ -62,3 +76,27 @@ WHERE salary =
 
 (SELECT MIN(salary)
 FROM employees);
+
+
+
+-- HAVING Clause with Subqueries
+
+
+SELECT   department_id, MIN(salary)
+FROM     employees
+GROUP BY department_id
+HAVING   MIN(salary) >
+(SELECT MIN(salary)
+FROM   employees
+WHERE  department_id = 30);
+
+
+
+SELECT   job_id, AVG(salary)
+FROM     employees
+GROUP BY job_id
+HAVING   AVG(salary) = (SELECT 
+  MIN(AVG(salary))
+FROM   
+  employees
+GROUP BY job_id);

@@ -1,0 +1,3 @@
+ A DML statement is executed when you:– Add new rows to a table– Modify existing rows in a table– Remove existing rows from a table
+• A transaction consists of a collection of DML statements 
+that form a logical unit of work.

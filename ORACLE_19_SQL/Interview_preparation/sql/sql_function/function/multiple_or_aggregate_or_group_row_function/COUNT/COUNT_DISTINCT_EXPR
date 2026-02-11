@@ -1,4 +1,7 @@
 -- COUNT(DISTINCT expr)=ONLY UNIQUE
 
+-- COUNT(DISTINCTexpr) returns the number of unique, non-null values that are in the 
+-- column identified by expr.
+
 SELECT COUNT(DISTINCT department_id)
 FROM   employees;

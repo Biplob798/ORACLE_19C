@@ -20,3 +20,11 @@ AND e1.emp_name <> e2.emp_name;
 SELECT worker.last_name emp, manager.last_name mgr
 FROM employees worker JOIN employees manager
 ON (worker.manager_id = manager.employee_id);
+
+
+
+
+SELECT worker.last_name emp, manager.last_name mgr
+FROM   employees worker JOIN employees manager
+ON 
+   (worker.manager_id = manager.employee_id);

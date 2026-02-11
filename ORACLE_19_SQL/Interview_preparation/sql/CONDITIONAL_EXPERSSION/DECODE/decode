@@ -1,3 +1,9 @@
+
+-- Facilitates conditional inquiries by doing the work of a CASE
+-- expression or an IF-THEN-ELSE statement
+
+
+
 SELECT last_name, job_id, salary,
 DECODE(job_id, 'IT_PROG',  1.10*salary,
 'ST_CLERK', 1.15*salary,
@@ -10,6 +16,8 @@ FROM   employees;
 
 -- Display the applicable tax rate for each employee in 
 -- department 80:
+
+
 
 
 

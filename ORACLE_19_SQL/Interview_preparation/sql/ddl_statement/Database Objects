@@ -1,0 +1,7 @@
+
+1.Table Is the basic unit of storage; composed of rows  
+2.View  Logically represents subsets of data from one or 
+more tables    
+3.Sequence Generates numeric values
+4.Index Improves the performance of some queries
+5.Synonym Gives alternative name to an object

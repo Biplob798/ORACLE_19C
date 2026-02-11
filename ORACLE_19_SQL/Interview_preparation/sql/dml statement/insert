@@ -1,0 +1,33 @@
+INSERT INTO departments(department_id, 
+department_name, manager_id, location_id)
+VALUES (70, 'Public Relations', 100, 1700);
+
+
+
+-- DESCRIBE departments
+
+
+
+INSERT INTO employees (employee_id, 
+first_name, last_name, 
+email, phone_number,
+hire_date, job_id, salary, 
+commission_pct, manager_id,
+department_id)
+VALUES
+(113, 
+'Louis', 'Popp', 
+'LPOPP', '515.124.4567', 
+CURRENT_DATE, 'AC_ACCOUNT', 6900, 
+NULL, 205, 110);
+
+
+
+
+INSERT INTO employees
+VALUES      
+(114, 
+'Den', 'Raphealy', 
+'DRAPHEAL', '515.127.4561',
+TO_DATE('FEB 3, 2003', 'MON DD, YYYY'),
+'SA_REP', 11000, 0.2, 100, 60);

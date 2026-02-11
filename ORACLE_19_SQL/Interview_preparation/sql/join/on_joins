@@ -1,5 +1,22 @@
+-- Creating Joins with the ON Clause
+-- • The join condition for the natural join is basically an 
+-- equijoin of all columns with the same name.
+-- • Use the ON clause to specify arbitrary conditions or specify 
+-- columns to join.
+-- • The join condition is separated from other search 
+-- conditions.
+-- • The ONclause makes code easy to understand
 
-The ON clause is the modern, explicit way to specify join conditions. Unlike USING, it allows you to join columns with different names and use table aliases for clarity.
+
+
+SELECT e.employee_id, e.last_name, e.department_id, 
+d.department_id, d.location_id
+FROM   employees e JOIN departments d
+ON 
+    (e.department_id = d.department_id);
+
+
+-- The ON clause is the modern, explicit way to specify join conditions. Unlike USING, it allows you to join columns with different names and use table aliases for clarity.
 
 
 SELECT e.emp_name, s.salary

@@ -1,5 +1,9 @@
+
 -- This is the most common join. It only returns rows where there is a match in both tables. We can use this to see the Salary for each employee by matching both id and dept.
 
+
+--  the join of two tables returning only matched 
+-- rows is called an INNER join
 
 SELECT e.emp_name, s.dept, s.salary
 FROM test_Employees e

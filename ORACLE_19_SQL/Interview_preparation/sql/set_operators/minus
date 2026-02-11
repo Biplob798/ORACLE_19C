@@ -1,0 +1,14 @@
+
+-- Rows in the first query that are not present in the second query
+-- Display the employee IDs and Job IDs of those employees who 
+-- works in the sales department.
+
+
+
+SELECT employee_id, job_id
+FROM employees
+WHERE department_id = 80
+MINUS
+SELECT employee_id, job_id
+FROM retired_employees
+WHERE department_id = 90;

@@ -1,0 +1,9 @@
+– NOTNULL   Specifies that the column cannot contain a null value
+– UNIQUE    Specifies a column or combination of columns whose 
+values must be unique for all rows in the table 
+
+– PRIMARYKEY  Uniquely identifies each row of the table 
+– FOREIGNKEY   Establishes and enforces a referential integrity between 
+the column and a column of the referenced table such 
+that values in one table match values in another table. 
+– CHECK Specifies a condition that must be true 

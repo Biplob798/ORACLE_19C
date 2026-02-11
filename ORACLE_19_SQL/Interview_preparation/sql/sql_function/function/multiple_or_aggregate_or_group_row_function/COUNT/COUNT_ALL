@@ -1,5 +1,7 @@
 -- COUNT(*)=NULL+DUPLICATE
 
+-- COUNT(*) returns the number of rows in a table:
+
 
 SELECT COUNT(*)
 FROM   employees

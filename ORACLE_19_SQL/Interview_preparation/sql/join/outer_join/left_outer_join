@@ -1,7 +1,12 @@
 
 -- This returns all rows from the Salary table, even if the employee isn't in your main employee list.
 
-
+--  A join between two tables that returns the results of the 
+-- INNER join as well as the unmatched rows from the left (or 
+-- right) table is called a left (or right) OUTER join.
+-- • A join between two tables that returns the results of an 
+-- INNER join as well as the results of a left and right join is a 
+-- full OUTER join
 
 
 SELECT e.emp_name, s.salary
@@ -24,3 +29,6 @@ ON e.emp_id = s.id AND e.dept_name = s.dept;
 SELECT e.last_name, e.department_id, d.department_name
 FROM employees e LEFT OUTER JOIN departments d
 ON (e.department_id = d.department_id) ;
+
+
+

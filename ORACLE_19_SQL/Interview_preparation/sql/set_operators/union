@@ -1,0 +1,11 @@
+-- Rows from both queries after eliminating duplications 
+-- Display the job details of all the current and retired employees. 
+-- Display each job only once.
+
+SELECT job_id
+FROM   
+employees
+UNION 
+SELECT job_id
+FROM   
+job_history;
