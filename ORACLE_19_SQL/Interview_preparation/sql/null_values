@@ -1,0 +1,12 @@
+--  Null is a value that is unavailable, unassigned, unknown, 
+-- or inapplicable.
+-- • Null is not the same as zero or a blank space.
+
+
+SELECT last_name, job_id, salary, commission_pct
+FROM   employees;
+
+
+-- Arithmetic expressions containing a null value evaluate to null.
+SELECT last_name, 12*salary*commission_pct
+FROM   employees;

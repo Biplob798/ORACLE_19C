@@ -1,0 +1,6 @@
+-- Note: The symbols != and ^= can also represent the not equal to condition.
+
+
+SELECT employee_id, first_name, department_id
+FROM employees
+WHERE department_id <> 50;

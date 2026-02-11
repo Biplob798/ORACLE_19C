@@ -1,0 +1,32 @@
+
+
+SELECT employee_id, last_name, department_id
+FROM employees
+WHERE NOT department_id = 50;
+
+
+
+SELECT last_name, job_id
+FROM   employees
+WHERE  job_id 
+NOT IN ('IT_PROG', 'ST_CLERK', 'SA_REP') ;
+
+
+
+
+SELECT employee_id, last_name, salary
+FROM employees
+WHERE salary NOT BETWEEN 5000 AND 10000;
+
+
+
+SELECT employee_id, last_name, department_id
+FROM employees
+WHERE department_id NOT IN (10, 20, 30);
+
+
+SELECT employee_id, last_name, salary, hire_date
+FROM employees
+WHERE department_id = 50
+AND salary BETWEEN 5000 AND 10000
+AND NOT hire_date < TO_DATE('01-JAN-2005','DD-MON-YYYY');

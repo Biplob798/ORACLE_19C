@@ -1,0 +1,28 @@
+--  Use the LIKE operator to perform wildcard searches of 
+-- valid search string values.
+-- • Search conditions can contain either literal characters or 
+-- numbers:– %denotes zero or more characters.– _denotes one character.
+
+
+SELECT first_name
+FROM
+ employees
+WHERE
+first_name LIKE 'S%' ;
+
+SELECT last_name, hire_date
+FROM   employees
+WHERE  hire_date LIKE '%05';
+
+SELECT last_name
+FROM   employees
+WHERE  last_name LIKE '_o%' ;
+
+
+SELECT last_name
+FROM   employees
+WHERE last_name LIKE '%o%';
+
+
+
+

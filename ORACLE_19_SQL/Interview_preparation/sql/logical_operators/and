@@ -1,0 +1,17 @@
+
+-- AND requires both the component conditions to be true:
+
+
+SELECT employee_id, last_name, salary, department_id
+FROM employees
+WHERE salary > 5000
+AND department_id = 50;
+
+
+
+
+SELECT employee_id, last_name, job_id, salary
+FROM   employees
+WHERE  salary >= 10000
+AND    
+job_id LIKE '%MAN%' ;

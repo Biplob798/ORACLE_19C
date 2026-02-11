@@ -1,0 +1,10 @@
+ <!-- You can combine the two wildcard characters (%, _) with 
+literal characters for pattern matching: -->
+
+
+<!-- You can use the ESCAPE identifier to search for the actual 
+% and _ symbols. -->
+
+SELECT last_name
+FROM   employees
+WHERE  last_name LIKE '_o%' ;

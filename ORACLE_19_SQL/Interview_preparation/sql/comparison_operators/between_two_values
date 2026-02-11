@@ -1,0 +1,15 @@
+-- Use the BETWEEN operator to display rows based on a range of 
+-- values:
+
+
+SELECT employee_id, first_name, salary
+FROM employees
+WHERE salary BETWEEN 5000 AND 10000;
+
+
+-- You can also use the BETWEEN operator on character values:
+
+
+
+SELECT last_name FROM   employees 
+WHERE  last_name BETWEEN 'King' AND 'Whalen';

@@ -1,0 +1,9 @@
+SELECT employee_id, first_name, salary
+FROM employees
+WHERE salary <= 5000;
+
+
+
+SELECT last_name, salary
+FROM   employees
+WHERE  salary <= 3000 ;

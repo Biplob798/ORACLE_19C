@@ -1,0 +1,13 @@
+
+-- The condition defined 
+-- using the IN operator is also known as the membership condition.
+
+SELECT employee_id, last_name, salary, manager_id
+FROM   employees
+WHERE  manager_id IN (100, 101, 201) ;
+
+
+
+SELECT employee_id, manager_id, department_id
+FROM   employees
+WHERE  last_name IN ('Hartstein', 'Vargas');

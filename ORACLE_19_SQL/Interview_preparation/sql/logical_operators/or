@@ -1,0 +1,15 @@
+-- OR requires either component condition to be true:
+SELECT employee_id, last_name, department_id
+FROM employees
+WHERE department_id = 50
+OR department_id = 80;
+
+
+
+
+
+SELECT employee_id, last_name, job_id, salary
+FROM   employees
+WHERE  salary >= 10000
+OR     
+job_id LIKE '%MAN%' ;

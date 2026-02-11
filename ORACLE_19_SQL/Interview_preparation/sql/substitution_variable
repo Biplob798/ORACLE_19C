@@ -1,0 +1,31 @@
+
+-- Use substitution variables to:– Temporarily store values with single-ampersand (&) and 
+-- double-ampersand (&&) substitution
+-- • Use substitution variables to supplement the following:– WHEREconditions– ORDERBYclauses– Column expressions– Table names– Entire SELECT statement
+
+
+SELECT employee_id, last_name, salary, department_id
+FROM   employees
+WHERE  employee_id = &employee_num ;
+
+
+-- Character and Date Values 
+-- with Substitution Variables
+
+SELECT last_name, department_id, salary*12
+FROM   employees
+WHERE  job_id = '&job_title' ;
+
+
+
+
+
+-- Specifying Column Names, Expressions, and Text
+-- Use a variable prefixed with an ampersand (&) to prompt the 
+-- user for a value
+
+
+SELECT employee_id, last_name, job_id,&column_name
+FROM   employees
+WHERE  &condition
+ORDER BY &order_column ;

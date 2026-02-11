@@ -1,0 +1,20 @@
+
+-- Note: You cannot use column alias in the WHERE clause.
+
+SELECT employee_id, last_name, job_id, department_id
+FROM   employees;
+
+SELECT employee_id, last_name, job_id, department_id
+FROM   employees
+WHERE  department_id = 90 ;
+
+
+SELECT last_name, job_id, department_id
+FROM   employees
+WHERE  last_name = 'Whalen' ;
+
+
+SELECT last_name 
+FROM   
+employees
+WHERE  hire_date = '17-OCT-03' ;

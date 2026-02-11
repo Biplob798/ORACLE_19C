@@ -1,0 +1,36 @@
+-- Sort the retrieved rows with the ORDER BY clause:
+-- • ASC: Ascending order, default
+-- • DESC: Descending order
+
+SELECT   last_name, job_id, department_id, hire_date
+FROM     employees
+ORDER BY hire_date ;
+
+-- • Sorting in descending order:
+
+SELECT  
+FROM    
+ last_name, job_id, department_id, hire_date
+ employees
+ORDER BY department_id DESC ;
+
+--  Sorting by column alias:
+
+SELECT employee_id, last_name, salary*12 annsal
+FROM   employees
+ORDER BY annsal ;
+
+
+
+-- Sorting by using the column’s numeric position:
+SELECT  
+ last_name, job_id, department_id, hire_date
+FROM     employees
+ORDER BY 3;
+
+
+-- Sorting by multiple columns:
+
+SELECT last_name, department_id, salary
+FROM   employees
+ORDER BY department_id, salary DESC;
