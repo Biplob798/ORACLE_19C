@@ -1,0 +1,32 @@
+-- Creates a point inside a transaction to which you can roll back later.
+
+-- Useful when doing multiple operations.
+
+
+UPDATE employees
+SET salary = salary + 500
+WHERE department_id = 10;
+
+SAVEPOINT sp1;
+
+DELETE FROM employees
+WHERE employee_id = 205;
+
+-- Something went wrong, so rollback only delete
+ROLLBACK TO sp1;
+
+COMMIT;
+
+
+
+-- What happened?
+
+-- Salary updated ✔
+
+-- Savepoint created ✔
+
+-- Employee deleted ❌
+
+-- ROLLBACK TO sp1 → Only delete is undone
+
+-- COMMIT → Salary update saved permanently

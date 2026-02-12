@@ -1,0 +1,33 @@
+
+-- Undo changes made in the current transaction.
+
+-- It returns the data to the last COMMIT.
+DELETE FROM employees
+WHERE employee_id = 200;
+
+ROLLBACK;
+
+
+
+-- Discard all pending changes by using the ROLLBACK
+-- statement:
+-- • Data changes are undone.
+-- • Previous state of the data is restored.
+-- • Locks on the affected rows are released.
+
+
+DELETE FROM copy_emp;
+ROLLBACK ;
+
+
+
+DELETE FROM test;
+4 rows deleted.
+ROLLBACK;
+Rollback complete.
+DELETE FROM test WHERE  id = 100;
+1 row deleted.
+SELECT * FROM   test WHERE  id = 100;
+No rows selected.
+COMMIT;
+Commit complete.

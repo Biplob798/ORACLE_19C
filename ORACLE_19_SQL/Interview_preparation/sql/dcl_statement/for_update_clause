@@ -1,0 +1,57 @@
+--  Locks the rows in the EMPLOYEES table where job_id is 
+-- SA_REP.
+
+
+
+SELECT employee_id, salary, commission_pct, job_id
+FROM employees  
+WHERE job_id = 'SA_REP'
+FOR UPDATE 
+ORDER BY employee_id;
+
+
+-- Lock is released only when you issue a ROLLBACK or a 
+-- COMMIT.
+-- • If the SELECT statement attempts to lock a row that is 
+-- locked by another user, the database waits until the row is 
+-- available, and then returns the results of the SELECT
+-- statement.
+
+
+
+
+-- You can use the FOR UPDATE clause in a SELECT
+-- statement against multiple tables. 
+
+
+SELECT e.employee_id, e.salary, e.commission_pct 
+FROM employees e JOIN departments d 
+USING (department_id) 
+WHERE job_id = 'ST_CLERK'
+AND location_id = 1500 
+FOR UPDATE 
+ORDER BY e.employee_id;
+
+
+--  Rows from both the EMPLOYEES and DEPARTMENTS tables 
+-- are locked.
+-- • Use FORUPDATE OF column_name to qualify the column 
+-- you intend to change, then only the rows from that specific 
+-- table are locked.
+
+
+
+SELECT e.employee_id, e.salary, e.commission_pct 
+FROM employees e JOIN departments d 
+USING (department_id) 
+WHERE job_id = 'ST_CLERK' AND location_id = 1500 
+FOR UPDATE OF e.salary 
+ORDER BY e.employee_id;
+
+
+
+SELECT employee_id, salary, commission_pct, job_id
+FROM employees  
+WHERE job_id = 'SA_REP'
+FOR UPDATE WAIT 5
+ORDER BY employee_id;
