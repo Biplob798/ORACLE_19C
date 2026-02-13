@@ -1,0 +1,52 @@
+-- Main Reason: To Make Queries Faster
+
+-- An index is used to speed up data retrieval.
+
+-- Without index → Oracle reads the whole table (Full Table Scan).
+-- With index → Oracle directly finds the required rows.
+
+SELECT * 
+FROM employees
+WHERE employee_id = 100;
+
+-- If table has 10,000 rows → Oracle checks all 10,000 rows.
+
+CREATE INDEX emp_id_idx
+ON employees(employee_id);
+
+
+-- Now Oracle finds employee 100 quickly using the index.
+
+SELECT * 
+FROM employees
+WHERE employee_id = 100;
+
+
+
+
+-- An index:
+-- • Is a schema object
+-- • Can be used by the Oracle Server to speed up the retrieval 
+-- of rows by using a pointer
+-- of rows by using a pointer
+-- • Can reduce disk input/output (I/O) by using a rapid path 
+-- access method to locate data quickly
+-- • Is dependent on the table that it indexes
+-- • Is used and maintained automatically by the Oracle Server
+
+
+
+
+CREATE INDEX emp_last_name_idx
+ON employees(last_name);
+
+
+
+CREATE TABLE NEW_EMP
+(employee_id NUMBER(6)
+PRIMARY KEY USING INDEX
+(CREATE INDEX emp id idx ON
+p_ _
+NEW_EMP(employee_id)),
+first_name  VARCHAR2(20),
+last_name   VARCHAR2(25));

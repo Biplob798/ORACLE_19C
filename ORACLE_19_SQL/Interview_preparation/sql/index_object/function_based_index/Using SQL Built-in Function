@@ -1,0 +1,10 @@
+CREATE INDEX emp_upper_name_idx
+ON employees (UPPER(last_name));
+
+
+SELECT *
+FROM employees
+WHERE UPPER(last_name) = 'KING';
+
+
+-- Index is used for case-insensitive search.

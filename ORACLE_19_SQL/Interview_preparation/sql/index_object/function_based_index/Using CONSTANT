@@ -1,0 +1,18 @@
+CREATE INDEX emp_salary_const_idx
+ON employees (salary + 1000);
+
+
+SELECT *
+FROM employees
+WHERE salary + 1000 > 10000;
+
+
+-- Here:
+
+-- salary → column
+
+-- 1000 → constant
+
+-- salary + 1000 → expression
+
+-- Oracle can now use the index.

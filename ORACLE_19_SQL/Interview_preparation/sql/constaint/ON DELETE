@@ -1,0 +1,7 @@
+-- Use the ON DELETE CASCADE clause to delete child rows 
+-- when a parent key is deleted
+
+
+ALTER TABLE dept2 ADD CONSTRAINT dept_lc_fk 
+FOREIGN KEY (location id) 
+REFERENCES locations(location_id) ON DELETE CASCADE;

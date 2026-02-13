@@ -1,0 +1,7 @@
+CREATE USER user
+IDENTIFIED BY   
+password;
+
+
+CREATE USER  demo
+IDENTIFIED BY demo;

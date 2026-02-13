@@ -1,0 +1,7 @@
+
+-- Use the ON DELETE SET NULL clause to set the child 
+-- rows value to null when a parent key is deleted:
+
+ALTER TABLE emp2 ADD CONSTRAINT emp_dt_fk 
+FOREIGN KEY (Department_id) 
+REFERENCES departments(department_id) ON DELETE SET NULL;

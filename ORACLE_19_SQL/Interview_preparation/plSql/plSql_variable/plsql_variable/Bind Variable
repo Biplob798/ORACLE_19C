@@ -1,0 +1,16 @@
+variable b_result number
+begin
+select (salary*12)+nvl(commission_pct,0)into b_result from employees where employee_id=144;
+end;
+/
+print b_result
+
+
+-- A Reference variable holds the address of another variable or database object.
+vaiable b_emp_salary number
+begin
+select salary into :b_emp_salary from employees where employee_id=144;
+end;
+/
+print b_emp_salary
+select first_name,last_name from employees where salary=:b_emp_salary;

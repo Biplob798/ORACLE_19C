@@ -1,0 +1,13 @@
+
+-- A view is a virtual table based on a SQL query.
+
+-- 👉 It does NOT store data.
+-- 👉 It stores only the SELECT statement.
+
+-- When you query a view, Oracle runs the underlying query.
+
+
+CREATE VIEW emp_dept_90 AS
+SELECT employee_id, first_name, salary
+FROM employees
+WHERE department_id = 90;

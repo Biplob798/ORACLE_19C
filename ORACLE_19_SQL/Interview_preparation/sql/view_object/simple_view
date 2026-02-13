@@ -1,0 +1,51 @@
+
+--  A simple view is one that:
+-- s pe e so et at--
+-- Derives data from only one table
+-- Contains no functions or groups of data
+-- Usually perform DML operations through the view
+
+
+-- A Simple View is a view based on only one table
+-- and does not use:
+
+-- GROUP BY
+
+-- Aggregate functions (SUM, AVG, etc.)
+
+-- DISTINCT
+
+-- Joins
+
+
+CREATE VIEW emp_dept_90 AS
+SELECT employee_id, first_name, salary
+FROM employees
+WHERE department_id = 90;
+
+
+
+
+-- Can We Update Simple View?
+
+-- 👉 YES (if no restrictions)
+UPDATE emp_dept_90
+SET salary = salary + 1000
+WHERE employee_id = 100;
+
+
+
+DESCRIBE empvu80;
+
+
+
+CREATE OR REPLACE VIEW salvu50 (ID_NUMBER, NAME, ANN_SALARY)
+i
+AS SELECT  employee_id, last_name, salary*12
+FROM    employees
+WHERE   department_id = 50;
+
+
+SELECT *
+FROM 
+  salvu50;

@@ -1,0 +1,20 @@
+GRANT SELECT
+ON employees
+TO demo;
+
+GRANT  update (department_name, location_id)
+ON     departments
+TO     demo, manager;
+
+
+GRANT  select, insert
+ON     departments
+TO     demo
+WITH   GRANT OPTION;
+
+
+GRANT  select
+ON
+departments
+TO
+PUBLIC;

@@ -1,0 +1,6 @@
+DESCRIBE user_synonyms
+
+
+SELECT * 
+FROM 
+  user_synonyms;

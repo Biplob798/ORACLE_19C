@@ -1,0 +1,7 @@
+-- You can specify the ONLINE keyword to indicate that DML 
+-- operations on the table are allowed while dropping the 
+-- constraint.
+
+
+ALTER TABLE myemp2
+DROP CONSTRAINT emp_name_pk ONLINE;

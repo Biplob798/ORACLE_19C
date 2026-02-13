@@ -1,0 +1,52 @@
+
+--  A complex view is one that:--
+-- Derives data from many tables
+-- Contains f nctions or gro ps of data
+-- Contains functions or groups of data
+-- Does not always allow DML operations through the view
+
+
+
+
+
+
+
+CREATE OR REPLACE VIEW dept_sum_vu
+( i )
+(name, minsal, maxsal, avgsal)
+AS SELECT   
+d.department_name, MIN(e.salary), 
+MAX(e.salary),AVG(e.salary)
+FROM     
+USING    
+employees e JOIN departments d
+(department_id)
+GROUP BY d.department_name;
+
+
+
+-- A Complex View is a view that:
+
+-- Uses multiple tables (JOIN)
+
+-- OR uses GROUP BY
+
+-- OR uses aggregate functions
+
+-- OR uses DISTINCT
+
+
+
+CREATE VIEW emp_dept_view AS
+SELECT e.first_name, d.department_name
+FROM employees e
+JOIN departments d
+ON e.department_id = d.department_id;
+
+
+
+
+CREATE VIEW dept_salary_view AS
+SELECT department_id, SUM(salary) AS total_salary
+FROM employees
+GROUP BY department_id;

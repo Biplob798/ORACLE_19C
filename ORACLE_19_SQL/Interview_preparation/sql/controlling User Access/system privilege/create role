@@ -1,0 +1,14 @@
+
+-- A role is a named group of related privileges that can be granted to the user
+-- Auser can have access to several roles, and several users can be assigned the same role.
+-- A user can have access to several roles, and several users can be assigned the same role.
+
+-- A role is not a schema object; 
+
+
+CREATE ROLE manager;
+
+GRANT create table, create view 
+TO manager;  
+
+GRANT manager TO alice;    

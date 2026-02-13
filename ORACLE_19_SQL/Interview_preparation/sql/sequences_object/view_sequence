@@ -1,0 +1,6 @@
+--  View the current value for the DEPT_DEPTID_SEQ sequence:
+
+
+SELECT dept_deptid_seq.CURRVAL
+FROM
+dual;

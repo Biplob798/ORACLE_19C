@@ -1,0 +1,7 @@
+-- Available to all users
+
+-- Requires DBA privilege
+
+
+CREATE PUBLIC SYNONYM emp FOR hr.employees;
+SELECT * FROM emp;

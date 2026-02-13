@@ -1,0 +1,7 @@
+DECLARE
+  deptno   employees.department_id%TYPE := 10;
+BEGIN
+  DELETE FROM   employees
+  WHERE  department_id = deptno;
+END;
+/

@@ -1,0 +1,10 @@
+-- Private Synonym
+
+-- Default type
+
+-- Created inside a schema
+
+-- Only owner can use it
+
+
+CREATE SYNONYM emp FOR hr.employees;

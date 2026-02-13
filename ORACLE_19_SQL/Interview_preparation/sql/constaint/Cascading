@@ -1,0 +1,5 @@
+ALTER TABLE emp2 
+DROP COLUMN employee_id CASCADE CONSTRAINTS;
+
+ALTER TABLE test1
+DROP (col1_pk, col2_fk, col1);

@@ -1,0 +1,5 @@
+REVOKE  select, insert
+ON
+departments
+departments
+FROM    demo;

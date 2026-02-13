@@ -1,0 +1,6 @@
+ALTER TABLE emp2
+DISABLE CONSTRAINTS emp_dt_pk;
+
+
+ALTER TABLE dept2
+DISABLE primary key CASCADE;

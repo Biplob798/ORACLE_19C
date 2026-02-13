@@ -1,0 +1,16 @@
+DROP TABLE emp_new_sal;
+
+
+-- Table goes to Recycle Bin (if enabled).
+-- 👉 You can recover it using:
+
+FLASHBACK TABLE emp_new_sal TO BEFORE DROP;
+
+
+
+DROP TABLE emp_new_sal PURGE;
+
+
+-- Table is permanently deleted
+-- 👉 Cannot be recovered
+-- 👉 Does NOT go to Recycle Bin

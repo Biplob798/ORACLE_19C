@@ -1,0 +1,7 @@
+CREATE PUBLIC SYNONYM emp FOR hr.employees;
+
+
+DROP SYNONYM emp;
+
+
+DROP PUBLIC SYNONYM emp;

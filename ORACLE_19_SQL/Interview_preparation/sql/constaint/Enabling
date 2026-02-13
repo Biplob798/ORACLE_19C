@@ -1,0 +1,3 @@
+ALTER TABLE
+emp2
+ENABLE CONSTRAINT emp dt fk;

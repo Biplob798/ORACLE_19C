@@ -1,0 +1,17 @@
+-- A sequence:
+-- • Can automatically generate unique numbers
+-- • Is a shareable object
+-- • Canbeusedtocreate a primary key value
+-- • Can be used to create a primary key value
+-- • Replaces application code
+-- • Speeds up the efficiency of accessing sequence values 
+-- when cached in memory
+
+
+
+CREATE SEQUENCE dept_deptid_seq
+START WITH 280
+INCREMENT BY 10
+MAXVALUE 9999
+NOCACHE
+NOCYCLE;

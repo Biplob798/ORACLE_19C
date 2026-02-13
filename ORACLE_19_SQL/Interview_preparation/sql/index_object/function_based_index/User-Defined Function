@@ -1,0 +1,19 @@
+CREATE OR REPLACE FUNCTION annual_salary(p_salary NUMBER)
+RETURN NUMBER
+DETERMINISTIC
+IS
+BEGIN
+   RETURN p_salary * 12;
+END;
+/
+
+
+
+CREATE INDEX emp_annual_func_idx
+ON employees (annual_salary(salary));
+
+
+
+SELECT *
+FROM employees
+WHERE annual_salary(salary) > 100000;

@@ -1,0 +1,23 @@
+-- A synonym is an alias (another name) for a database object.
+
+-- It can be created for:
+
+-- Table
+
+-- View
+
+-- Sequence
+
+-- Procedure
+
+-- Function
+
+-- Package
+
+-- 👉 It helps to simplify object names and hide schema names.
+
+
+CREATE SYNONYM emp FOR hr.employees;
+
+
+SELECT * FROM emp;
