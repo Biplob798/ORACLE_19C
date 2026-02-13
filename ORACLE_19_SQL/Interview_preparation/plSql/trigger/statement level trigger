@@ -1,0 +1,7 @@
+CREATE OR REPLACE TRIGGER trg_statement_delete
+BEFORE DELETE
+ON employees
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Delete operation started');
+END;
+/

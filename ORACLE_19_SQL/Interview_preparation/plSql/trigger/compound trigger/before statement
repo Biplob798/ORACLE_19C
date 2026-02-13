@@ -1,0 +1,11 @@
+CREATE OR REPLACE TRIGGER trg_before_stmt_salary
+BEFORE UPDATE OF salary
+ON employees
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Salary update operation is about to start.');
+END;
+/
+UPDATE employees
+SET salary = salary * 1.10
+WHERE department_id = 50;
+-- Even if 20 rows are updated → trigger runs only once.

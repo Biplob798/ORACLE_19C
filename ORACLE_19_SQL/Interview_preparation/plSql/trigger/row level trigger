@@ -1,0 +1,8 @@
+CREATE OR REPLACE TRIGGER trg_row_delete
+BEFORE DELETE
+ON employees
+FOR EACH ROW
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Deleting Employee ID: ' || :OLD.employee_id);
+END;
+/

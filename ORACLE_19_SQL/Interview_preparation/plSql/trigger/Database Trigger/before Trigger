@@ -1,0 +1,13 @@
+CREATE OR REPLACE TRIGGER trg_before_update_salary
+BEFORE UPDATE OF salary
+ON employees
+FOR EACH ROW
+BEGIN
+    IF :NEW.salary <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Salary must be greater than 0');
+    END IF;
+END;
+/
+-- Fires before salary update
+-- ✔ :NEW = new value
+-- ✔ :OLD = old value

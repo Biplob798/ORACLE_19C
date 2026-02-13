@@ -1,0 +1,20 @@
+CREATE TABLE emp_salary_audit (
+    emp_id NUMBER,
+    old_salary NUMBER,
+    new_salary NUMBER,
+    updated_on DATE
+);
+
+
+CREATE OR REPLACE TRIGGER trg_after_row_salary
+AFTER UPDATE OF salary
+ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO emp_salary_audit
+    VALUES (:OLD.employee_id,
+            :OLD.salary,
+            :NEW.salary,
+            SYSDATE);
+END;
+/

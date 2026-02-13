@@ -1,0 +1,14 @@
+A Trigger is a stored PL/SQL block that automatically executes when a specific event occurs on a table, view, schema, or database.
+
+
+Example events:
+
+INSERT
+
+UPDATE
+
+DELETE
+
+LOGON
+
+DDL operations

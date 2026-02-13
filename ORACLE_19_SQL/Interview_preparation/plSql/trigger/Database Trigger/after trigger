@@ -1,0 +1,19 @@
+CREATE TABLE emp_salary_log (
+    emp_id NUMBER,
+    old_salary NUMBER,
+    new_salary NUMBER,
+    change_date DATE
+);
+
+CREATE OR REPLACE TRIGGER trg_after_update_salary
+AFTER UPDATE OF salary
+ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO emp_salary_log
+    VALUES (:OLD.employee_id,
+            :OLD.salary,
+            :NEW.salary,
+            SYSDATE);
+END;
+/

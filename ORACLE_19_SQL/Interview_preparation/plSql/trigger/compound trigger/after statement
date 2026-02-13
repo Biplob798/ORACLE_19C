@@ -1,0 +1,7 @@
+CREATE OR REPLACE TRIGGER trg_after_stmt_salary
+AFTER UPDATE OF salary
+ON employees
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Salary update operation completed successfully.');
+END;
+/

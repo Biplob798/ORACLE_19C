@@ -1,0 +1,12 @@
+CREATE OR REPLACE TRIGGER trg_before_row_salary
+BEFORE UPDATE OF salary
+ON employees
+FOR EACH ROW
+BEGIN
+    IF :NEW.salary < 1000 THEN
+        RAISE_APPLICATION_ERROR(-20002,
+        'Salary cannot be less than 1000');
+    END IF;
+END;
+/
+-- If 5 rows are updated → trigger runs 5 times.
