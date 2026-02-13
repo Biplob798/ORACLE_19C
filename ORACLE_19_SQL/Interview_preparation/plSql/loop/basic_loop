@@ -1,0 +1,53 @@
+-- Basic Loop: Use when the statements inside the loop must execute at least once.
+
+
+-- The loop runs until an EXIT condition is met.
+
+-- loop 
+-- statement;
+-- exit when condition;
+-- end loop;
+
+
+-- without conditon check 
+
+
+DECLARE
+    v_num NUMBER := 1;
+BEGIN
+    -- LOOP
+    LOOP
+        -- statement;
+        DBMS_OUTPUT.PUT_LINE('Number is: ' || v_num);
+
+        v_num := v_num + 1;
+
+        -- exit when condition;
+        EXIT WHEN v_num > 5;
+
+    -- end loop;
+    END LOOP;
+END;
+/
+
+
+-- EXIT WHEN is required to stop the loop.
+-- Without it, the loop runs forever (infinite loop).
+
+
+DECLARE
+  v_countryid  locations.country_id%TYPE := 'CA';
+  v_loc_id     locations.location_id%TYPE;
+  v_counter    NUMBER(2) := 1;
+  v_new_city   locations.city%TYPE := 'Montreal';
+BEGIN
+  SELECT MAX(location_id) INTO v_loc_id FROM locations
+  WHERE country_id = v_countryid;
+  LOOP
+    INSERT INTO locations(location_id, city, country_id)
+    VALUES((v_loc_id + v_counter), v_new_city, v_countryid);
+    v_counter := v_counter + 1;
+    EXIT WHEN v_counter > 3;
+  END LOOP;
+END;
+/

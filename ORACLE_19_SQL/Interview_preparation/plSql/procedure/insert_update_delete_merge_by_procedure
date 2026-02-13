@@ -1,0 +1,106 @@
+
+-- INSERT by Procedure
+
+CREATE OR REPLACE PROCEDURE insert_employee(
+    p_emp_id    IN employees.employee_id%TYPE,
+    p_fname     IN employees.first_name%TYPE,
+    p_lname     IN employees.last_name%TYPE,
+    p_email     IN employees.email%TYPE,
+    p_job_id    IN employees.job_id%TYPE,
+    p_hire_date IN employees.hire_date%TYPE,
+    p_salary    IN employees.salary%TYPE
+)
+IS
+BEGIN
+    INSERT INTO employees(employee_id, first_name, last_name, email, job_id, hire_date, salary)
+    VALUES (p_emp_id, p_fname, p_lname, p_email, p_job_id, p_hire_date, p_salary);
+    
+    DBMS_OUTPUT.PUT_LINE('Employee inserted: ' || p_fname || ' ' || p_lname);
+END;
+/
+
+BEGIN
+    insert_employee(300, 'John', 'Doe', 'jdoe', 'IT_PROG', SYSDATE, 6000);
+END;
+/
+
+-- UPDATE by Procedure
+
+CREATE OR REPLACE PROCEDURE update_salary(
+    p_emp_id IN employees.employee_id%TYPE,
+    p_new_sal IN employees.salary%TYPE
+)
+IS
+BEGIN
+    UPDATE employees
+    SET salary = p_new_sal
+    WHERE employee_id = p_emp_id;
+    
+    DBMS_OUTPUT.PUT_LINE('Salary updated for Employee ID: ' || p_emp_id);
+END;
+/
+
+BEGIN
+    update_salary(300, 7000);
+END;
+/
+
+-- DELETE by Procedure
+
+CREATE OR REPLACE PROCEDURE delete_employee(
+    p_emp_id IN employees.employee_id%TYPE
+)
+IS
+BEGIN
+    DELETE FROM employees
+    WHERE employee_id = p_emp_id;
+    
+    DBMS_OUTPUT.PUT_LINE('Employee deleted: ' || p_emp_id);
+END;
+/
+
+BEGIN
+    delete_employee(300);
+END;
+/
+
+-- MERGE by Procedure
+
+CREATE OR REPLACE PROCEDURE merge_employee(
+    p_emp_id  IN employees.employee_id%TYPE,
+    p_fname   IN employees.first_name%TYPE,
+    p_lname   IN employees.last_name%TYPE,
+    p_email   IN employees.email%TYPE,
+    p_job_id  IN employees.job_id%TYPE,
+    p_salary  IN employees.salary%TYPE
+)
+IS
+BEGIN
+    MERGE INTO employees e
+    USING (SELECT p_emp_id AS emp_id, p_fname AS fname, p_lname AS lname,
+                  p_email AS email, p_job_id AS job_id, p_salary AS sal
+           FROM dual) src
+    ON (e.employee_id = src.emp_id)
+    WHEN MATCHED THEN
+        UPDATE SET e.first_name = src.fname,
+                   e.last_name  = src.lname,
+                   e.email      = src.email,
+                   e.job_id     = src.job_id,
+                   e.salary     = src.sal
+    WHEN NOT MATCHED THEN
+        INSERT(employee_id, first_name, last_name, email, job_id, hire_date, salary)
+        VALUES(src.emp_id, src.fname, src.lname, src.email, src.job_id, SYSDATE, src.sal);
+        
+    DBMS_OUTPUT.PUT_LINE('MERGE executed for Employee ID: ' || p_emp_id);
+END;
+/
+
+
+BEGIN
+    -- Insert new employee if not exists
+    merge_employee(301, 'Alice', 'Smith', 'asmith', 'IT_PROG', 6500);
+    
+    -- Update existing employee if exists
+    merge_employee(301, 'Alice', 'Brown', 'abrown', 'IT_PROG', 7000);
+END;
+/

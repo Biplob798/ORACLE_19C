@@ -1,0 +1,36 @@
+-- WHILE Loop: Use if the condition needs to be evaluated at the start of each iteration.
+
+-- with condition check
+
+-- WHILE condition LOOP
+--    statement;
+-- END LOOP;
+
+
+
+
+DECLARE
+    v_num NUMBER := 1;
+BEGIN
+    -- WHILE condition LOOP
+    WHILE v_num <= 5 LOOP
+
+        -- statement;
+        DBMS_OUTPUT.PUT_LINE('Number is: ' || v_num);
+
+        v_num := v_num + 1;
+
+    -- END LOOP;
+    END LOOP;
+END;
+/
+
+-- How WHILE LOOP Works
+
+-- WHILE condition → checks condition first
+
+-- If TRUE → executes loop
+
+-- If FALSE → loop stops
+
+-- Condition is checked before every iteration

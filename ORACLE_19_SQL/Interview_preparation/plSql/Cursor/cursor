@@ -1,0 +1,32 @@
+-- A Cursor is a pointer that holds the result of a query
+-- and allows PL/SQL to process one row at a time.
+
+-- Steps of Explicit Cursor
+
+-- 1. Declare cursor
+-- 2. Open cursor
+-- 3. Fetch data
+-- 4. Exit when no row found
+-- 5. Close cursor
+
+DECLARE
+   CURSOR cursor_name IS
+      SELECT column_name FROM table_name;
+
+   variable_name table_name.column_name%TYPE;
+
+BEGIN
+   OPEN cursor_name;
+
+   LOOP
+      FETCH cursor_name INTO variable_name;
+
+      EXIT WHEN cursor_name%NOTFOUND;
+
+      -- statement;
+
+   END LOOP;
+
+   CLOSE cursor_name;
+END;
+/

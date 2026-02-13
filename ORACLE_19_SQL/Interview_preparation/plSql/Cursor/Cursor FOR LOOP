@@ -1,0 +1,14 @@
+FOR record_variable IN cursor_name LOOP
+   statement
+END LOOP
+
+
+DECLARE
+   CURSOR emp_cur IS
+      SELECT first_name FROM employees;
+BEGIN
+   FOR rec IN emp_cur LOOP
+      DBMS_OUTPUT.PUT_LINE('Name: ' || rec.first_name);
+   END LOOP;
+END;
+/

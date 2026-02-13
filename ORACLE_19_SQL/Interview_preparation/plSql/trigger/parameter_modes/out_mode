@@ -1,0 +1,59 @@
+-- Meaning
+
+-- Used to return value from procedure
+
+-- Cannot read its value before assigning
+
+-- Must assign value inside procedure
+
+
+CREATE OR REPLACE PROCEDURE get_square (
+    p_num   IN  NUMBER,
+    p_result OUT NUMBER
+)
+IS
+BEGIN
+    p_result := p_num * p_num;
+END;
+/
+
+
+DECLARE
+   v_result NUMBER;
+BEGIN
+   get_square(5, v_result);
+   DBMS_OUTPUT.PUT_LINE('Square is: ' || v_result);
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE get_sysdate(
+    p_date OUT DATE
+)
+IS
+BEGIN
+    -- Assign value to OUT parameter
+    p_date := SYSDATE;
+END;
+/
+
+DECLARE
+    v_today DATE;
+BEGIN
+    get_sysdate(v_today);
+    DBMS_OUTPUT.PUT_LINE('Today is: ' || v_today);
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE query_emp
+  (p_id     IN  employees.employee_id%TYPE,
+   p_name   OUT employees.last_name%TYPE,
+   p_salary OUT employees.salary%TYPE) 
+IS
+BEGIN
+  SELECT last_name, salary INTO p_name, p_salary
+  FROM   employees
+  WHERE  employee_id = p_id;
+END query_emp;
+/

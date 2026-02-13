@@ -1,0 +1,29 @@
+-- Structure
+-- OPEN cursor
+-- LOOP
+--    FETCH cursor
+--    EXIT WHEN %NOTFOUND
+-- END LOOP
+-- CLOSE cursor
+
+
+DECLARE
+   CURSOR emp_cur IS
+      SELECT first_name FROM employees;
+
+   v_name employees.first_name%TYPE;
+BEGIN
+   OPEN emp_cur;
+
+   LOOP
+      FETCH emp_cur INTO v_name;
+
+      EXIT WHEN emp_cur%NOTFOUND;
+
+      DBMS_OUTPUT.PUT_LINE('Name: ' || v_name);
+
+   END LOOP;
+
+   CLOSE emp_cur;
+END;
+/

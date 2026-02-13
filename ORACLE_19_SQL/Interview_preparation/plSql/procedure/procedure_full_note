@@ -1,0 +1,115 @@
+-- What is a Procedure?
+
+-- A Procedure is a named PL/SQL block that performs a specific task.
+
+-- Can take parameters (IN, OUT, IN OUT).
+
+-- Can be called multiple times.
+
+-- Does not return a value (unless via OUT parameter).
+
+
+
+
+-- Procedure Structure
+
+CREATE OR REPLACE PROCEDURE procedure_name
+    [ (parameter1 [mode] datatype, parameter2 [mode] datatype, ...) ]
+IS
+   -- Declaration section (optional)
+BEGIN
+   -- Executable statements
+EXCEPTION
+   -- Exception handling (optional)
+END;
+/
+
+
+-- IN Parameter:
+
+CREATE PROCEDURE greet_name(p_name IN VARCHAR2) IS
+BEGIN
+  DBMS_OUTPUT.PUT_LINE('Hello, ' || p_name);
+END;
+/
+
+-- OUT Parameter:
+
+CREATE PROCEDURE get_square(p_num IN NUMBER, p_result OUT NUMBER) IS
+BEGIN
+  p_result := p_num * p_num;
+END;
+/
+-- IN OUT Parameter:
+
+
+CREATE PROCEDURE increase_value(p_num IN OUT NUMBER) IS
+BEGIN
+  p_num := p_num + 10;
+END;
+/
+
+
+
+-- INSERT
+
+CREATE OR REPLACE PROCEDURE insert_employee(
+    p_emp_id IN employees.employee_id%TYPE,
+    p_fname  IN employees.first_name%TYPE
+)
+IS
+BEGIN
+    INSERT INTO employees(employee_id, first_name)
+    VALUES (p_emp_id, p_fname);
+    DBMS_OUTPUT.PUT_LINE('Inserted: ' || p_fname);
+END;
+/
+
+-- UPDATE
+
+
+CREATE OR REPLACE PROCEDURE update_salary(
+    p_emp_id IN employees.employee_id%TYPE,
+    p_new_sal IN employees.salary%TYPE
+)
+IS
+BEGIN
+    UPDATE employees
+    SET salary = p_new_sal
+    WHERE employee_id = p_emp_id;
+    DBMS_OUTPUT.PUT_LINE('Salary updated for: ' || p_emp_id);
+END;
+/
+
+-- DELETE
+
+CREATE OR REPLACE PROCEDURE delete_employee(
+    p_emp_id IN employees.employee_id%TYPE
+)
+IS
+BEGIN
+    DELETE FROM employees
+    WHERE employee_id = p_emp_id;
+    DBMS_OUTPUT.PUT_LINE('Deleted: ' || p_emp_id);
+END;
+/
+
+-- MERGE (Insert or Update)
+
+CREATE OR REPLACE PROCEDURE merge_employee(
+    p_emp_id IN employees.employee_id%TYPE,
+    p_fname  IN employees.first_name%TYPE
+)
+IS
+BEGIN
+    MERGE INTO employees e
+    USING (SELECT p_emp_id AS emp_id, p_fname AS fname FROM dual) src
+    ON (e.employee_id = src.emp_id)
+    WHEN MATCHED THEN
+        UPDATE SET e.first_name = src.fname
+    WHEN NOT MATCHED THEN
+        INSERT(employee_id, first_name)
+        VALUES(src.emp_id, src.fname);
+    DBMS_OUTPUT.PUT_LINE('MERGE executed for: ' || p_emp_id);
+END;
+/

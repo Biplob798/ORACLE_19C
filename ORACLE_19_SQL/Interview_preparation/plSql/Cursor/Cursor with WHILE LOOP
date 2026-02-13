@@ -1,0 +1,31 @@
+-- OPEN cursor
+-- FETCH first row
+-- WHILE %FOUND LOOP
+--    statement
+--    FETCH next row
+-- END LOOP
+-- CLOSE cursor
+
+
+
+DECLARE
+   CURSOR emp_cur IS
+      SELECT first_name FROM employees;
+
+   v_name employees.first_name%TYPE;
+BEGIN
+   OPEN emp_cur;
+
+   FETCH emp_cur INTO v_name;
+
+   WHILE emp_cur%FOUND LOOP
+
+      DBMS_OUTPUT.PUT_LINE('Name: ' || v_name);
+
+      FETCH emp_cur INTO v_name;
+
+   END LOOP;
+
+   CLOSE emp_cur;
+END;
+/

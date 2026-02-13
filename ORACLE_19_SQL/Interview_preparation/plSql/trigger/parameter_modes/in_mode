@@ -1,0 +1,40 @@
+
+-- Meaning
+
+-- Default mode
+
+-- Used to pass value into procedure
+
+-- Read-only
+
+-- Cannot modify inside procedure
+
+CREATE OR REPLACE PROCEDURE show_number (
+    p_num IN NUMBER
+)
+IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Number is: ' || p_num);
+END;
+/
+
+BEGIN
+   show_number(10);
+END;
+/
+
+
+
+
+CREATE OR REPLACE PROCEDURE raise_salary
+  (p_id      IN employees.employee_id%TYPE,
+   p_percent IN NUMBER)
+IS
+BEGIN
+  UPDATE employees
+  SET    salary = salary * (1 + p_percent/100)
+  WHERE  employee_id = p_id;
+END raise_salary;
+/
+
+execute raise_salary(101, 10);
