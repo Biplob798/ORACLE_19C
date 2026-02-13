@@ -85,3 +85,144 @@ END MTR2YRD;
 /
 
 EXECUTE DBMS_OUTPUT.PUT_LINE(MTR2YRD(1))
+-------------------------------------------------------------
+
+
+
+CREATE OR REPLACE FUNCTION get_annual_salary (
+    p_emp_id NUMBER
+)
+RETURN NUMBER
+IS
+    v_annual_salary NUMBER;
+BEGIN
+    SELECT salary * 12
+    INTO v_annual_salary
+    FROM employees
+    WHERE employee_id = p_emp_id;
+
+    RETURN v_annual_salary;
+END;
+/
+SELECT get_annual_salary(100)
+FROM dual;
+
+
+SELECT employee_id,
+       salary,
+       get_annual_salary(employee_id) AS annual_salary
+FROM employees;
+
+
+
+-- procedure
+CREATE OR REPLACE PROCEDURE increase_salary (
+    p_emp_id   NUMBER,
+    p_percent  NUMBER
+)
+IS
+BEGIN
+    UPDATE employees
+    SET salary = salary + (salary * p_percent / 100)
+    WHERE employee_id = p_emp_id;
+
+    IF SQL%ROWCOUNT = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Employee not found');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Salary updated successfully');
+    END IF;
+
+END;
+/
+
+
+
+
+-- Using the EXECUTE command
+BEGIN
+    increase_salary(100, 10);
+END;
+/
+SELECT employee_id, salary
+FROM employees
+WHERE employee_id = 100;
+
+-----------------------------------------------
+
+CREATE OR REPLACE PACKAGE emp_pkg
+IS
+    -- Function Declaration
+    FUNCTION get_annual_salary (
+        p_emp_id NUMBER
+    ) RETURN NUMBER;
+
+    -- Procedure Declaration
+    PROCEDURE increase_salary (
+        p_emp_id  NUMBER,
+        p_percent NUMBER
+    );
+
+END emp_pkg;
+/
+
+
+CREATE OR REPLACE PACKAGE BODY emp_pkg
+IS
+
+    -- Function Definition
+    FUNCTION get_annual_salary (
+        p_emp_id NUMBER
+    )
+    RETURN NUMBER
+    IS
+        v_annual_salary NUMBER;
+    BEGIN
+        SELECT salary * 12
+        INTO v_annual_salary
+        FROM employees
+        WHERE employee_id = p_emp_id;
+
+        RETURN v_annual_salary;
+    END get_annual_salary;
+
+
+    -- Procedure Definition
+    PROCEDURE increase_salary (
+        p_emp_id  NUMBER,
+        p_percent NUMBER
+    )
+    IS
+    BEGIN
+        UPDATE employees
+        SET salary = salary + (salary * p_percent / 100)
+        WHERE employee_id = p_emp_id;
+
+        IF SQL%ROWCOUNT = 0 THEN
+            DBMS_OUTPUT.PUT_LINE('Employee not found');
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('Salary updated successfully');
+        END IF;
+
+    END increase_salary;
+
+END emp_pkg;
+/
+SELECT emp_pkg.get_annual_salary(100)
+FROM dual;
+
+BEGIN
+    emp_pkg.increase_salary(100, 10);
+END;
+/
+
+
+SELECT employee_id,
+       salary,
+       emp_pkg.get_annual_salary(employee_id) AS annual_salary
+FROM employees;
+
+
+
+-- DROP FUNCTION validate_comm;
+-- DROP PROCEDURE reset_comm;
+-- DROP PACKAGE comm_pkg;

@@ -27,3 +27,81 @@ SELECT test_pkg.tax(1000) AS tax_value FROM dual;
 SELECT employee_id,last_name,salary,test_pkg.tax(salary)
 FROM EMPLOYEES
 WHERE employee_id=100;
+
+-----------------------------------------------------------------
+
+-- function
+CREATE OR REPLACE FUNCTION validate_comm(p_comm NUMBER) 
+RETURN BOOLEAN IS
+    v_max_comm    employees.commission_pct%TYPE;
+BEGIN
+    SELECT MAX(commission_pct) INTO v_max_comm
+    FROM   employees;
+    RETURN (p_comm BETWEEN 0.0 AND v_max_comm);
+END validate_comm;
+/
+
+
+
+
+BEGIN
+   -- This calls the function directly inside an IF statement
+   IF validate_comm(0.5) THEN 
+      DBMS_OUTPUT.PUT_LINE('Validation passed!');
+   END IF;
+END;
+/
+
+-- procedure
+ CREATE OR REPLACE PROCEDURE reset_comm (p_new_comm NUMBER) IS
+BEGIN
+  IF validate(p_new_comm) THEN
+    v_std_comm := p_new_comm; 
+  ELSE 
+    RAISE_APPLICATION_ERROR(-20210, 'Bad Commission');
+  END IF;
+END reset_comm;
+/
+
+
+-- Using the EXECUTE command
+EXECUTE comm_pkg.reset_comm(0.15);
+
+-- Using an anonymous PL/SQL block
+BEGIN
+  comm_pkg.reset_comm(0.15);
+END;
+/
+-----------------------------------------------
+
+
+CREATE OR REPLACE PACKAGE BODY comm_pkg IS
+
+  FUNCTION validate(p_comm NUMBER) RETURN BOOLEAN IS
+    v_max_comm    employees.commission_pct%type;
+  BEGIN
+    SELECT MAX(commission_pct) INTO v_max_comm
+    FROM   employees;
+    RETURN (p_comm BETWEEN 0.0 AND v_max_comm);
+  END validate;
+
+  PROCEDURE reset_comm (p_new_comm NUMBER) IS
+  BEGIN
+    IF validate(p_new_comm) THEN
+      v_std_comm := p_new_comm; -- reset public var
+    ELSE RAISE_APPLICATION_ERROR(
+           -20210, 'Bad Commission');
+    END IF;
+  END reset_comm;
+
+END comm_pkg;
+
+
+BEGIN
+  comm_pkg.reset_comm(0.15); 
+END;
+/
+
+-- DROP FUNCTION validate_comm;
+-- DROP PROCEDURE reset_comm;
+-- DROP PACKAGE comm_pkg;
