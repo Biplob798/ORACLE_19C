@@ -1,0 +1,17 @@
+CREATE OR REPLACE FUNCTION add_numbers(p_num1 IN NUMBER, p_num2 IN NUMBER)
+RETURN NUMBER
+IS
+BEGIN
+    RETURN p_num1 + p_num2;
+END;
+/
+
+-- Call Function:
+
+DECLARE
+    v_sum NUMBER;
+BEGIN
+    v_sum := add_numbers(10, 20);
+    DBMS_OUTPUT.PUT_LINE('Sum: ' || v_sum);
+END;
+/

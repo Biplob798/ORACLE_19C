@@ -94,6 +94,7 @@ BEGIN
 END;
 /
 
+
 -- MERGE (Insert or Update)
 
 CREATE OR REPLACE PROCEDURE merge_employee(
@@ -111,5 +112,14 @@ BEGIN
         INSERT(employee_id, first_name)
         VALUES(src.emp_id, src.fname);
     DBMS_OUTPUT.PUT_LINE('MERGE executed for: ' || p_emp_id);
+END;
+/
+
+
+-- call procedure
+
+BEGIN
+    -- Call procedure with employee ID
+    delete_employee(101);  -- Replace 101 with the employee_id you want to delete
 END;
 /

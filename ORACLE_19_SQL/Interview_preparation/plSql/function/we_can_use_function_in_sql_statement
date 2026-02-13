@@ -1,0 +1,65 @@
+amra function babohar kortya pari:
+1.select clause er modhye
+2.where clause er modhye
+3.order by clause er modhye
+4.group by clause er modhye
+5.having clause er modhye
+6.insert statement er modhye
+7.update statement er modhye
+
+
+
+
+CREATE OR REPLACE FUNCTION calc_tax(p_salary IN NUMBER)
+RETURN NUMBER
+IS
+BEGIN
+    RETURN p_salary * 0.10;  -- 10% tax
+END;
+/
+
+
+-- Use in SELECT Clause
+
+SELECT first_name, salary, calc_tax(salary) AS tax
+FROM employees
+WHERE ROWNUM <= 5;
+
+-- Use in WHERE Clause
+
+SELECT first_name, salary
+FROM employees
+WHERE calc_tax(salary) > 500;
+
+-- Use in ORDER BY Clause
+
+SELECT first_name, salary
+FROM employees
+ORDER BY calc_tax(salary) DESC;
+
+
+-- Use in GROUP BY Clause
+SELECT ROUND(calc_tax(salary),0) AS tax_group, COUNT(*) AS emp_count
+FROM employees
+GROUP BY ROUND(calc_tax(salary),0);
+
+-- Use in HAVING Clause
+
+SELECT ROUND(calc_tax(salary),0) AS tax_group, COUNT(*) AS emp_count
+FROM employees
+GROUP BY ROUND(calc_tax(salary),0)
+HAVING COUNT(*) > 2;
+
+-- Use in INSERT Statement
+
+INSERT INTO employees_backup(employee_id, first_name, salary, tax)
+SELECT employee_id, first_name, salary, calc_tax(salary)
+FROM employees
+WHERE ROWNUM <= 5;
+
+
+-- Use in UPDATE Statement
+
+UPDATE employees
+SET salary = salary - calc_tax(salary)
+WHERE department_id = 60;

@@ -1,0 +1,19 @@
+CREATE OR REPLACE PROCEDURE emp_sal(
+    dep_id NUMBER, 
+    sal_raise NUMBER
+) 
+IS
+BEGIN
+    UPDATE employees 
+    SET salary = salary * sal_raise 
+    WHERE department_id = dep_id;
+
+    DBMS_OUTPUT.PUT_LINE('Salary updated successfully');
+END;
+/
+
+
+BEGIN
+    emp_sal(60, 1.10);  -- dep_id = 60, sal_raise = 1.10
+END;
+/

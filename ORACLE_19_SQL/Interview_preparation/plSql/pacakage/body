@@ -1,0 +1,29 @@
+CREATE or REPLACE PACKAGE BODY test_pkg
+is
+-- without create or replace
+procedure add_dept
+(
+     p_name in varchar2,
+    p_loc in number
+)
+is
+BEGIN
+insert into departments(department_id,department_name,location_id)
+values (departments_seq.nextval,p_name,p_loc);
+END add_dept;
+-- without create or replace
+FUNCTION tax
+(p_value in number)
+RETURN number
+is
+begin
+RETURN(p_value*0.08);
+end tax;
+END test_pkg;
+/
+
+EXECUTE test_pkg.add_dept('TEST',1700)
+SELECT test_pkg.tax(1000) AS tax_value FROM dual;
+SELECT employee_id,last_name,salary,test_pkg.tax(salary)
+FROM EMPLOYEES
+WHERE employee_id=100;

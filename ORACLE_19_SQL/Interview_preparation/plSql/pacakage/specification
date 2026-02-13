@@ -1,0 +1,13 @@
+create or replace PACKAGE test_pkg 
+is
+PROCEDURE add_dept
+(
+    p_name varchar2,
+    p_loc number
+);
+FUNCTION tax
+(
+    p_value in number
+)
+RETURN number;
+END test_pkg;

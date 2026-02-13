@@ -1,0 +1,48 @@
+
+-- What is a Mutating Table Error?
+
+
+-- Mutating table error (ORA-04091) happens when a row-level trigger tries to read or modify the table that is currently being changed.
+
+-- Basically: “You can’t query or modify a table while it’s being modified by the same operation in a row-level trigger.”
+
+-- This is Oracle’s way of preventing data inconsistency during DML operations.
+
+
+-- Why It Happens
+
+-- Row-level trigger (FOR EACH ROW) is fired for each row being updated/inserted/deleted.
+
+-- If the trigger tries to query or modify the same table, Oracle detects potential conflict → mutating table error.
+
+
+CREATE OR REPLACE TRIGGER emp_salary_check
+AFTER UPDATE OF salary ON employees
+FOR EACH ROW
+DECLARE
+    v_avg NUMBER;
+BEGIN
+    -- This will cause mutating table error
+    SELECT AVG(salary) INTO v_avg FROM employees;
+
+    IF :NEW.salary > v_avg * 2 THEN
+        DBMS_OUTPUT.PUT_LINE('Salary too high!');
+    END IF;
+END;
+/
+
+-- What happens:
+
+-- When you update a row in employees, the trigger tries to query the same table to calculate average salary.
+
+-- Oracle raises ORA-04091: table employees is mutating, trigger/function may not see it.
+
+
+
+-- Oracle says: I’m changing the table, don’t try to read or change it at the same time!”
+
+-- Super Simple Rule
+
+-- Mutating table = table is “busy” being updated. Don’t peek at it inside a row trigger.
+
+-- Solution: Use statement-level trigger or compound trigger.

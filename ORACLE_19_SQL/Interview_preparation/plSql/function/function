@@ -1,0 +1,43 @@
+-- Functions usually use IN parameters only.
+-- A Function is a PL/SQL block that performs a task and returns a value.
+
+-- Can have parameters (IN, OUT, IN OUT) — but usually IN parameters.
+
+-- Must return a value using the RETURN statement.
+
+-- Can be used in SQL statements (like SELECT, WHERE) if deterministic.
+
+
+
+
+CREATE OR REPLACE FUNCTION function_name
+    (parameter1 [mode] datatype, parameter2 [mode] datatype, ...)
+RETURN return_datatype
+IS
+   -- Declaration section (optional)
+   v_variable datatype;
+BEGIN
+   -- Executable statements
+   RETURN value; -- Mandatory
+EXCEPTION
+   -- Optional exception handling
+END;
+/
+
+
+-- Simple Function (No Parameter)
+
+
+CREATE OR REPLACE FUNCTION get_sysdate_func
+RETURN DATE
+IS
+BEGIN
+    RETURN SYSDATE;
+END;
+/
+
+-- Call Function:
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Today is: ' || get_sysdate_func);
+END;
+/

@@ -1,0 +1,30 @@
+
+-- Function to calculate 10% tax
+CREATE OR REPLACE FUNCTION calc_tax(salary IN NUMBER)
+RETURN NUMBER
+IS
+BEGIN
+    RETURN salary * 0.10;
+END;
+/
+
+-- Using in SELECT
+SELECT first_name, salary, calc_tax(salary) AS tax
+FROM employees
+WHERE ROWNUM <= 5;
+
+
+
+-- Function to calculate 10% tax
+CREATE OR REPLACE FUNCTION calc_tax(salary IN NUMBER)
+RETURN NUMBER
+IS
+BEGIN
+    RETURN salary * 0.10;
+END;
+/
+
+-- Using in SELECT
+SELECT first_name, salary, calc_tax(salary) AS tax
+FROM employees
+WHERE ROWNUM <= 5;
