@@ -222,7 +222,6 @@ SELECT employee_id,
 FROM employees;
 
 
-
--- DROP FUNCTION validate_comm;
--- DROP PROCEDURE reset_comm;
--- DROP PACKAGE comm_pkg;
+-- DROP FUNCTION get_annual_salary;
+-- DROP PROCEDURE increase_salary;
+-- DROP PACKAGE emp_pkg;
