@@ -1,0 +1,59 @@
+-- =====================================================
+-- Step 1: Switch to Pluggable Database (PDB)
+-- =====================================================
+
+ALTER SESSION SET CONTAINER = ORCLPDB;
+
+-- Verify current container
+SHOW CON_NAME;
+
+-- =====================================================
+-- Step 2: Create Tablespace
+-- =====================================================
+
+CREATE TABLESPACE tbs_test
+DATAFILE 'F:\oracle_database_66\oradata66\ORCL\TEST.DBF'
+SIZE 256M
+AUTOEXTEND ON
+NEXT 10M
+MAXSIZE 2048M
+EXTENT MANAGEMENT LOCAL
+SEGMENT SPACE MANAGEMENT AUTO
+ONLINE;
+
+-- Verify tablespace
+SELECT tablespace_name, status
+FROM dba_tablespaces
+WHERE tablespace_name = 'TBS_TEST';
+
+-- =====================================================
+-- Step 3: Create New User
+-- =====================================================
+
+CREATE USER test1
+IDENTIFIED BY test
+DEFAULT TABLESPACE tbs_test
+TEMPORARY TABLESPACE temp
+QUOTA UNLIMITED ON tbs_test;
+
+-- =====================================================
+-- Step 4: Grant Privileges
+-- =====================================================
+
+-- Recommended privileges (Practical/Exam Safe)
+GRANT CREATE SESSION TO test1;
+GRANT CREATE TABLE TO test1;
+GRANT CREATE VIEW TO test1;
+GRANT CREATE SEQUENCE TO test1;
+GRANT CREATE PROCEDURE TO test1;
+
+-- If Full DBA access required (Not recommended in production)
+-- GRANT DBA TO test1;
+
+-- =====================================================
+-- Step 5: Verify User
+-- =====================================================
+
+SELECT username, default_tablespace
+FROM dba_users
+WHERE username = 'TEST1';

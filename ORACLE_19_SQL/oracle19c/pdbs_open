@@ -1,0 +1,12 @@
+conn sys as sysdba
+
+-- Check PDB status
+show pdbs;
+
+-- Open PDB
+alter pluggable database orclpdb66 open;
+
+-- Save state (auto open after restart)
+alter pluggable database orclpdb66 save state;
+
+conn hr/hr@//localhost:1522/orclpdb66
