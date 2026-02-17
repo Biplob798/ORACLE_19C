@@ -1,0 +1,7 @@
+BEGIN
+    Submit_page_with_collection_order_items(
+        P_CUST_ID      => :P19_CUSTOMER_ID,
+        P_TOTAM_AMOUNT => :P19_TOTAL_AMOUNT,
+        P_STATUS       => :P19_STATUS
+    );
+END;

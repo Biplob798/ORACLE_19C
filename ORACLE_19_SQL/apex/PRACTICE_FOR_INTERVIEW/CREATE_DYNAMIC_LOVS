@@ -1,0 +1,4 @@
+SELECT 
+    customer_id || '-' || customer_name || '-' || phone AS display,
+    customer_id AS return_value
+FROM customer;

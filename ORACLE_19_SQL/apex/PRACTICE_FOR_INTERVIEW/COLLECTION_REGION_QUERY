@@ -1,0 +1,8 @@
+select
+ac.seq_id,
+ac.c001 as Product_name,
+ac.n001 as Quantity,
+ac.n002 as Price,
+ac.n003 as Amount
+from apex_collections ac
+where collection_name='ORDER_ITEMS';

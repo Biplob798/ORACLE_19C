@@ -1,0 +1,51 @@
+CREATE OR REPLACE PROCEDURE Submit_page_with_collection_order_items (
+    P_CUST_ID      NUMBER,
+    P_TOTAM_AMOUNT NUMBER,
+    P_STATUS       VARCHAR2
+)
+IS
+    v_order_id NUMBER;  -- will hold the generated ORDER_ID
+
+    -- Cursor to loop through the APEX collection
+    CURSOR c_items IS
+        SELECT
+            c001 AS product_name,
+            n001 AS quantity,
+            n002 AS unit_price,
+            n003 AS amount
+        FROM apex_collections
+        WHERE collection_name = 'ORDER_ITEMS';
+BEGIN
+    -- ===== MASTER INSERT =====
+    INSERT INTO ORDERED (CUSTOMER_ID, TOTAL_AMOUNT, STATUS)
+    VALUES (P_CUST_ID, P_TOTAM_AMOUNT, P_STATUS)
+    RETURNING ORDER_ID INTO v_order_id;  -- capture generated ORDER_ID
+
+    -- ===== DETAILS INSERT =====
+    FOR item IN c_items LOOP
+        INSERT INTO ORDERED_DETAILS (
+            ORDER_ID,
+            PRODUCT_NAME,
+            QUANTITY,
+            UNIT_PRICE,
+            AMOUNT
+        )
+        VALUES (
+            v_order_id,           -- link to master
+            item.product_name,
+            item.quantity,
+            item.unit_price,
+            item.amount
+        );
+    END LOOP;
+
+    -- Commit the transaction
+    COMMIT;
+
+    -- Optionally, clear the collection after submit
+    IF APEX_COLLECTION.COLLECTION_EXISTS('ORDER_ITEMS') THEN
+        APEX_COLLECTION.DELETE_COLLECTION('ORDER_ITEMS');
+    END IF;
+
+END;
+/

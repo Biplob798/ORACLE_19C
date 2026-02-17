@@ -1,0 +1,50 @@
+CREATE OR REPLACE PROCEDURE Submit_page_with_collection_order_items (
+   P_CUST_ID      NUMBER,
+   P_TOTAM_AMOUNT NUMBER,
+   P_STATUS       VARCHAR2
+)
+IS
+   CURSOR c IS
+     SELECT
+       seq_id,
+       c001 AS Product_name,
+       n001 AS Quantity,
+       n002 AS Unit_Price,
+       n003 AS Amount
+     FROM apex_collections
+     WHERE collection_name = 'ORDER_ITEMS';
+BEGIN
+   /* ===== MASTER INSERT ===== */
+   INSERT INTO ORDERED (
+       CUSTOMER_ID,
+       TOTAL_AMOUNT,
+       STATUS,
+       CREATE_BY
+   )
+   VALUES (
+       P_CUST_ID,
+       P_TOTAM_AMOUNT,
+       P_STATUS,
+       USER
+   );
+
+   /* ===== DETAILS INSERT ===== */
+   FOR i IN c LOOP
+      INSERT INTO ORDERED_DETAILS (
+          ORDER_ID,
+          Product_name,
+          Quantity,
+          Unit_Price,
+          Amount
+      )
+      VALUES (
+          ORDERED_SEQ.CURRVAL,  -- Assuming ORDERED_SEQ is used for ORDER_ID
+          i.Product_name,
+          i.Quantity,
+          i.Unit_Price,
+          i.Amount
+      );
+   END LOOP;
+
+   COMMIT;
+END;
