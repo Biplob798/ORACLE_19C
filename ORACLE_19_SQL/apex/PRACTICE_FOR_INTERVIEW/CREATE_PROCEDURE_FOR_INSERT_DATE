@@ -1,6 +1,6 @@
 CREATE OR REPLACE PROCEDURE Submit_page_with_collection_order_items (
     P_CUST_ID      NUMBER,
-    P_TOTAM_AMOUNT NUMBER,
+    P_TOTAL_AMOUNT NUMBER,
     P_STATUS       VARCHAR2
 )
 IS
@@ -47,5 +47,61 @@ BEGIN
         APEX_COLLECTION.DELETE_COLLECTION('ORDER_ITEMS');
     END IF;
 
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE submit_page_with_collection_order_items(
+    v_cust_id      IN NUMBER,
+    v_total_amount IN NUMBER,
+    v_status       IN VARCHAR2
+)
+IS 
+    v_order_id NUMBER;
+
+    CURSOR c IS
+        SELECT 
+            c001 AS product_name,
+            n001 AS quantity,
+            n002 AS unit_price,
+            n003 AS amount
+        FROM apex_collections
+        WHERE collection_name = 'ORDER_ITEMS';
+
+BEGIN
+
+    -- Insert into master table
+    INSERT INTO ORDERED (
+        CUSTOMER_ID,
+        TOTAL_AMOUNT,
+        STATUS
+    )
+    VALUES (
+        v_cust_id,
+        v_total_amount,
+        v_status
+    )
+    RETURNING ORDER_ID INTO v_order_id;
+
+    -- Insert into detail table
+    FOR item IN c LOOP
+        INSERT INTO ORDERED_DETAILS (
+            ORDER_ID,
+            PRODUCT_NAME,
+            QUANTITY,
+            UNIT_PRICE,
+            AMOUNT
+        )
+        VALUES (
+            v_order_id,
+            item.product_name,
+            item.quantity,
+            item.unit_price,
+            item.amount
+        );
+    END LOOP;
+
+APEX_COLLECTION.DELETE_COLLECTION('ORDER_ITEMS');
+COMMIT;
 END;
 /
