@@ -1,0 +1,9 @@
+SELECT
+    seq_id,
+    c001 AS product_name,
+    n001 AS quantity,
+    n002 AS price,
+    n003 AS amount,
+    '<a href="javascript:deleteRow(' || seq_id || ')">Delete</a>' AS delete_btn
+FROM apex_collections
+WHERE collection_name = 'ORDER_ITEMS';
