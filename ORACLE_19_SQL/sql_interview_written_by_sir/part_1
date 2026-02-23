@@ -85,3 +85,43 @@ WHERE manager_id IS NOT NULL
 GROUP BY manager_id 
 HAVING MIN(salary) > 6000 
 ORDER BY MIN(salary) DESC;
+
+SELECT e.last_name, e.job_id, e.department_id, d.department_name
+FROM employees e 
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l ON d.location_id = l.location_id
+WHERE l.city = 'Toronto';
+
+16. Display employee last names, department numbers, and all the employees who work in the same department as a given employee.
+
+SELECT e.department_id AS "Dept No", e.last_name AS "Employee", c.last_name AS "Colleague"
+FROM employees e 
+JOIN employees c ON e.department_id = c.department_id
+WHERE e.employee_id <> c.employee_id
+ORDER BY e.department_id, e.last_name;
+
+17. Query that prompts the user for a last name, then displays the last name and hire date of any employee in the same department (excluding the supplied employee).
+
+SELECT last_name, hire_date
+FROM employees
+WHERE department_id = (SELECT department_id 
+                      FROM employees 
+                      WHERE last_name = '&&enter_name')
+AND last_name <> '&enter_name';
+
+18. Display the last name, department number, and job ID of all employees whose department location ID is 1700.
+
+
+SELECT last_name, department_id, job_id
+FROM employees
+WHERE department_id IN (SELECT department_id 
+                        FROM departments 
+                        WHERE location_id = 1700);
+
+19. Create a report that displays a list of all employees whose salary is more than the salary of any employee from department 60.
+
+SELECT last_name, salary
+FROM employees
+WHERE salary > ALL (SELECT salary 
+                    FROM employees 
+                    WHERE department_id = 60);
