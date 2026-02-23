@@ -1,0 +1,87 @@
+1. Query to display the last name, job ID, hire date, and employee number for each employee.
+
+SELECT last_name, job_id, hire_date, employee_id AS STARTDATE 
+FROM employees;
+
+2. Query to display all unique job codes from the EMPLOYEES table.
+
+SELECT DISTINCT job_id 
+FROM employees;
+
+3. Query to display the last name, job ID, hire date, and employee number for each employee, with employee number appearing first.
+
+SELECT employee_id, last_name, job_id, hire_date 
+FROM employees;
+
+4. Report of all employees and their job IDs. Concatenate the last name with the job ID (separated by a comma and space) and name the column "Employee and Title".
+
+SELECT last_name || ', ' || job_id AS "Employee and Title" 
+FROM employees;
+
+5. Report to display the last name, job ID, and start date for employees with the last names of Matos and Taylor. Order the query in ascending order by start date.
+
+SELECT last_name, job_id, hire_date 
+FROM employees 
+WHERE last_name IN ('Matos', 'Taylor') 
+ORDER BY hire_date ASC;
+
+6. Display the last name and salary of employees who earn between $5,000 and $12,000 and are in department 20 or 50. Label columns "Employee" and "Monthly Salary".
+
+SELECT last_name AS "Employee", salary AS "Monthly Salary" 
+FROM employees 
+WHERE salary BETWEEN 5000 AND 12000 
+AND department_id IN (20, 50);
+
+7. Report that displays the last name and hire date for all employees who were hired in 2005.
+
+SELECT last_name, hire_date 
+FROM employees 
+WHERE hire_date LIKE '%05'; 
+-- Or: WHERE EXTRACT(YEAR FROM hire_date) = 2005;
+
+8. Report to display the last name, salary, and commission of all employees who earn commissions. Sort data in descending order of salary and commissions.
+
+SELECT last_name, salary, commission_pct 
+FROM employees 
+WHERE commission_pct IS NOT NULL 
+ORDER BY salary DESC, commission_pct DESC;
+
+9. Report to display the employee number, last name, salary, and salary increased by 15.5% (expressed as a whole number). Label the column "New Salary".
+
+SELECT employee_id, last_name, salary, ROUND(salary * 1.155) AS "New Salary" 
+FROM employees;
+
+10. Display the first eight characters of the employees' last names and the amounts of their salaries with asterisks. Each asterisk signifies a thousand dollars.
+
+SELECT SUBSTR(last_name, 1, 8), RPAD(' ', salary/1000, '*') AS "EMPLOYEES_AND_THEIR_SALARIES" 
+FROM employees 
+ORDER BY salary DESC;
+
+11. Display last name, hire date, and salary review date (first Monday after six months of service). Label "REVIEW". Format date: "Monday, the Thirty-First of July, 2000".
+
+SELECT last_name, hire_date, 
+TO_CHAR(NEXT_DAY(ADD_MONTHS(hire_date, 6), 'MONDAY'), 'fmDay, "the" Ddspth "of" Month, YYYY') AS "REVIEW" 
+FROM employees;
+
+12. Display last name, hire date, and day of the week on which the employee started. Label "DAY". Order by day of the week starting with Monday.
+
+SELECT last_name, hire_date, TO_CHAR(hire_date, 'Day') AS "DAY" 
+FROM employees 
+ORDER BY TO_CHAR(hire_date - 1, 'D');
+
+13. Determine the number of managers without listing them. Label "Number of Managers".
+
+
+
+SELECT COUNT(DISTINCT manager_id) AS "Number of Managers" 
+FROM employees;
+
+14. Report to display the manager number and the salary of the lowest-paid employee for that manager. Exclude anyone whose manager is unknown. Exclude groups where the minimum salary is $6,000 or less. Sort descending.
+
+
+SELECT manager_id, MIN(salary) 
+FROM employees 
+WHERE manager_id IS NOT NULL 
+GROUP BY manager_id 
+HAVING MIN(salary) > 6000 
+ORDER BY MIN(salary) DESC;
