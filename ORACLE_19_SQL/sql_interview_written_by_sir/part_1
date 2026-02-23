@@ -59,11 +59,16 @@ ORDER BY salary DESC;
 
 11. Display last name, hire date, and salary review date (first Monday after six months of service). Label "REVIEW". Format date: "Monday, the Thirty-First of July, 2000".
 
+SELECT last_name, hire_date, salary, 
+       TO_CHAR(NEXT_DAY(ADD_MONTHS(hire_date, 6), 'MONDAY'), 'fmDay, "the" Ddspth "of" Month, YYYY') AS "Review Date" 
+FROM employees;
+
 SELECT last_name, hire_date, 
 TO_CHAR(NEXT_DAY(ADD_MONTHS(hire_date, 6), 'MONDAY'), 'fmDay, "the" Ddspth "of" Month, YYYY') AS "REVIEW" 
 FROM employees;
 
 12. Display last name, hire date, and day of the week on which the employee started. Label "DAY". Order by day of the week starting with Monday.
+
 
 SELECT last_name, hire_date, TO_CHAR(hire_date, 'Day') AS "DAY" 
 FROM employees 
@@ -85,6 +90,7 @@ WHERE manager_id IS NOT NULL
 GROUP BY manager_id 
 HAVING MIN(salary) > 6000 
 ORDER BY MIN(salary) DESC;
+15. Display the last name, job, department number, and department name for all employees who work in Toronto.
 
 SELECT e.last_name, e.job_id, e.department_id, d.department_name
 FROM employees e 
@@ -125,3 +131,4 @@ FROM employees
 WHERE salary > ALL (SELECT salary 
                     FROM employees 
                     WHERE department_id = 60);
+
