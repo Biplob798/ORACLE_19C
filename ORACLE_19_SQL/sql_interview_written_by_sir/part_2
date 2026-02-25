@@ -1,0 +1,176 @@
+1. Insert Data Using a Cursor
+Question: Write a PL/SQL block to insert data from employees to a new table emp_new_table using a cursor.
+
+Solution:
+
+CREATE OR REPLACE PROCEDURE insert_data_into_new_tab IS
+    CURSOR c_emp IS
+        SELECT * FROM employees;
+BEGIN
+    FOR i IN c_emp LOOP
+        INSERT INTO new_emp_tab (
+            EMPLOYEE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER, 
+            HIRE_DATE, JOB_ID, SALARY, COMMISSION_PCT, MANAGER_ID, 
+            DEPARTMENT_ID, ANN_SAL
+        )
+        VALUES (
+            i.EMPLOYEE_ID, i.FIRST_NAME, i.LAST_NAME, i.EMAIL, i.PHONE_NUMBER, 
+            i.HIRE_DATE, i.JOB_ID, i.SALARY, i.COMMISSION_PCT, i.MANAGER_ID, 
+            i.DEPARTMENT_ID, i.ANN_SAL
+        );
+    END LOOP;
+END;
+/
+-- To execute:
+BEGIN
+    insert_data_into_new_tab;
+END;
+
+2. Show Employees with Commission
+Question: Write a PL/SQL block to show the data of employees who get a commission_pct.
+
+Solution:
+
+CREATE OR REPLACE PROCEDURE to_show_emp_get_comm IS
+    CURSOR c_emp IS
+        SELECT * FROM employees WHERE commission_pct IS NOT NULL;
+BEGIN
+    FOR i IN c_emp LOOP
+        DBMS_OUTPUT.put_line('The result is : ' || i.employee_id || ' get salary: ' || i.salary);
+    END LOOP;
+END;
+/
+-- To execute:
+BEGIN
+    to_show_emp_get_comm;
+END;
+
+3. Get Top Salary of a Specific Department
+Question: Write a PL/SQL function to get the top salary of a specific department.
+
+Solution:
+CREATE OR REPLACE FUNCTION get_top_sal(p_dept IN number) 
+RETURN NUMBER IS
+    v_sal NUMBER;
+BEGIN
+    SELECT MAX(salary) INTO v_sal
+    FROM employees
+    WHERE department_id = p_dept;
+    
+    RETURN v_sal;
+END;
+/
+-- To execute:
+SELECT get_top_sal(70) FROM dual;
+
+4. Average Salary of Every Department
+Question: Write a procedure to show the average salary of every department.
+
+Solution:
+
+CREATE OR REPLACE PROCEDURE avg_sal_all_dept IS
+    CURSOR c_avg_sal IS
+        SELECT round(avg(salary), 2) avg_salary, department_id
+        FROM employees
+        GROUP BY department_id;
+BEGIN
+    FOR i IN c_avg_sal LOOP
+        DBMS_OUTPUT.put_line('The avg sal dept wise is : ' || i.avg_salary);
+    END LOOP;
+END;
+/
+-- To execute:
+BEGIN
+    avg_sal_all_dept;
+END;
+
+5. Find Minimum Department ID
+Question: Create a PL/SQL block that selects the minimum Department ID in the departments table and stores it in the v_did variable.
+
+Solution:
+
+CREATE OR REPLACE PROCEDURE get_min_dept IS
+    v_did NUMBER;
+BEGIN
+    SELECT MIN(department_id) INTO v_did FROM departments;
+    DBMS_OUTPUT.put_line(v_did);
+END;
+/
+-- To execute:
+BEGIN
+    get_min_dept;
+END;
+
+6. Retrieve Employee Details by ID
+Question: Create a PL/SQL block that retrieves Last Name, Hire Date, and Salary for a specified employee from the employee table.
+
+Solution:
+CREATE OR REPLACE PROCEDURE get_data(p_empid IN number) IS
+    v_last_name varchar2(100);
+    v_sal number;
+    v_hire_date date;
+BEGIN
+    SELECT last_name, salary, hire_date 
+    INTO v_last_name, v_sal, v_hire_date
+    FROM employees 
+    WHERE employee_id = p_empid;
+
+    DBMS_OUTPUT.put_line(v_last_name || ' ' || v_sal || ' ' || v_hire_date);
+END;
+/
+-- To execute:
+BEGIN
+    get_data(100);
+END;
+
+7. Print Odd Numbers (1 to 100)
+Question: Write a PL/SQL program to print odd numbers between 1 and 100.
+(Note: The prompt says 1 to 10, but the code in the image uses 1 to 100).
+
+Solution:
+DECLARE
+    v NUMBER;
+BEGIN
+    FOR i IN 1..100 LOOP
+        IF MOD(i, 2) != 0 THEN
+            DBMS_OUTPUT.put_line(i);
+        END IF;
+    END LOOP;
+END;
+
+8. Print Even Numbers (6 to 30)
+Question: Write a PL/SQL program to print even numbers between 6 and 30.
+
+Solution:
+DECLARE
+    v NUMBER;
+BEGIN
+    FOR i IN 6..30 LOOP
+        IF MOD(i, 2) = 0 THEN
+            DBMS_OUTPUT.put_line(i);
+        END IF;
+    END LOOP;
+END;
+
+9. Select Employee Name, Department Name, Salary, and Job ID
+Question: Create a PL/SQL block that selects all Employee Name, Department Name, Salary, and Job ID.
+
+Solution:
+DECLARE
+    -- We use a cursor to handle multiple rows of data
+    CURSOR c_emp_details IS
+        SELECT e.first_name || ' ' || e.last_name AS employee_name, 
+               d.department_name, 
+               e.salary, 
+               e.job_id
+        FROM employees e
+        LEFT JOIN departments d ON e.department_id = d.department_id;
+BEGIN
+    FOR i IN c_emp_details LOOP
+        DBMS_OUTPUT.put_line('Name: ' || i.employee_name || 
+                             ' | Dept: ' || i.department_name || 
+                             ' | Salary: ' || i.salary || 
+                             ' | Job: ' || i.job_id);
+    END LOOP;
+END;
+/
