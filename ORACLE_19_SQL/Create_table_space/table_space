@@ -21,6 +21,21 @@ EXTENT MANAGEMENT LOCAL
 SEGMENT SPACE MANAGEMENT AUTO
 ONLINE;
 
+
+-- or 
+
+CREATE TABLESPACE tbs_test
+DATAFILE 'F:\oracle_database_66\oradata66\ORCL\TEST.DBF'
+SIZE 256M
+AUTOEXTEND ON
+NEXT 10M
+MAXSIZE UNLIMITED;
+
+-- OR
+CREATE TABLESPACE tbs_test_6
+DATAFILE 'F:\oracle_database_66\oradata66\ORCL\TEST.DBF_6'
+SIZE 100M;
+
 -- Verify tablespace
 SELECT tablespace_name, status
 FROM dba_tablespaces
