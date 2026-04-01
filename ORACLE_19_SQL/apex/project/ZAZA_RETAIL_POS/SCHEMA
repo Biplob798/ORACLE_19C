@@ -1,0 +1,72 @@
+CREATE TABLE SUPPLIER_INFO (
+    SUPP_ID            NUMBER,
+    DATE1              DATE,
+    SUPP_NAME          VARCHAR2(50),
+    ADDRESS            VARCHAR2(50),
+    OFFICE_PHONE       NUMBER(15),
+    MOBILE_NO          NUMBER(12),
+    EMAIL              VARCHAR2(50),
+    TIN                NUMBER(20),
+    NID                NUMBER(20),
+    IMAGE              BLOB,
+    CREDIT_LIMIT       NUMBER(12, 2),
+    CREATED_BY         VARCHAR2(30),
+    CREATED_ON         DATE,
+    STATUS             VARCHAR2(5)
+);
+
+create sequence s1 start with 1 increment by 1;
+
+-- CREATE PROCESS ID AUTO GENERATE
+SELECT S1.NEXTVAL INTO :P5_SUPP_ID FROM DUAL;
+
+-- CREATE trigger with sequenc ID AUTO GENERATE
+create or replace trigger SUPP_ID_TRIGGER
+before insert on SUPPLIER_INFO
+for each row
+begin
+    if :new.SUPP_ID is null then
+        select S1.NEXTVAL into :new.SUPP_ID from dual;
+    end if;
+end;
+
+-- CREATE trigger witout sequenc ID AUTO GENERATE
+
+CREATE OR REPLACE TRIGGER SUPP_ID_MAX_TRIGGER
+BEFORE INSERT ON SUPPLIER_INFO
+FOR EACH ROW
+DECLARE
+    v_max_id NUMBER;
+BEGIN
+    -- Only generate if the ID is not provided in the INSERT statement
+    IF :new.SUPP_ID IS NULL THEN
+        -- NVL handles the first record ever (if table is empty, start at 1)
+        SELECT NVL(MAX(SUPP_ID), 0) + 1 
+        INTO v_max_id 
+        FROM SUPPLIER_INFO;
+        
+        :new.SUPP_ID := v_max_id;
+    END IF;
+END;
+/
+-- CREATE  witout sequenc and trigger ID AUTO GENERATE
+
+SELECT NVL(MAX(SUPP_ID), 0) + 1 FROM SUPPLIER_INFO;
+
+-- FOR DEFAUL DATE SETUP
+GO DEFAULT >SELECT >EXPRESSION>SYSDATE
+-- FOR DEFAULT CREATE BY SETUP
+GO DEFAULT >SELECT >STATIC>&APP_USER.
+-- FOR DEFAULT CURRENT DATE SETUP
+GO DEFAULT >SELECT >EXPRESSION>SYSDATE
+
+-- Phone number 11 degit rakha in input field
+go >validateion>maximum length>11
+
+-- credit limit fixed kora validatiion add kora
+go >settiings>minimum value>0
+go >settings>maximum value>1000000
+-- or
+
+create validation>expression> :P5_CREDIT_LIMIT >= 0 AND :P5_CREDIT_LIMIT <= 1000000
+
