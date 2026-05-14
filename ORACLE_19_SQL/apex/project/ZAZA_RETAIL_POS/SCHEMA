@@ -129,3 +129,41 @@ SELECT CATEGORY_NAME, CATEGORY_NAME AS C FROM CATEGORY WHERE GROUP_NAME = :P18_G
 THEN GO> Cascading List of Values>PARENT ITEMS >P18_GROUP_NAME
 AND ITEM TO SUBMITE>P18_GROUP_NAME 
 
+CREATE TABLE PURCHASE_MASTER(
+    VOUCHER_NO VARCHAR2(20),
+    SUPPLIER_NAME VARCHAR2(50),
+    DATE1 DATE,
+    TOTAL NUMBER,
+    DISCOUNT NUMBER,
+    VAT NUMBER,
+    SUB_TOTAL NUMBER,
+    CREATED_BY VARCHAR2(30),
+    CREATED_ON DATE
+);
+
+CREATE TABLE PURCHASE_DETAILS(
+    ID NUMBER,
+    VOUCHER_NO VARCHAR2(20),
+    ITEM_NO VARCHAR2(50),
+    ITEM_NAME VARCHAR2(100),
+    UNIT VARCHAR2(10),
+    CPU NUMBER,
+    RPU NUMBER,
+    QTY NUMBER
+);
+
+-- create purchase master interactive report and down to create details manualy.--importend must do this
+
+-- for item_no field in purchase details form
+SELECT item_no || ' - ' || item_name AS display_value, 
+       item_no AS return_value 
+FROM item_master;
+
+-- for item name field in purchase details form
+select item_name,item_name a from item_master where item_no=:P22_ITEM_NO
+-- for unit field in purchase details form
+select unit,unit a from item_master where item_no=:P22_ITEM_NO
+
+create sequence p1 start with 1000 increment by 1;
+-- CREATE PROCESS ID AUTO GENERATE
+SELECT P1.NEXTVAL INTO :P21_VOUCHER_NO FROM DUAL;

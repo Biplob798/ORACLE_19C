@@ -1,0 +1,33 @@
+How to Install Oracle Database 19c on Windows 10/11
+Step 1: Download Oracle 19c
+1.	Go to Oracle Official Website: https://www.oracle.com/database/technologies/
+2.	Select Oracle Database 19c for Windows x64
+3.	Login with your Oracle account (or create one if needed)
+4.	Download the ZIP file (e.g., WINDOWS.X64_193000_db_home.zip)
+Step 2: Extract the Installation Files
+1.	Create a folder on your system, for example: C:\Oracle19c
+2.	 Extract the downloaded ZIP file into this folder
+3.	Make sure the folder path does not contain spaces
+Step 3: Create Software Directory Structure
+1.	Inside C:\Oracle19c, create a new folder named: app
+Step 4: Run the Setup File
+2.	Open the extracted folder
+3.	Right-click on setup.exe
+4.	Select Run as Administrator
+Step 5: Installation Configuration
+1.	Select Create and configure a single instance database
+2.	Choose Desktop Class
+3.	Select Use Windows Built-in Account
+4.	For Oracle Base, click Browse and select: C:\Oracle19c\app
+5.	Enter Global Database Name: orcl
+6.	Enter Password (example: s)
+7.	Confirm Password
+8.	Keep Create as Container Database checked
+9.	Enter Pluggable Database Name: orclpdb
+10.	Click Next
+11.	Click Install
+12.	If prompted, allow access for Public Network
+13.	Click Done after installation completes
+✅ Installation Complete
+Oracle Database 19c is now successfully installed on your Windows system.
+

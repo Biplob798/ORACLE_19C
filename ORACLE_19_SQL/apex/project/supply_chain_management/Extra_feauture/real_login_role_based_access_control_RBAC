@@ -1,0 +1,171 @@
+  CREATE TABLE "USERS_AUTH" 
+   (	"ID" NUMBER, 
+	"FIRST_NAME" VARCHAR2(40), 
+	"LAST_NAME" VARCHAR2(40), 
+	"LOGIN_ID" VARCHAR2(40), 
+	"PASSWORD_HASH" VARCHAR2(200), 
+	"ACTIVE_STATUS" CHAR(1) DEFAULT 'Y', 
+	"ACTION_USER" VARCHAR2(100), 
+	"ACTION_DATE_TIME" DATE DEFAULT SYSDATE, 
+	"ROLE_NAME" VARCHAR2(20) DEFAULT 'USER', 
+	 PRIMARY KEY ("ID")
+  USING INDEX  ENABLE
+   ) ;
+
+  CREATE OR REPLACE EDITIONABLE TRIGGER "TRG_USERS_AUTH_ID" 
+BEFORE INSERT ON USERS_AUTH
+FOR EACH ROW
+BEGIN
+  IF :NEW.ID IS NULL THEN
+    SELECT NVL(MAX(ID), 0) + 1 INTO :NEW.ID FROM USERS_AUTH;
+  END IF;
+END;
+/
+
+
+-- FOR DEFAUL ACTION_DATE_TIME SETUP 
+GO DEFAULT >SELECT >EXPRESSION>SYSDATE
+-- FOR DEFAULT ACTION_USER BY SETUP
+GO DEFAULT >SELECT >STATIC>&APP_USER.
+
+
+-- We Create Report With Form 
+
+
+FUNCTION user_authentication (
+    p_username IN VARCHAR2, 
+    p_password IN VARCHAR2
+) RETURN BOOLEAN 
+IS
+    v_user_info NUMBER := 0;
+BEGIN
+    SELECT 1
+      INTO v_user_info
+      FROM USERS_AUTH
+     WHERE UPPER(LOGIN_ID) = UPPER(p_username)
+       AND PASSWORD_HASH = p_password
+       AND ACTIVE_STATUS = 'Y';
+
+    RETURN TRUE;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN FALSE;
+    WHEN OTHERS THEN
+        RETURN FALSE;
+END;
+
+
+
+
+create or replace PROCEDURE SALE_ORDER (
+    p_invoice_no        IN VARCHAR2,
+    p_customer_id       IN NUMBER,
+    p_total_amount      IN NUMBER,
+    p_discount          IN NUMBER,
+    p_discount_amt      IN NUMBER,
+    p_vat               IN NUMBER,
+    p_vat_amt           IN NUMBER,
+    p_net_payable       IN NUMBER,
+    p_paid_amount       IN NUMBER,
+    p_change_amount     IN NUMBER,
+    p_due_amount        IN NUMBER,
+    p_payment_method    IN VARCHAR2,
+    p_payment_status    IN VARCHAR2,
+    p_sale_date         IN DATE,
+    p_cust_phone        IN VARCHAR2 DEFAULT NULL
+) AS
+    v_master_id NUMBER;
+    v_product_name VARCHAR2(200); -- প্রোডাক্ট নাম রাখার জন্য ভেরিয়েবল
+BEGIN
+    -- ১. মাস্টার টেবিলে ইনসার্ট
+    INSERT INTO SELL_ORDER_MASTER (
+        INVOICE_NO, 
+        CUSTOMER_ID, 
+        CUST_PHONE,
+        TOTAL_AMOUNT, 
+        PAID_AMOUNT,
+        DUE_AMOUNT,
+        DISCOUNT, 
+        DISCOUNT_AMOUNT, 
+        VAT, 
+        VAT_AMOUNT, 
+        NET_PAYABLE_AMO, -- আপনার টেবিলের কলাম
+        PAYMENT_METHOD, 
+        PAYMENT_STATUS, 
+        SALE_DATE,
+        CHANGE_AMOUNT,
+        CREATED_BY,
+        CREATED_DATE
+    ) VALUES (
+        p_invoice_no, 
+        p_customer_id, 
+        p_cust_phone,
+        p_total_amount, 
+        p_paid_amount,
+        p_due_amount,
+        p_discount, 
+        p_discount_amt, 
+        p_vat, 
+        p_vat_amt, 
+        p_net_payable, 
+        p_payment_method,
+        p_payment_status, 
+        NVL(p_sale_date, SYSDATE),
+        p_change_amount,
+        V('APP_USER'), 
+        SYSDATE
+    ) RETURNING SELL_ORDER_ID INTO v_master_id;
+
+    -- ২. ডিটেইলস টেবিলে লুপের মাধ্যমে ডাটা ইনসার্ট
+    FOR r IN (SELECT c002 as prod_id, 
+                     c003 as prod_name, -- কালেকশন থেকে নাম নেওয়ার চেষ্টা
+                     n002 as price, 
+                     n003 as qty, 
+                     n004 as total 
+              FROM apex_collections WHERE collection_name = 'SALES')
+    LOOP
+        -- যদি কালেকশনে নাম না থাকে তবে প্রোডাক্ট টেবিল থেকে তুলে আনা
+        IF r.prod_name IS NULL THEN
+            BEGIN
+                SELECT product_name INTO v_product_name 
+                FROM products 
+                WHERE product_id = TO_NUMBER(r.prod_id);
+            EXCEPTION WHEN NO_DATA_FOUND THEN
+                v_product_name := 'Unknown Product';
+            END;
+        ELSE
+            v_product_name := r.prod_name;
+        END IF;
+
+        INSERT INTO SELL_ORDER_DETAILS (
+            SELL_ORDER_DETAIL_ID,
+            SELL_ORDER_ID, 
+            PRODUCT_ID, 
+            PRODUCT_NAME, -- এই কলামে নাম সেভ হবে
+            PRICE, 
+            QUANTITY, 
+            TOTAL_AMOUNT,
+            CREATED_DATE
+        ) VALUES (
+            (SELECT NVL(MAX(SELL_ORDER_DETAIL_ID), 0) + 1 FROM SELL_ORDER_DETAILS),
+            v_master_id, 
+            r.prod_id, 
+            v_product_name, -- সঠিক নাম এখানে যাচ্ছে
+            r.price, 
+            r.qty, 
+            r.total,
+            SYSDATE
+        );
+
+        -- ৩. প্রোডাক্ট টেবিলের স্টক আপডেট
+        UPDATE PRODUCTS 
+        SET STOCK_QTY = NVL(STOCK_QTY, 0) - r.qty
+        WHERE PRODUCT_ID = TO_NUMBER(r.prod_id);
+    END LOOP;
+
+    -- ৪. কালেকশন খালি করা
+    APEX_COLLECTION.TRUNCATE_COLLECTION(p_collection_name => 'SALES');
+    
+    COMMIT;
+END;
+/

@@ -1,0 +1,29 @@
+
+How to Uninstall Oracle Database 11g on Windows 10
+Step 1: Remove Oracle from Environment Variables
+•	Right-click This PC → Properties
+•	Click Advanced system settings
+•	Click Environment Variables
+•	Under System variables, double-click Path
+•	Delete all Oracle-related entries
+•	Click OK to save changes
+Step 2: Remove Oracle Services from Registry
+1.	Press Windows + S, type Run, and press Enter
+2.	Type regedit → press Enter to open Registry Editor
+3.	Navigate to: 
+4.	HKEY_LOCAL_MACHINE → SYSTEM → CurrentControlSet → Services
+5.	Delete all Oracle-related service entries
+Step 3: Remove Oracle Software from Registry
+1.	In Registry Editor, go to: HKEY_LOCAL_MACHINE → SOFTWARE
+2.	Delete all Oracle-related entries
+Step 4: Restart Your Computer
+•	Restart the PC to ensure all services are cleared
+Step 5: Delete Oracle Setup Files
+•	Navigate to the folder where Oracle was installed and delete it
+Step 6: Delete Oracle from Program Files
+1.	Open C:\Program Files
+2.	Delete the Oracle folder
+Step 7: Delete Oracle from Start Menu
+•	Go to: C:\ProgramData\Microsoft\Windows\Start Menu\Programs
+•	Delete any Oracle-related folders
+✅ Note: After completing all steps, Oracle Database 11g will be completely removed from your Windows 10 system.
